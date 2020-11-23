@@ -31,9 +31,9 @@ setup(
         'pytest-mock',
     ],
     include_package_data=True,
-    # entry_points={
-    #     'console_scripts': [
-    #         'plantumlcli=plantumlcli.entrance.cli:cli'
-    #     ]
-    # },
+    entry_points={
+        'console_scripts': [
+            'plantumlcli=plantumlcli.entrance.cli:cli'
+        ]
+    },
 )
