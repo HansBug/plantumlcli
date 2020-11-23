@@ -1,0 +1,7 @@
+where>=1
+click~=7.0
+colorama~=0.4.0
+prettytable~=1.0
+pytest~=5.1.1
+pytest-cov~=2.10.1
+chardet>=3
