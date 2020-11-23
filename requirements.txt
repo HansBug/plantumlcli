@@ -1,6 +1,9 @@
 where>=1
 click~=7.0
 colorama~=0.4.0
+requests~=2.24.0
+urlobject~=2.4.3
+pyquery~=1.4.3
 prettytable~=1.0
 pytest~=5.1.1
 pytest-cov~=2.10.1

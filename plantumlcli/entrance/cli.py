@@ -1,6 +1,8 @@
 import click
 from click import Context, Option
 
+from .local import _find_java_from_local
+from .remote import OFFICIAL_PLANTUML_HOST
 from ..config.meta import __TITLE__, __VERSION__, __AUTHOR__, __AUTHOR_EMAIL__
 
 
@@ -22,5 +24,8 @@ CONTEXT_SETTINGS = dict(
 @click.option('-v', '--version', is_flag=True,
               callback=print_version, expose_value=False, is_eager=True,
               help="Show package's version information.")
+@click.option('-j', '--java', envvar='JAVA_EXEC', type=str, default=lambda: _find_java_from_local())
+@click.option('-p', '--plantuml', envvar='PLANTUML_JAR', type=str, default=None)
+@click.option('-h', '--remote-host', envvar='PLANTUML_HOST', type=str, default=OFFICIAL_PLANTUML_HOST)
 def cli():
     pass
