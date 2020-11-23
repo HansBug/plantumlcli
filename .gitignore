@@ -473,3 +473,8 @@ __pycache__
 /dist
 /demo
 /.python-version
+*.png
+*.pdf
+*.svg
+*.latex
+*.eps
