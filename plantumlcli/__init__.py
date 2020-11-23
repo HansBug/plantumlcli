@@ -1,1 +1,1 @@
-from .models import RemotePlantumlServer
+from .models import RemotePlantuml, LocalPlantuml

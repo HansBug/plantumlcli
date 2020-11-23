@@ -1,9 +1,12 @@
+from typing import Optional
+
 import click
 from click import Context, Option
 
-from .local import _find_java_from_local
-from .remote import OFFICIAL_PLANTUML_HOST
+from .local import _find_java_from_local, _if_local_ok
+from .remote import _if_remote_ok
 from ..config.meta import __TITLE__, __VERSION__, __AUTHOR__, __AUTHOR_EMAIL__
+from ..models.remote import OFFICIAL_PLANTUML_HOST
 
 
 # noinspection PyUnusedLocal
@@ -20,12 +23,17 @@ CONTEXT_SETTINGS = dict(
 )
 
 
-@click.group(context_settings=CONTEXT_SETTINGS)
+@click.command(context_settings=CONTEXT_SETTINGS)
 @click.option('-v', '--version', is_flag=True,
               callback=print_version, expose_value=False, is_eager=True,
               help="Show package's version information.")
 @click.option('-j', '--java', envvar='JAVA_EXEC', type=str, default=lambda: _find_java_from_local())
 @click.option('-p', '--plantuml', envvar='PLANTUML_JAR', type=str, default=None)
 @click.option('-h', '--remote-host', envvar='PLANTUML_HOST', type=str, default=OFFICIAL_PLANTUML_HOST)
-def cli():
-    pass
+def cli(java: str, plantuml: Optional[str], remote_host: str):
+    if _if_local_ok(java, plantuml):
+        print(java, plantuml)
+    elif _if_remote_ok(remote_host):
+        print(remote_host)
+    else:
+        raise RuntimeError

@@ -2,24 +2,27 @@ import base64
 import os
 import string
 import zlib
+from typing import Optional
 
 import requests
 from pyquery import PyQuery
 from urlobject import URLObject
 
-from ..utils import check_func
+from .base import Plantuml
 
+OFFICIAL_PLANTUML_HOST = 'http://www.plantuml.com/plantuml'
 _trans_from_base64_to_plantuml = bytes.maketrans(
     (string.ascii_uppercase + string.ascii_lowercase + string.digits + '+/').encode(),
     (string.digits + string.ascii_uppercase + string.ascii_lowercase + '-_').encode(),
 )
 
 
-class RemotePlantumlServer:
+class RemotePlantuml(Plantuml):
     __BYTE_TRANS = _trans_from_base64_to_plantuml
 
-    def __init__(self, host: str, **kwargs):
-        self.__host = URLObject(host).without_fragment().without_query()
+    def __init__(self, host: Optional[str] = None, **kwargs):
+        Plantuml.__init__(self)
+        self.__host = URLObject(host or OFFICIAL_PLANTUML_HOST).without_fragment().without_query()
         self.__session = requests.session()
         self.__request_params = kwargs
         self.__version = None
@@ -45,8 +48,7 @@ class RemotePlantumlServer:
         if ("version" not in version_info) or ("plantuml server" not in version_info.lower()) or (not version_info):
             raise ValueError("Invalid version information from homepage - {info}.".format(info=repr(version_info)))
 
-    @property
-    def version(self) -> str:
+    def _get_version(self) -> str:
         if not self.__version:
             r = self.__get_homepage()
             _version = PyQuery(r.content.decode()).find('#footer').text().strip()
@@ -55,10 +57,8 @@ class RemotePlantumlServer:
 
         return self.__version
 
-    @check_func(keep_return=False)
-    def test(self) -> bool:
+    def _check(self):
         self.__get_homepage()
-        return True
 
     def __get_uml_url(self, type_: str, code: str) -> str:
         return self.__request_url(os.path.join(type_, self.__compress(code)))
@@ -66,6 +66,9 @@ class RemotePlantumlServer:
     def __get_uml(self, type_: str, code: str) -> bytes:
         r = self.__request(os.path.join(type_, self.__compress(code)))
         return r.content
+
+    def get_online_editor_url(self, code: str) -> str:
+        return self.__get_uml_url('uml', code)
 
     def get_txt_uml_url(self, code: str) -> str:
         return self.__get_uml_url('txt', code)
