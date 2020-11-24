@@ -1,7 +1,22 @@
-from typing import Optional
+import os
+from typing import Union
 
-import where
+import click
+
+from plantumlcli import LocalPlantuml
+from .base import _check_plantuml, _click_exception_with_exit_code
 
 
-def _find_java_from_local() -> Optional[str]:
-    return where.first('java')
+def _additional_info_for_local(plantuml: LocalPlantuml):
+    click.echo('Java executable : {path}'.format(path=os.path.abspath(plantuml.java)))
+    click.echo('Plantuml jar : {path}'.format(path=os.path.abspath(plantuml.plantuml)))
+
+
+def _check_local_plantuml(success, plantuml: Union[LocalPlantuml, Exception]) -> bool:
+    return _check_plantuml('local', success, plantuml, _additional_info_for_local)
+
+
+def print_local_check_info(success, plantuml: Union[LocalPlantuml, Exception]):
+    _ok = _check_local_plantuml(success, plantuml)
+    if not _ok:
+        raise _click_exception_with_exit_code('PlantumlNotFound', 'Local plantuml not found.', -1)
