@@ -1,10 +1,45 @@
+import os
 import re
 import subprocess
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Mapping, Any
 
 import where
 
 from .base import Plantuml
+
+PLANTUML_JAR_ENV = 'PLANTUML_JAR'
+
+
+def find_java_from_env() -> Optional[str]:
+    return where.first('java')
+
+
+def find_java(java: Optional[str] = None) -> Optional[str]:
+    return java or find_java_from_env()
+
+
+def find_plantuml_from_env() -> Optional[str]:
+    return os.environ.get(PLANTUML_JAR_ENV, None)
+
+
+def find_plantuml(plantuml: Optional[str] = None) -> Optional[str]:
+    return plantuml or find_plantuml_from_env()
+
+
+def _check_local(java: str, plantuml: str):
+    if not java or not os.path.exists(java):
+        raise FileNotFoundError('Java executable {exec} not found.'.format(exec=repr(java)))
+    if not os.path.isfile(java):
+        raise IsADirectoryError('Java executable {exec} is not a file.'.format(exec=repr(java)))
+    if not os.access(java, os.X_OK):
+        raise PermissionError('Java executable {exec} not executable.'.format(exec=repr(java)))
+
+    if not plantuml or not os.path.exists(plantuml):
+        raise FileNotFoundError('Plantuml jar file {jar} not found.'.format(jar=repr(plantuml)))
+    if not os.path.isfile(plantuml):
+        raise IsADirectoryError('Plantuml jar file {jar} is not a file.'.format(jar=repr(plantuml)))
+    if not os.access(plantuml, os.R_OK):
+        raise PermissionError('Plantuml jar file {jar} not readable.'.format(jar=repr(plantuml)))
 
 
 def _decode_if_not_none(value: Optional[bytes]) -> Optional[str]:
@@ -15,11 +50,32 @@ def _decode_if_not_none(value: Optional[bytes]) -> Optional[str]:
 
 
 class LocalPlantuml(Plantuml):
-    def __init__(self, plantuml: str, java: str = None):
+    def __init__(self, java: str, plantuml: str):
         Plantuml.__init__(self)
-        self.__java = java or where.first('java')
+
+        self.__java = java
         self.__plantuml = plantuml
+        _check_local(self.__java, self.__plantuml)
+
         self.__version = None
+
+    @classmethod
+    def autoload(cls, java: str = None, plantuml: str = None, **kwargs) -> 'LocalPlantuml':
+        return LocalPlantuml(find_java(java), find_plantuml(plantuml))
+
+    @property
+    def java(self) -> str:
+        return self.__java
+
+    @property
+    def plantuml(self) -> str:
+        return self.__plantuml
+
+    def _properties(self) -> Mapping[str, Any]:
+        return {
+            'java': self.__java,
+            'plantuml': self.__plantuml,
+        }
 
     def __execute(self, *args) -> Tuple[str, str]:
         _cmdline = [self.__java, '-jar', self.__plantuml] + list(args)

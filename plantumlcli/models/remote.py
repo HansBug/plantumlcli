@@ -2,7 +2,7 @@ import base64
 import os
 import string
 import zlib
-from typing import Optional
+from typing import Optional, Mapping, Any
 
 import requests
 from pyquery import PyQuery
@@ -10,22 +10,64 @@ from urlobject import URLObject
 
 from .base import Plantuml
 
+PLANTUML_HOST_ENV = 'PLANTUML_HOST'
 OFFICIAL_PLANTUML_HOST = 'http://www.plantuml.com/plantuml'
+
+
+def find_plantuml_host_from_env() -> Optional[None]:
+    return os.environ.get(PLANTUML_HOST_ENV, None)
+
+
+def find_plantuml_host(plantuml_host: Optional[str]) -> Optional[str]:
+    return plantuml_host or find_plantuml_host_from_env() or OFFICIAL_PLANTUML_HOST
+
+
 _trans_from_base64_to_plantuml = bytes.maketrans(
     (string.ascii_uppercase + string.ascii_lowercase + string.digits + '+/').encode(),
     (string.digits + string.ascii_uppercase + string.ascii_lowercase + '-_').encode(),
 )
 
 
+def _host_process(host: str) -> URLObject:
+    return URLObject(host).without_fragment().without_query()
+
+
+def _check_remote(host: str):
+    if not host:
+        raise ValueError("Host should be present, but {actual} found.".format(actual=repr(host)))
+
+    _host_url = _host_process(host)
+    if _host_url.scheme not in ['http', 'https']:
+        raise ValueError(
+            "Host's scheme should be http or https, but {actual} found.".format(actual=repr(_host_url.scheme)))
+
+
 class RemotePlantuml(Plantuml):
     __BYTE_TRANS = _trans_from_base64_to_plantuml
 
-    def __init__(self, host: Optional[str] = None, **kwargs):
+    def __init__(self, host: str, **kwargs):
         Plantuml.__init__(self)
-        self.__host = URLObject(host or OFFICIAL_PLANTUML_HOST).without_fragment().without_query()
+
+        self.__host = host
+        _check_remote(self.__host)
+        self.__host = _host_process(self.__host)
+
         self.__session = requests.session()
         self.__request_params = kwargs
         self.__version = None
+
+    @classmethod
+    def autoload(cls, host: Optional[str] = None, **kwargs) -> 'RemotePlantuml':
+        return RemotePlantuml(find_plantuml_host(host), **kwargs)
+
+    @property
+    def host(self) -> str:
+        return str(self.__host)
+
+    def _properties(self) -> Mapping[str, Any]:
+        return {
+            'host': str(self.__host),
+        }
 
     @classmethod
     def __compress(cls, code: str) -> str:
