@@ -75,6 +75,13 @@ _Tp = TypeVar('_Tp', bound=Plantuml)
 
 
 def try_plantuml(cls: Type[_Tp], *args, **kwargs) -> Tuple[bool, Union[Optional[_Tp], Exception]]:
+    """
+    Try initialize plantuml object
+    :param cls: plantuml class
+    :param args: arguments
+    :param kwargs: key-word arguments
+    :return: (True, Plantuml) when success and (False, Exception) when failed
+    """
     try:
         return True, cls.autoload(*args, **kwargs)
     except Exception as e:
