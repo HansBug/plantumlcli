@@ -4,7 +4,7 @@ import click
 from click.core import Context, Option
 
 from .base import _DEFAULT_CONCURRENCY
-from .general import _get_check_type, print_check_info, print_text_graph
+from .general import _get_check_type, print_check_info, print_text_graph, process_plantuml
 from .remote import print_url, print_homepage_url
 from ..config.meta import __TITLE__, __VERSION__, __AUTHOR__, __AUTHOR_EMAIL__
 from ..models.base import try_plantuml, PlantumlResourceType, Plantuml
@@ -118,7 +118,6 @@ def cli(java: str, plantuml: Optional[str], remote_host: str,
 
         if text:  # print text graph
             print_text_graph(plantuml, sources, concurrency)
-        else:
-            print(sources)
-            print(_local_ok, _local)
-            print(_remote_ok, _remote)
+        else:  # dump plantuml resource (core feature)
+            process_plantuml(plantuml, sources, output, output_dir,
+                             PlantumlResourceType.load(resource_type), concurrency)

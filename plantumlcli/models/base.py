@@ -106,6 +106,14 @@ class Plantuml(metaclass=ABCMeta):
         """
         save_binary_file(path, self._generate_uml_data(PlantumlResourceType.load(type_), code))
 
+    def dump_binary(self, type_: Union[int, str, PlantumlResourceType], code: str) -> bytes:
+        """
+        Dump uml data to bytes
+        :param type_: resource type
+        :param code: source code
+        """
+        return self._generate_uml_data(PlantumlResourceType.load(type_), code)
+
     def dump_txt(self, code: str) -> str:
         """
         Dump txt uml data to str

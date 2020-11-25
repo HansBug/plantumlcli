@@ -11,7 +11,7 @@ from .remote import _check_remote_plantuml, print_remote_check_info
 from ..models.base import PlantumlType, Plantuml, PlantumlResourceType
 from ..models.local import LocalPlantuml, LocalPlantumlExecuteError
 from ..models.remote import RemotePlantuml
-from ..utils import load_text_file, linear_process
+from ..utils import load_text_file, linear_process, save_binary_file
 
 
 def print_double_check_info(local_ok: bool, local: LocalPlantuml,
@@ -117,7 +117,7 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
         items=sources,
         process=lambda i, src: _process_text(src),
         post_process=lambda i, src, ret: _print_text(src, ret),
-        concurrency=concurrency
+        concurrency=concurrency,
     )
 
     if _error_count > 0:
@@ -129,15 +129,30 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
 
 
 def process_plantuml(plantuml: Plantuml, sources: Tuple[str],
-                     output: Tuple[str], output_dir: Optional[str],
+                     outputs: Tuple[str], output_dir: Optional[str],
                      type_: PlantumlResourceType, concurrency: int):
+    if outputs and len(outputs) != len(sources):
+        raise ValueError('Amount of output file(s) should be {expect}, but {actual} found.'
+                         .format(expect=len(sources), actual=len(outputs)))
+
     def _output_filename(index: int):
-        if output:
-            name = output[index]
+        if outputs:
+            name = outputs[index]
         else:
             _, _filename = os.path.split(sources[index])
             _name, _ = os.path.splitext(_filename)
             name = '{name}.{ext}'.format(name=_name, ext=type_.name.lower())
         return os.path.join(output_dir or os.curdir, name)
 
-    # TODO: Complete this part
+    def _process_code(index: int):
+        return plantuml.dump_binary(type_, load_text_file(sources[index]))
+
+    def _post_process_data(index: int, ret: bytes):
+        save_binary_file(_output_filename(index), ret)
+
+    linear_process(
+        items=sources,
+        process=lambda i, src: _process_code(i),
+        post_process=lambda i, src, ret: _post_process_data(i, ret),
+        concurrency=concurrency,
+    )
