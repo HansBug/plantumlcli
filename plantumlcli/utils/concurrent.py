@@ -1,5 +1,6 @@
-from multiprocessing import cpu_count, Lock
-from multiprocessing.pool import ThreadPool
+from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
+from multiprocessing import cpu_count
+from threading import Lock
 from typing import Iterable, TypeVar, Callable, Optional, List, Tuple
 
 _Ti = TypeVar('_Ti')
@@ -18,45 +19,49 @@ def linear_process(items: Iterable[_Ti],
                    skip_once_error: bool = True,
                    final_error_process: Optional[Callable[[List[Tuple[int, _Ti, Exception]]], None]] = None):
     concurrency = concurrency or cpu_count()
-    pool = ThreadPool(processes=concurrency)
+    pool = ThreadPoolExecutor(max_workers=concurrency)
 
+    _items = {index: item for index, item in enumerate(items)}
+    _results, _errors = {}, []
     _post_lock = Lock()
     _max_post_id = 0
-    _items, _result, _errors = {}, {}, []
     _skipped = False
+
+    def _work_func(index_: int, item_):
+        nonlocal _post_lock, _max_post_id, _items, _results, _skipped
+        if _skipped:
+            return
+
+        try:
+            _ret = process(index_, item_)
+        except Exception as e:
+            _results[index_] = (False, e)
+        else:
+            _results[index_] = (True, _ret)
+
+        with _post_lock:
+            while _max_post_id in _results.keys():
+                _success, _data = _results[_max_post_id]
+                if _success:
+                    if not _skipped:
+                        post_process(_max_post_id, _items[_max_post_id], _data)
+                else:
+                    if skip_once_error:
+                        _skipped = True
+                    _errors.append((_max_post_id, _items[_max_post_id], _data))
+
+                _max_post_id += 1
+
+    def _callback(worker):
+        if worker.exception():
+            raise worker.exception()
+
+    tasks = []
     for index, item in enumerate(items):
-        _items[index] = item
-
-        def _func():
-            nonlocal _skipped, _max_post_id
-            if _skipped:
-                return
-
-            try:
-                _ret = process(index, item)
-            except Exception as e:
-                _result[index] = (False, e)
-            else:
-                _result[index] = (True, _ret)
-
-            with _post_lock:
-                while _max_post_id in _result.keys():
-                    _success, _data = _result[_max_post_id]
-                    if _success:
-                        if not _skipped:
-                            post_process(_max_post_id, _items[_max_post_id], _data)
-                    else:
-                        if skip_once_error:
-                            _skipped = True
-                        _errors.append((_max_post_id, _items[_max_post_id], _data))
-
-                    _max_post_id += 1
-
-        if not _skipped:
-            pool.apply(func=_func, )
-
-    pool.close()
-    pool.join()
+        _task = pool.submit(_work_func, index, item)
+        _task.add_done_callback(_callback)
+        tasks.append(_task)
+    wait(tasks, return_when=ALL_COMPLETED)
 
     if len(_errors) > 0:
         if skip_once_error:

@@ -38,7 +38,7 @@ class TestUtilsDecorator:
             return duration * 2
 
         _time, _return = func1(1.0)
-        assert 0.9 < _time < 1.1
+        assert 0.8 < _time < 1.2
         assert _return == 2.0
 
         @timing_func(keep_return=False)
@@ -46,7 +46,7 @@ class TestUtilsDecorator:
             time.sleep(duration)
             return duration * 2
 
-        assert 0.9 < func2(1.0) < 1.1
+        assert 0.8 < func2(1.0) < 1.2
 
 
 if __name__ == "__main__":
