@@ -50,7 +50,7 @@ CONTEXT_SETTINGS = dict(
 @click.option('--check-remote', is_flag=True, help='Check remote plantuml.')
 @click.option('-u', '--url', is_flag=True, help='Print url of remote plantuml resource.')
 @click.option('--homepage-url', is_flag=True, help='Print url of remote plantuml editor.')
-@click.option('-t', '--type', 'resource_type', default=PlantumlResourceType.TXT.name,
+@click.option('-t', '--type', 'resource_type', default=PlantumlResourceType.PNG.name,
               type=click.Choice(PlantumlResourceType.__members__.keys(), case_sensitive=False),
               help='Type of plantuml resource.', show_default=True)
 @click.option('-T', '--text', is_flag=True, help='Display text uml graph by stdout.')
