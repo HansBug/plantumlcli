@@ -2,6 +2,7 @@ from enum import IntEnum
 from typing import Optional, Tuple, Union
 
 import click
+from requests.exceptions import HTTPError
 
 from .base import _click_exception_with_exit_code
 from .local import _check_local_plantuml, print_local_check_info
@@ -78,7 +79,7 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
     def _process_text(src: str):
         try:
             return True, plantuml.dump_txt(load_text_file(src))
-        except LocalPlantumlExecuteError as e:
+        except (LocalPlantumlExecuteError, HTTPError) as e:
             return False, e
 
     def _print_text(src: str, ret: Tuple[bool, Union[str, LocalPlantumlExecuteError]]):
@@ -87,10 +88,16 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
         if _success:
             click.secho('{source}: '.format(source=src), fg='green')
             click.echo(_data)
+            click.echo()
         else:
             nonlocal _error_count
-            click.secho('{source}: [error with exitcode {code}]'.format(source=src, code=_data.exitcode), fg='red')
-            click.secho(_data.stderr, fg='red')
+            if isinstance(_data, LocalPlantumlExecuteError):
+                click.secho('{source}: [error with exitcode {code}]'.format(source=src, code=_data.exitcode), fg='red')
+                click.secho(_data.stderr, fg='red')
+            else:
+                click.secho('{source}: [{cls}]'.format(source=src, cls=type(_data).__name__), fg='red')
+                click.secho(str(_data), fg='red')
+            click.echo()
             _error_count += 1
 
     linear_process(

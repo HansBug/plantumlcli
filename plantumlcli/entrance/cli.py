@@ -1,15 +1,37 @@
-from typing import Optional, Tuple
+from typing import Union, Optional, Tuple
 
 import click
-from click import Context, Option
+from click.core import Context, Option
 
 from .base import _DEFAULT_CONCURRENCY
 from .general import _get_check_type, print_check_info, print_text_graph
 from .remote import print_url, print_homepage_url
 from ..config.meta import __TITLE__, __VERSION__, __AUTHOR__, __AUTHOR_EMAIL__
-from ..models.base import try_plantuml, PlantumlResourceType
-from ..models.local import LocalPlantuml, PLANTUML_JAR_ENV, find_java_from_env
-from ..models.remote import OFFICIAL_PLANTUML_HOST, PLANTUML_HOST_ENV, RemotePlantuml
+from ..models.base import try_plantuml, PlantumlResourceType, Plantuml
+from ..models.local import LocalPlantuml, find_java_from_env, PLANTUML_JAR_ENV
+from ..models.remote import RemotePlantuml, PLANTUML_HOST_ENV, OFFICIAL_PLANTUML_HOST
+
+
+def _select_plantuml(
+        local_ok: bool, local: Union[LocalPlantuml, Exception],
+        remote_ok: bool, remote: Union[RemotePlantuml, Exception],
+        use_local: bool, use_remote: bool) -> Plantuml:
+    if use_local:
+        plantuml = local
+    elif use_remote:
+        plantuml = remote
+    else:
+        if local_ok:
+            plantuml = local
+        elif remote_ok:
+            plantuml = remote
+        else:
+            raise RuntimeError('No plantuml available.')
+
+    if isinstance(plantuml, Plantuml):
+        return plantuml
+    else:
+        raise plantuml
 
 
 # noinspection PyUnusedLocal
@@ -54,11 +76,13 @@ CONTEXT_SETTINGS = dict(
               help='Remote host of the online plantuml editor (will load from ${{{env}}} when not given).'.format(
                   env=PLANTUML_HOST_ENV),
               show_default=True)
-@click.option('-c', '--check', is_flag=True, help='Check usable plantuml.')
+@click.option('-L', '--use-local', is_flag=True, help='Use local plantuml only.')
+@click.option('-R', '--use-remote', is_flag=True, help='Use remote plantuml only.')
+@click.option('-c', '--check', is_flag=True, help='Check usable plantuml (ignore -L and -R).')
 @click.option('--check-local', is_flag=True, help='Check local plantuml.')
 @click.option('--check-remote', is_flag=True, help='Check remote plantuml.')
-@click.option('-u', '--url', is_flag=True, help='Print url of remote plantuml resource.')
-@click.option('--homepage-url', is_flag=True, help='Print url of remote plantuml editor.')
+@click.option('-u', '--url', is_flag=True, help='Print url of remote plantuml resource (ignore -L and -R).')
+@click.option('--homepage-url', is_flag=True, help='Print url of remote plantuml editor (ignore -L and -R).')
 @click.option('-t', '--type', 'resource_type', default=PlantumlResourceType.PNG.name,
               type=click.Choice(PlantumlResourceType.__members__.keys(), case_sensitive=False),
               help='Type of plantuml resource.', show_default=True)
@@ -67,6 +91,7 @@ CONTEXT_SETTINGS = dict(
               help='Concurrency when running plantuml.', show_default=True)
 @click.argument('sources', nargs=-1, type=click.Path(exists=True, dir_okay=False, readable=True))
 def cli(java: str, plantuml: Optional[str], remote_host: str,
+        use_local: bool, use_remote: bool,
         check: bool, check_local: bool, check_remote: bool,
         url: bool, homepage_url: bool,
         resource_type: str, text: bool,
@@ -85,10 +110,7 @@ def cli(java: str, plantuml: Optional[str], remote_host: str,
         else:
             print_url(_remote_ok, _remote, sources, PlantumlResourceType.load(resource_type), concurrency)
     else:  # run plantuml process
-        if _local_ok:
-            plantuml = _local
-        else:
-            plantuml = _remote
+        plantuml = _select_plantuml(_local_ok, _local, _remote_ok, _remote, use_local, use_remote)
 
         if text:  # print text graph
             print_text_graph(plantuml, sources, concurrency)
