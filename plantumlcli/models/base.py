@@ -12,10 +12,16 @@ class PlantumlType(IntEnum):
 
 class Plantuml(metaclass=ABCMeta):
     def __init__(self):
+        """
+        """
         pass
 
     @classmethod
     def autoload(cls, *args, **kwargs):
+        """
+        Autoload plantuml object from given arguments
+        :return: auto-loaded plantuml object
+        """
         raise NotImplementedError
 
     @classmethod
@@ -28,6 +34,10 @@ class Plantuml(metaclass=ABCMeta):
 
     @property
     def version(self) -> str:
+        """
+        Get version information from this plantuml
+        :return: version information
+        """
         _version = self._get_version()
         self._check_version(_version)
         return _version
@@ -35,12 +45,20 @@ class Plantuml(metaclass=ABCMeta):
     def _check(self):
         self._check_version(self._get_version())
 
-    def check(self):
+    def check(self) -> None:
+        """
+        Check this plantuml is okay or not, raise exception when not ok
+        """
         return self._check()
 
     @check_func(keep_return=False)
-    def test(self):
-        return self._check()
+    def test(self) -> bool:
+        """
+        Test this plantuml is okay or not
+        :return: True if is okay, otherwise False
+        """
+        self._check()
+        return True
 
     def _properties(self) -> Mapping[str, Any]:
         return {}
