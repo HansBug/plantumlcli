@@ -3,6 +3,7 @@ from typing import Optional, Tuple
 import click
 from click import Context, Option
 
+from .base import _DEFAULT_CONCURRENCY
 from .general import _get_check_type, print_check_info, print_text_graph
 from .remote import print_url, print_homepage_url
 from ..config.meta import __TITLE__, __VERSION__, __AUTHOR__, __AUTHOR_EMAIL__
@@ -24,6 +25,14 @@ def print_version(ctx: Context, param: Option, value: bool) -> None:
     click.echo('{title}, version {version}.'.format(title=__TITLE__.capitalize(), version=__VERSION__))
     click.echo('Developed by {author}, {email}.'.format(author=__AUTHOR__, email=__AUTHOR_EMAIL__))
     ctx.exit()
+
+
+# noinspection PyUnusedLocal
+def validate_concurrency(ctx: Context, param: Option, value: int):
+    if value > 0:
+        return value
+    else:
+        raise ValueError("Concurrency should be no less than 1.")
 
 
 CONTEXT_SETTINGS = dict(
@@ -54,12 +63,14 @@ CONTEXT_SETTINGS = dict(
               type=click.Choice(PlantumlResourceType.__members__.keys(), case_sensitive=False),
               help='Type of plantuml resource.', show_default=True)
 @click.option('-T', '--text', is_flag=True, help='Display text uml graph by stdout.')
+@click.option('-n', '--concurrency', type=int, default=_DEFAULT_CONCURRENCY, callback=validate_concurrency,
+              help='Concurrency when running plantuml.', show_default=True)
 @click.argument('sources', nargs=-1, type=click.Path(exists=True, dir_okay=False, readable=True))
 def cli(java: str, plantuml: Optional[str], remote_host: str,
         check: bool, check_local: bool, check_remote: bool,
         url: bool, homepage_url: bool,
         resource_type: str, text: bool,
-        sources: Tuple[str]):
+        concurrency: Optional[int], sources: Tuple[str]):
     _local_ok, _local = try_plantuml(LocalPlantuml, java=java, plantuml=plantuml)
     _remote_ok, _remote = try_plantuml(RemotePlantuml, host=remote_host)
 
@@ -70,9 +81,9 @@ def cli(java: str, plantuml: Optional[str], remote_host: str,
         )
     elif url or homepage_url:  # print url of remote plantuml
         if homepage_url:
-            print_homepage_url(_remote_ok, _remote, sources)
+            print_homepage_url(_remote_ok, _remote, sources, concurrency)
         else:
-            print_url(_remote_ok, _remote, sources, PlantumlResourceType.load(resource_type))
+            print_url(_remote_ok, _remote, sources, PlantumlResourceType.load(resource_type), concurrency)
     else:  # run plantuml process
         if _local_ok:
             plantuml = _local

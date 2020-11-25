@@ -1,9 +1,12 @@
+from multiprocessing import cpu_count
 from typing import Union, Optional, Callable, TypeVar
 
 import click
 
 from ..models import Plantuml
 from ..utils import timing_func
+
+_DEFAULT_CONCURRENCY = cpu_count()
 
 
 def _click_exception_with_exit_code(name: str, message: str, exitcode: int):
