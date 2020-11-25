@@ -91,7 +91,7 @@ def cli(java: str, plantuml: Optional[str], remote_host: str,
             plantuml = _remote
 
         if text:  # print text graph
-            print_text_graph(plantuml, sources)
+            print_text_graph(plantuml, sources, concurrency)
         else:
             print(sources)
             print(_local_ok, _local)
