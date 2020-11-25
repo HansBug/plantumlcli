@@ -73,7 +73,7 @@ def cli(java: str, plantuml: Optional[str], remote_host: str,
             print_homepage_url(_remote_ok, _remote, sources)
         else:
             print_url(_remote_ok, _remote, sources, PlantumlResourceType.load(resource_type))
-    else:
+    else:  # run plantuml process
         if _local_ok:
             plantuml = _local
         else:

@@ -67,6 +67,11 @@ def print_check_info(check_type: PlantumlCheckType,
 
 
 def print_text_graph(plantuml: Plantuml, sources: Tuple[str]):
+    """
+    Print text graph of source codes
+    :param plantuml: plantuml object
+    :param sources: source code files
+    """
     for source in sources:
         click.echo('{source}: '.format(source=source))
         click.echo(plantuml.dump_txt(load_text_file(source)))
