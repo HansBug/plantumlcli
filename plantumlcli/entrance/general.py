@@ -1,3 +1,4 @@
+import os
 from enum import IntEnum
 from typing import Optional, Tuple, Union
 
@@ -7,7 +8,7 @@ from requests.exceptions import HTTPError
 from .base import _click_exception_with_exit_code
 from .local import _check_local_plantuml, print_local_check_info
 from .remote import _check_remote_plantuml, print_remote_check_info
-from ..models.base import PlantumlType, Plantuml
+from ..models.base import PlantumlType, Plantuml, PlantumlResourceType
 from ..models.local import LocalPlantuml, LocalPlantumlExecuteError
 from ..models.remote import RemotePlantuml
 from ..utils import load_text_file, linear_process
@@ -88,7 +89,6 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
         if _success:
             click.secho('{source}: '.format(source=src), fg='green')
             click.echo(_data)
-            click.echo()
         else:
             nonlocal _error_count
             if isinstance(_data, LocalPlantumlExecuteError):
@@ -97,7 +97,6 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
             else:
                 click.secho('{source}: [{cls}]'.format(source=src, cls=type(_data).__name__), fg='red')
                 click.secho(str(_data), fg='red')
-            click.echo()
             _error_count += 1
 
     linear_process(
@@ -113,3 +112,18 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
             message='{count} error(s) found when generating text graph.'.format(count=_error_count),
             exitcode=-2,
         )
+
+
+def process_plantuml(plantuml: Plantuml, sources: Tuple[str],
+                     output: Tuple[str], output_dir: Optional[str],
+                     type_: PlantumlResourceType, concurrency: int):
+    def _output_filename(index: int):
+        if output:
+            name = output[index]
+        else:
+            _, _filename = os.path.split(sources[index])
+            _name, _ = os.path.splitext(_filename)
+            name = '{name}.{ext}'.format(name=_name, ext=type_.name.lower())
+        return os.path.join(output_dir or os.curdir, name)
+
+    # TODO: Complete this part

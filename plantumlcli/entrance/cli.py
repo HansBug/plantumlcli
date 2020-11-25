@@ -68,7 +68,7 @@ CONTEXT_SETTINGS = dict(
               help="Show package's version information.")
 @click.option('-j', '--java', type=str, default=find_java_from_env(),
               help='Path of java executable file (will load from environment when not given).',
-              show_default=not not find_java_from_env())
+              show_default='java from ${PATH}')
 @click.option('-p', '--plantuml', envvar=PLANTUML_JAR_ENV, type=str, default=None,
               help='Path of plantuml jar file (will load from ${{{env}}} when not given).'.format(
                   env=PLANTUML_JAR_ENV))
@@ -82,11 +82,15 @@ CONTEXT_SETTINGS = dict(
 @click.option('--check-local', is_flag=True, help='Check local plantuml.')
 @click.option('--check-remote', is_flag=True, help='Check remote plantuml.')
 @click.option('-u', '--url', is_flag=True, help='Print url of remote plantuml resource (ignore -L and -R).')
-@click.option('--homepage-url', is_flag=True, help='Print url of remote plantuml editor (ignore -L and -R).')
+@click.option('--homepage-url', is_flag=True, help='Print url of remote plantuml editor (ignore -L, -R and -u).')
 @click.option('-t', '--type', 'resource_type', default=PlantumlResourceType.PNG.name,
               type=click.Choice(PlantumlResourceType.__members__.keys(), case_sensitive=False),
               help='Type of plantuml resource.', show_default=True)
-@click.option('-T', '--text', is_flag=True, help='Display text uml graph by stdout.')
+@click.option('-T', '--text', is_flag=True, help='Display text uml graph by stdout (ignore -t).')
+@click.option('-o', '--output', type=str, multiple=True,
+              help='Paths of output files (relative path supported, based on output dir in -O).')
+@click.option('-O', '--output-dir', type=click.Path(exists=True, file_okay=False, writable=True), default='.',
+              help='Base path for outputting files.', show_default='current path')
 @click.option('-n', '--concurrency', type=int, default=_DEFAULT_CONCURRENCY, callback=validate_concurrency,
               help='Concurrency when running plantuml.', show_default=True)
 @click.argument('sources', nargs=-1, type=click.Path(exists=True, dir_okay=False, readable=True))
@@ -94,7 +98,7 @@ def cli(java: str, plantuml: Optional[str], remote_host: str,
         use_local: bool, use_remote: bool,
         check: bool, check_local: bool, check_remote: bool,
         url: bool, homepage_url: bool,
-        resource_type: str, text: bool,
+        resource_type: str, text: bool, output: Tuple[str], output_dir: str,
         concurrency: Optional[int], sources: Tuple[str]):
     _local_ok, _local = try_plantuml(LocalPlantuml, java=java, plantuml=plantuml)
     _remote_ok, _remote = try_plantuml(RemotePlantuml, host=remote_host)
