@@ -52,9 +52,11 @@ def linear_process(items: Iterable[_Ti],
 
                 _max_post_id += 1
 
-    def _callback(worker):
-        if worker.exception():
-            raise worker.exception()
+    _post_errors = []
+
+    def _callback(task):
+        if task.exception():
+            _post_errors.append(task.exception())
 
     tasks = []
     for index, item in enumerate(items):
@@ -62,6 +64,9 @@ def linear_process(items: Iterable[_Ti],
         _task.add_done_callback(_callback)
         tasks.append(_task)
     wait(tasks, return_when=ALL_COMPLETED)
+
+    if _post_errors:
+        raise _post_errors[0]
 
     if len(_errors) > 0:
         if skip_once_error:
