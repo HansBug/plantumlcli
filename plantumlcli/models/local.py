@@ -101,7 +101,7 @@ class LocalPlantuml(Plantuml):
 
     @classmethod
     def _check_version(cls, version: str):
-        if "plantuml" not in version.lower():
+        if (not version) or ("plantuml" not in version.lower()):
             raise ValueError("Invalid version of plantuml - {version}.".format(version=repr(version)))
 
     def _get_version(self) -> str:

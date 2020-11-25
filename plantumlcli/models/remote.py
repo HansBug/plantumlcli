@@ -100,7 +100,7 @@ class RemotePlantuml(Plantuml):
 
     @classmethod
     def _check_version(cls, version: str):
-        if ("version" not in version) or ("plantuml server" not in version.lower()) or (not version):
+        if (not version) or ("plantuml" not in version.lower()) or ("version" not in version.lower()):
             raise ValueError("Invalid version information from homepage - {info}.".format(info=repr(version)))
 
     def _get_version(self) -> str:
