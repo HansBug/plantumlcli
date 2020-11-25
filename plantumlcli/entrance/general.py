@@ -71,8 +71,8 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
     Print text graph of source codes
     :param plantuml: plantuml object
     :param sources: source code files
+    :param concurrency: concurrency when running this
     """
-
     _error_count = 0
 
     def _process_text(src: str):
