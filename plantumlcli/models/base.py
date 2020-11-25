@@ -13,15 +13,13 @@ class PlantumlType(IntEnum):
 
 @unique
 class PlantumlResourceType(IntEnum):
+    """
+    More types will be added later
+    """
     TXT = 1
     PNG = 2
     SVG = 3
     EPS = 4
-    PDF = 5
-    VDX = 6
-    XMI = 7
-    HTML = 8
-    LATEX = 9
 
     @classmethod
     def load(cls, data: Union[int, str, 'PlantumlResourceType']) -> 'PlantumlResourceType':
