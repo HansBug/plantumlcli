@@ -1,11 +1,12 @@
 import os
 import re
-import subprocess
+from tempfile import TemporaryDirectory, NamedTemporaryFile
 from typing import Tuple, Optional, Mapping, Any
 
 import where
 
 from .base import Plantuml, PlantumlResourceType
+from ..utils import load_binary_file, save_text_file, CommandLineExecuteError, execute
 
 PLANTUML_JAR_ENV = 'PLANTUML_JAR'
 
@@ -46,11 +47,8 @@ def _check_local(java: str, plantuml: str):
         raise PermissionError('Plantuml jar file {jar} not readable.'.format(jar=repr(plantuml)))
 
 
-def _decode_if_not_none(value: Optional[bytes]) -> Optional[str]:
-    if value is not None:
-        return value.decode()
-    else:
-        return value
+class LocalPlantumlExecuteError(CommandLineExecuteError):
+    pass
 
 
 class LocalPlantuml(Plantuml):
@@ -99,18 +97,7 @@ class LocalPlantuml(Plantuml):
         }
 
     def __execute(self, *args) -> Tuple[str, str]:
-        _cmdline = [self.__java, '-jar', self.__plantuml] + list(args)
-        process = subprocess.Popen(
-            args=_cmdline,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        _stdout, _stderr = process.communicate()
-        if process.returncode != 0:
-            raise RuntimeError('Error when executing {cmd}, return {ret}.'.format(
-                cmd=repr(tuple(_cmdline)), ret=process.returncode
-            ))
-        return _decode_if_not_none(_stdout), _decode_if_not_none(_stderr)
+        return execute(self.__java, '-jar', self.__plantuml, *args, exc=LocalPlantumlExecuteError)
 
     @classmethod
     def _check_version(cls, version: str):
@@ -125,5 +112,9 @@ class LocalPlantuml(Plantuml):
         return _line.strip()
 
     def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
-        pass
-        # self.__execute('-t{type}'.format(type=type_.name.lower()))
+        with TemporaryDirectory(prefix='puml') as output_path_name:
+            with NamedTemporaryFile(prefix='puml', suffix='.puml') as input_file:
+                save_text_file(input_file.name, code)
+                self.__execute('-t{type}'.format(type=type_.name.lower()), '-o', output_path_name, input_file.name)
+                output_filename = os.path.join(output_path_name, os.listdir(output_path_name)[0])
+                return load_binary_file(output_filename)
