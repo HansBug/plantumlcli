@@ -16,7 +16,8 @@ install:
   - pip install -U pip
   - pip install -r requirements.txt
 script:
-  - echo "this is test script, just for fun :)"
+  - pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
+  - pytest ./test -sv -m benchmark --durations=0
 after_success:
   - pip install -U coveralls[yaml]
-  - coveralls --version
+  - coveralls
