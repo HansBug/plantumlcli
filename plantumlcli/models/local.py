@@ -61,8 +61,6 @@ class LocalPlantuml(Plantuml):
         self.__plantuml = plantuml
         _check_local(self.__java, self.__plantuml)
 
-        self.__version = None
-
     @classmethod
     def autoload(cls, java: str = None, plantuml: str = None, **kwargs) -> 'LocalPlantuml':
         return LocalPlantuml(find_java(java), find_plantuml(plantuml))
@@ -95,16 +93,14 @@ class LocalPlantuml(Plantuml):
             ))
         return _decode_if_not_none(_stdout), _decode_if_not_none(_stderr)
 
+    @classmethod
+    def _check_version(cls, version: str):
+        if "plantuml" not in version.lower():
+            raise ValueError("Invalid version of plantuml - {version}.".format(version=repr(version)))
+
     def _get_version(self) -> str:
-        if not self.__version:
-            _stdout, _ = self.__execute('-version')
-            _first_line = _stdout.strip().splitlines()[0].strip()
-            _line, _ = re.subn(r'\([^()]*?\)', '', _first_line)
-            _line, _ = re.subn(r'\\s+', '', _line)
-            self.__version = _line.strip()
-
-        return self.__version
-
-    def _check(self):
-        if "plantuml" not in self._get_version().lower():
-            raise ValueError("Invalid version of plantuml - {version}.".format(version=repr(self._get_version())))
+        _stdout, _ = self.__execute('-version')
+        _first_line = _stdout.strip().splitlines()[0].strip()
+        _line, _ = re.subn(r'\([^()]*?\)', '', _first_line)
+        _line, _ = re.subn(r'\\s+', '', _line)
+        return _line.strip()

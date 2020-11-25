@@ -54,7 +54,6 @@ class RemotePlantuml(Plantuml):
 
         self.__session = requests.session()
         self.__request_params = kwargs
-        self.__version = None
 
     @classmethod
     def autoload(cls, host: Optional[str] = None, **kwargs) -> 'RemotePlantuml':
@@ -86,21 +85,13 @@ class RemotePlantuml(Plantuml):
         return self.__request('')
 
     @classmethod
-    def __check_version(cls, version_info: str):
-        if ("version" not in version_info) or ("plantuml server" not in version_info.lower()) or (not version_info):
-            raise ValueError("Invalid version information from homepage - {info}.".format(info=repr(version_info)))
+    def _check_version(cls, version: str):
+        if ("version" not in version) or ("plantuml server" not in version.lower()) or (not version):
+            raise ValueError("Invalid version information from homepage - {info}.".format(info=repr(version)))
 
     def _get_version(self) -> str:
-        if not self.__version:
-            r = self.__get_homepage()
-            _version = PyQuery(r.content.decode()).find('#footer').text().strip()
-            self.__check_version(_version)
-            self.__version = _version
-
-        return self.__version
-
-    def _check(self):
-        self.__get_homepage()
+        r = self.__get_homepage()
+        return PyQuery(r.content.decode()).find('#footer').text().strip()
 
     def __get_uml_url(self, type_: str, code: str) -> str:
         return self.__request_url(os.path.join(type_, self.__compress(code)))

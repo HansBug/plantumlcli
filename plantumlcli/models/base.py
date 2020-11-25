@@ -18,17 +18,22 @@ class Plantuml(metaclass=ABCMeta):
     def autoload(cls, *args, **kwargs):
         raise NotImplementedError
 
+    @classmethod
+    def _check_version(cls, version: str):
+        pass
+
     @abstractmethod
     def _get_version(self) -> str:
         raise NotImplementedError
 
     @property
     def version(self) -> str:
-        return self._get_version()
+        _version = self._get_version()
+        self._check_version(_version)
+        return _version
 
-    @abstractmethod
     def _check(self):
-        raise NotImplementedError
+        self._check_version(self._get_version())
 
     def check(self):
         return self._check()
