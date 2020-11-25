@@ -1,7 +1,13 @@
 from abc import ABCMeta, abstractmethod
+from enum import IntEnum
 from typing import TypeVar, Type, Optional, Tuple, Union, Any, Mapping
 
 from ..utils import check_func
+
+
+class PlantumlType(IntEnum):
+    LOCAL = 1
+    REMOTE = 2
 
 
 class Plantuml(metaclass=ABCMeta):
