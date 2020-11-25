@@ -2,7 +2,7 @@ import base64
 import os
 import string
 import zlib
-from typing import Optional, Mapping, Any
+from typing import Optional, Mapping, Any, Union
 
 import requests
 from pyquery import PyQuery
@@ -114,14 +114,25 @@ class RemotePlantuml(Plantuml):
         r = self.__request(os.path.join(type_, self.__compress(code)))
         return r.content
 
+    def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
+        return self.__get_uml(type_.name.lower(), code)
+
     def _generate_uml_url(self, type_: PlantumlResourceType, code: str) -> str:
         return self.__get_uml_url(type_.name.lower(), code)
 
-    def get_url(self, type_: PlantumlResourceType, code: str) -> str:
-        return self._generate_uml_url(type_, code)
+    def get_url(self, type_: Union[int, str, PlantumlResourceType], code: str) -> str:
+        """
+        Get resource url for the source code
+        :param type_: type of resource
+        :param code: source code
+        :return:  url of resource
+        """
+        return self._generate_uml_url(PlantumlResourceType.load(type_), code)
 
     def get_homepage_url(self, code: str) -> str:
+        """
+        Get homepage url for the source code
+        :param code: source code
+        :return: url of homepage
+        """
         return self.__get_uml_url('uml', code)
-
-    def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
-        return self.__get_uml(type_.name.lower(), code)
