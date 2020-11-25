@@ -55,6 +55,10 @@ def _decode_if_not_none(value: Optional[bytes]) -> Optional[str]:
 
 class LocalPlantuml(Plantuml):
     def __init__(self, java: str, plantuml: str):
+        """
+        :param java: java executable file path
+        :param plantuml: plantuml jar file path
+        """
         Plantuml.__init__(self)
 
         self.__java = java
@@ -63,14 +67,29 @@ class LocalPlantuml(Plantuml):
 
     @classmethod
     def autoload(cls, java: str = None, plantuml: str = None, **kwargs) -> 'LocalPlantuml':
+        """
+        Autoload LocalPlantuml object from given parameters and the environment
+        :param java: java executable file path
+        :param plantuml: plantuml jar file path
+        :param kwargs: other arguments
+        :return: local plantuml object
+        """
         return LocalPlantuml(find_java(java), find_plantuml(plantuml))
 
     @property
     def java(self) -> str:
+        """
+        Java executable file path
+        :return: java executable file path
+        """
         return self.__java
 
     @property
     def plantuml(self) -> str:
+        """
+        Plantuml jar file path
+        :return: plantuml jar file path
+        """
         return self.__plantuml
 
     def _properties(self) -> Mapping[str, Any]:

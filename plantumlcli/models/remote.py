@@ -46,6 +46,10 @@ class RemotePlantuml(Plantuml):
     __BYTE_TRANS = _trans_from_base64_to_plantuml
 
     def __init__(self, host: str, **kwargs):
+        """
+        :param host: the given host
+        :param kwargs: other arguments
+        """
         Plantuml.__init__(self)
 
         self.__host = host
@@ -57,10 +61,20 @@ class RemotePlantuml(Plantuml):
 
     @classmethod
     def autoload(cls, host: Optional[str] = None, **kwargs) -> 'RemotePlantuml':
+        """
+        Autoload RemotePlantuml object from given host, system environments and official site
+        :param host: the given host
+        :param kwargs: other arguments
+        :return: remote plantuml object
+        """
         return RemotePlantuml(find_plantuml_host(host), **kwargs)
 
     @property
     def host(self) -> str:
+        """
+        Host of remote plantuml
+        :return: host of remote plantuml
+        """
         return str(self.__host)
 
     def _properties(self) -> Mapping[str, Any]:

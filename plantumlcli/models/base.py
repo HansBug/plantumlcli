@@ -97,14 +97,14 @@ class Plantuml(metaclass=ABCMeta):
     def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
         raise NotImplementedError
 
-    def dump(self, path: str, type_: PlantumlResourceType, code: str):
+    def dump(self, path: str, type_: Union[int, str, PlantumlResourceType], code: str):
         """
         Dump uml data to file
         :param path: file path
         :param type_: resource type
         :param code: source code
         """
-        save_binary_file(path, self._generate_uml_data(type_, code))
+        save_binary_file(path, self._generate_uml_data(PlantumlResourceType.load(type_), code))
 
     def dump_txt(self, code: str) -> str:
         """
