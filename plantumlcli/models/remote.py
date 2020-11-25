@@ -8,7 +8,7 @@ import requests
 from pyquery import PyQuery
 from urlobject import URLObject
 
-from .base import Plantuml
+from .base import Plantuml, PlantumlResourceType
 
 PLANTUML_HOST_ENV = 'PLANTUML_HOST'
 OFFICIAL_PLANTUML_HOST = 'http://www.plantuml.com/plantuml'
@@ -100,29 +100,14 @@ class RemotePlantuml(Plantuml):
         r = self.__request(os.path.join(type_, self.__compress(code)))
         return r.content
 
-    def get_online_editor_url(self, code: str) -> str:
+    def _generate_uml_url(self, type_: PlantumlResourceType, code: str) -> str:
+        return self.__get_uml_url(type_.name.lower(), code)
+
+    def get_url(self, type_: PlantumlResourceType, code: str) -> str:
+        return self._generate_uml_url(type_, code)
+
+    def get_homepage_url(self, code: str) -> str:
         return self.__get_uml_url('uml', code)
 
-    def get_txt_uml_url(self, code: str) -> str:
-        return self.__get_uml_url('txt', code)
-
-    def get_txt_uml(self, code: str) -> str:
-        return self.__get_uml('txt', code).decode()
-
-    def get_png_uml_url(self, code: str) -> str:
-        return self.__get_uml_url('png', code)
-
-    def get_png_uml(self, code: str) -> bytes:
-        return self.__get_uml('png', code)
-
-    def get_svg_uml_url(self, code: str) -> str:
-        return self.__get_uml_url('svg', code)
-
-    def get_svg_uml(self, code: str) -> bytes:
-        return self.__get_uml('svg', code)
-
-    def get_eps_uml_url(self, code: str) -> str:
-        return self.__get_uml_url('eps', code)
-
-    def get_eps_uml(self, code: str) -> bytes:
-        return self.__get_uml('eps', code)
+    def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
+        return self.__get_uml(type_.name.lower(), code)

@@ -3,10 +3,10 @@ from typing import Optional, Tuple
 import click
 from click import Context, Option
 
-from .general import _get_check_type, print_check_info
+from .general import _get_check_type, print_check_info, print_text_graph
 from .remote import print_url, print_homepage_url
 from ..config.meta import __TITLE__, __VERSION__, __AUTHOR__, __AUTHOR_EMAIL__
-from ..models.base import try_plantuml
+from ..models.base import try_plantuml, PlantumlResourceType
 from ..models.local import LocalPlantuml, PLANTUML_JAR_ENV, find_java_from_env
 from ..models.remote import OFFICIAL_PLANTUML_HOST, PLANTUML_HOST_ENV, RemotePlantuml
 
@@ -50,10 +50,16 @@ CONTEXT_SETTINGS = dict(
 @click.option('--check-remote', is_flag=True, help='Check remote plantuml.')
 @click.option('-u', '--url', is_flag=True, help='Print url of remote plantuml resource.')
 @click.option('--homepage-url', is_flag=True, help='Print url of remote plantuml editor.')
+@click.option('-t', '--type', 'resource_type', default=PlantumlResourceType.TXT.name,
+              type=click.Choice(PlantumlResourceType.__members__.keys(), case_sensitive=False),
+              help='Type of plantuml resource.', show_default=True)
+@click.option('-T', '--text', is_flag=True, help='Display text uml graph by stdout.')
 @click.argument('sources', nargs=-1, type=click.Path(exists=True, dir_okay=False, readable=True))
 def cli(java: str, plantuml: Optional[str], remote_host: str,
         check: bool, check_local: bool, check_remote: bool,
-        url: bool, homepage_url: bool, sources: Tuple[str]):
+        url: bool, homepage_url: bool,
+        resource_type: str, text: bool,
+        sources: Tuple[str]):
     _local_ok, _local = try_plantuml(LocalPlantuml, java=java, plantuml=plantuml)
     _remote_ok, _remote = try_plantuml(RemotePlantuml, host=remote_host)
 
@@ -66,8 +72,16 @@ def cli(java: str, plantuml: Optional[str], remote_host: str,
         if homepage_url:
             print_homepage_url(_remote_ok, _remote, sources)
         else:
-            print_url(_remote_ok, _remote, sources)
+            print_url(_remote_ok, _remote, sources, PlantumlResourceType.load(resource_type))
     else:
-        print(sources)
-        print(_local_ok, _local)
-        print(_remote_ok, _remote)
+        if _local_ok:
+            plantuml = _local
+        else:
+            plantuml = _remote
+
+        if text:  # print text graph
+            print_text_graph(plantuml, sources)
+        else:
+            print(sources)
+            print(_local_ok, _local)
+            print(_remote_ok, _remote)

@@ -5,7 +5,7 @@ from typing import Tuple, Optional, Mapping, Any
 
 import where
 
-from .base import Plantuml
+from .base import Plantuml, PlantumlResourceType
 
 PLANTUML_JAR_ENV = 'PLANTUML_JAR'
 
@@ -104,3 +104,7 @@ class LocalPlantuml(Plantuml):
         _line, _ = re.subn(r'\([^()]*?\)', '', _first_line)
         _line, _ = re.subn(r'\\s+', '', _line)
         return _line.strip()
+
+    def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
+        pass
+        # self.__execute('-t{type}'.format(type=type_.name.lower()))

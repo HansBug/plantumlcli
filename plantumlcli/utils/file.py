@@ -1,9 +1,7 @@
 from pathlib import Path
 from typing import Optional
 
-import chardet
-
-_DEFAULT_ENCODING = 'utf-8'
+from .encoding import auto_decode, _DEFAULT_ENCODING
 
 
 def load_binary_file(path: str) -> bytes:
@@ -22,9 +20,7 @@ def load_text_file(path: str, encoding: Optional[str] = None) -> str:
     :param encoding: data encoding
     :return: text data
     """
-    _bytes = load_binary_file(path)
-    encoding = encoding or chardet.detect(_bytes)['encoding'] or _DEFAULT_ENCODING
-    return _bytes.decode(encoding)
+    return auto_decode(load_binary_file(path), encoding)
 
 
 def save_binary_file(path: str, data: bytes):

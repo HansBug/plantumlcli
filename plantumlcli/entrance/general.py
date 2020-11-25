@@ -1,12 +1,15 @@
 from enum import IntEnum
-from typing import Optional
+from typing import Optional, Tuple
+
+import click
 
 from .base import _click_exception_with_exit_code
 from .local import _check_local_plantuml, print_local_check_info
 from .remote import _check_remote_plantuml, print_remote_check_info
-from ..models.base import PlantumlType
+from ..models.base import PlantumlType, Plantuml
 from ..models.local import LocalPlantuml
 from ..models.remote import RemotePlantuml
+from ..utils import load_text_file
 
 
 def print_double_check_info(local_ok: bool, local: LocalPlantuml,
@@ -61,3 +64,9 @@ def print_check_info(check_type: PlantumlCheckType,
     else:
         # nothing to check, maybe warnings can be placed here.
         pass
+
+
+def print_text_graph(plantuml: Plantuml, sources: Tuple[str]):
+    for source in sources:
+        click.echo('{source}: '.format(source=source))
+        click.echo(plantuml.dump_txt(load_text_file(source)))

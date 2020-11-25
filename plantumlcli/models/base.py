@@ -1,13 +1,46 @@
 from abc import ABCMeta, abstractmethod
-from enum import IntEnum
+from enum import IntEnum, unique
 from typing import TypeVar, Type, Optional, Tuple, Union, Any, Mapping
 
-from ..utils import check_func
+from ..utils import check_func, save_binary_file, auto_decode
 
 
+@unique
 class PlantumlType(IntEnum):
     LOCAL = 1
     REMOTE = 2
+
+
+@unique
+class PlantumlResourceType(IntEnum):
+    TXT = 1
+    PNG = 2
+    SVG = 3
+    EPS = 4
+    PDF = 5
+    VDX = 6
+    XMI = 7
+    HTML = 8
+    LATEX = 9
+
+    @classmethod
+    def load(cls, data: Union[int, str, 'PlantumlResourceType']) -> 'PlantumlResourceType':
+        if isinstance(data, int):
+            if data in cls.__members__.values():
+                return cls.__members__[dict(zip(cls.__members__.values(), cls.__members__.keys()))[data]]
+            else:
+                raise ValueError('Value {value} not found for enum {cls}.'.format(value=repr(data), cls=cls.__name__))
+        elif isinstance(data, str):
+            if data.upper() in cls.__members__.keys():
+                return cls.__members__[data.upper()]
+            else:
+                raise KeyError('Key {key} not found for enum {cls}.'.format(key=repr(data), cls=cls.__name__))
+        elif isinstance(data, PlantumlResourceType):
+            return data
+        else:
+            raise TypeError('Data should be an int, str or {cls}, but {actual} found.'.format(
+                cls=cls.__name__, actual=type(data).__name__,
+            ))
 
 
 class Plantuml(metaclass=ABCMeta):
@@ -59,6 +92,27 @@ class Plantuml(metaclass=ABCMeta):
         """
         self._check()
         return True
+
+    @abstractmethod
+    def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
+        raise NotImplementedError
+
+    def dump(self, path: str, type_: PlantumlResourceType, code: str):
+        """
+        Dump uml data to file
+        :param path: file path
+        :param type_: resource type
+        :param code: source code
+        """
+        save_binary_file(path, self._generate_uml_data(type_, code))
+
+    def dump_txt(self, code: str) -> str:
+        """
+        Dump txt uml data to str
+        :param code: source code
+        :return: txt uml data
+        """
+        return auto_decode(self._generate_uml_data(PlantumlResourceType.TXT, code))
 
     def _properties(self) -> Mapping[str, Any]:
         return {}
