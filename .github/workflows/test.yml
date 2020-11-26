@@ -1,4 +1,4 @@
-name: Test-Pipeline
+name: Code Test
 
 on: [ push, pull_request ]
 
@@ -41,11 +41,11 @@ jobs:
           sudo apt-get install -y tree cloc wget curl make
           sudo apt-get install -y graphviz
           sudo dot -c
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Set up Java ${{ matrix.java-version }}
+      - name: Set up java ${{ matrix.java-version }}
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
@@ -77,7 +77,7 @@ jobs:
           source env.sh
           pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
           pytest ./test -sv -m benchmark --durations=0
-      - name: Upload Coverage
+      - name: Upload coverage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_FLAG_NAME: ${{ format('{0}-{1}-{2}', matrix.python-version, matrix.java-version, matrix.assistant-plantuml-version) }}
@@ -87,7 +87,7 @@ jobs:
           coveralls
 
   coveralls:
-    name: Finish Coveralls
+    name: Finish coveralls
     needs: test
     runs-on: ubuntu-latest
     container: python:3-slim

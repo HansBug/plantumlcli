@@ -1,7 +1,7 @@
 # plantumlcli
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Build Status](https://travis-ci.org/HansBug/plantumlcli.svg?branch=main)](https://travis-ci.org/HansBug/plantumlcli)
+[![Code Test](https://github.com/HansBug/plantumlcli/workflows/Code%20Test/badge.svg)](https://github.com/HansBug/plantumlcli/actions)
 [![Coverage Status](https://coveralls.io/repos/github/HansBug/plantumlcli/badge.svg?branch=main)](https://coveralls.io/github/HansBug/plantumlcli?branch=main)
 
 Python cli and package interface for local and remote plantuml
