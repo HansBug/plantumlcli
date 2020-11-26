@@ -14,6 +14,10 @@ with open('requirements.txt', 'r', 'utf-8') as f:
     _lines = f.readlines()
     requirements = [line.strip() for line in _lines if line.strip()]
 
+with open('requirements-test.txt', 'r', 'utf-8') as f:
+    _lines = f.readlines()
+    requirements_dev = [line.strip() for line in _lines if line.strip()]
+
 _package_version = meta['__VERSION__']
 setup(
     name=meta['__TITLE__'],
@@ -25,11 +29,7 @@ setup(
     author_email=meta['__AUTHOR_EMAIL__'],
     python_requires=">=3.5",
     install_requires=requirements,
-    tests_require=[
-        'pytest>=3',
-        'pytest-cov',
-        'pytest-mock',
-    ],
+    tests_require=requirements_dev,
     include_package_data=True,
     entry_points={
         'console_scripts': [

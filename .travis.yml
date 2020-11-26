@@ -20,6 +20,7 @@ install:
     && python get-pip.py
     && pip install -U pip
     && pip install -r requirements.txt
+    && pip install -r requirements-test.txt
     && python -V && pip --version && pytest --version
   - mkdir -p demo
   - mkdir -p demo/jars
