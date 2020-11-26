@@ -3,7 +3,7 @@ name: Test-Pipeline
 on: [ push, pull_request ]
 
 jobs:
-  unit_test:
+  test:
     name: Run unit test
     runs-on: ubuntu-latest
     strategy:
@@ -77,19 +77,24 @@ jobs:
           source env.sh
           pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
           pytest ./test -sv -m benchmark --durations=0
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: .coverage
-          parallel: true
+      - name: Upload Coverage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_FLAG_NAME: ${{ format('{0}-{1}-{2}', matrix.python-version, matrix.java-version, matrix.assistant-plantuml-version) }}
+          COVERALLS_PARALLEL: true
+        run: |
+          pip3 install --upgrade coveralls
+          coveralls
 
-  finish:
-    needs: unit_test
+  coveralls:
+    name: Finish Coveralls
+    needs: test
     runs-on: ubuntu-latest
+    container: python:3-slim
     steps:
-      - name: Coveralls Finished
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel-finished: true
+      - name: Finished
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pip3 install --upgrade coveralls
+          coveralls --finish
