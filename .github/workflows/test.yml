@@ -77,9 +77,7 @@ jobs:
           source env.sh
           pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
           pytest ./test -sv -m benchmark --durations=0
-      - name: Upload coverage data
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-        run: |
-          pip install -U coveralls[yaml]
-          coveralls
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
