@@ -23,7 +23,9 @@ class PlantumlResourceType(IntEnum):
 
     @classmethod
     def load(cls, data: Union[int, str, 'PlantumlResourceType']) -> 'PlantumlResourceType':
-        if isinstance(data, int):
+        if isinstance(data, PlantumlResourceType):
+            return data
+        elif isinstance(data, int):
             if data in cls.__members__.values():
                 return cls.__members__[dict(zip(cls.__members__.values(), cls.__members__.keys()))[data]]
             else:
@@ -33,8 +35,6 @@ class PlantumlResourceType(IntEnum):
                 return cls.__members__[data.upper()]
             else:
                 raise KeyError('Key {key} not found for enum {cls}.'.format(key=repr(data), cls=cls.__name__))
-        elif isinstance(data, PlantumlResourceType):
-            return data
         else:
             raise TypeError('Data should be an int, str or {cls}, but {actual} found.'.format(
                 cls=cls.__name__, actual=type(data).__name__,
