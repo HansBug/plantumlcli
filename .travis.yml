@@ -18,6 +18,7 @@ env:
   jobs:
     - ASSISTANT_JAR_VERSION=1.2019.13 ASSISTANT_JAR_PATH=demo/jar/plantuml.1.2019.13.jar
     - ASSISTANT_JAR_VERSION=1.2018.14 ASSISTANT_JAR_PATH=demo/jar/plantuml.1.2018.14.jar
+    - ASSISTANT_JAR_VERSION=1.2017.20 ASSISTANT_JAR_PATH=demo/jar/plantuml.1.2017.20.jar
 install:
   - sudo apt-get update
   - sudo apt-get install -y curl wget make tree cloc
