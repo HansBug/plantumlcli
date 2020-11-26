@@ -37,6 +37,7 @@ jobs:
           fetch-depth: 20
       - name: Set up system dependences
         run: |
+          sudo apt-get update
           sudo apt-get install -y tree cloc wget curl make
           sudo apt-get install -y graphviz
           sudo dot -c
@@ -62,10 +63,20 @@ jobs:
           java -version
           javac -version
           tree .
+          cloc plantuml
+          cloc test
       - name: Test the plantuml in use (${{ matrix.plantuml-version }} and ${{ matrix.assistant-plantuml-version }})
         run: |
           java -jar demo/jar/plantuml.${{ matrix.plantuml-version }}.jar -version
           java -jar demo/jar/plantuml.${{ matrix.assistant-plantuml-version }}.jar -version
+      - name: Run unit test and benchmark
+        env:
+          PRIMARY_JAR_VERSION: ${{ matrix.plantuml-version }}
+          ASSISTANT_JAR_VERSION: ${{ matrix.assistant-plantuml-version }}
+        run: |
+          source env.sh
+          pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
+          pytest ./test -sv -m benchmark --durations=0
       - name: Upload coverage data
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
