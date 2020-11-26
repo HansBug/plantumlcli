@@ -26,7 +26,7 @@ install:
   - mkdir -p demo/jars
     && for v in 1.2017.20 1.2018.14 1.2019.13 1.2020.19; do wget -O "demo/jars/plantuml.$v.jar" "https://sourceforge.net/projects/plantuml/files/$v/plantuml.$v.jar/download"; done
   - tree demo
-  - cloc .
+  - cloc plantumlcli && cloc test
 script:
   - pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
   - pytest ./test -sv -m benchmark --durations=0
