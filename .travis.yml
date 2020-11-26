@@ -33,6 +33,8 @@ install:
     && python -V && pip --version && pytest --version
   - mkdir -p ${DEMO_PATH}
   - mkdir -p ${DEMO_JAR_PATH}
+    && sudo apt-get install -y graphviz
+    && sudo dot -c
     && wget -O "${PRIMARY_JAR_PATH}"   "https://sourceforge.net/projects/plantuml/files/${PRIMARY_JAR_VERSION}/plantuml.${PRIMARY_JAR_VERSION}.jar/download"
     && wget -O "${ASSISTANT_JAR_PATH}" "https://sourceforge.net/projects/plantuml/files/${ASSISTANT_JAR_VERSION}/plantuml.${ASSISTANT_JAR_VERSION}.jar/download"
     && java -jar "${PRIMARY_JAR_PATH}"   -version
