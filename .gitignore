@@ -478,3 +478,4 @@ __pycache__
 *.svg
 *.latex
 *.eps
+/get-pip.py
