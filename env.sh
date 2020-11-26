@@ -4,6 +4,14 @@
 export DEMO_PATH="demo"
 mkdir -p ${DEMO_PATH}
 
+export DEAD_FILE_PATH="${DEMO_PATH}/dead_file"
+touch ${DEAD_FILE_PATH}
+chmod 000 ${DEAD_FILE_PATH}
+
+export DEAD_PATH="${DEMO_PATH}/dead_path"
+mkdir -p ${DEAD_PATH}
+chmod -R 000 ${DEAD_PATH}
+
 # demo/jar configuration
 export DEMO_JAR_PATH="demo/jar"
 mkdir -p ${DEMO_JAR_PATH}
