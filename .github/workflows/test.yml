@@ -78,15 +78,17 @@ jobs:
           pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
           pytest ./test -sv -m benchmark --durations=0
       - name: Coveralls
-        uses: AndreMiras/coveralls-python-action@develop
+        uses: coverallsapp/github-action@master
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel: true
 
-  coveralls_finish:
+  finish:
     needs: unit_test
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
-        uses: AndreMiras/coveralls-python-action@develop
+        uses: coverallsapp/github-action@master
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true
