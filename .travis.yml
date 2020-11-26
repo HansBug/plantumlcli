@@ -32,7 +32,7 @@ install:
   - source env.sh
     && java -jar "${PRIMARY_JAR_PATH}" -version
     && java -jar "${ASSISTANT_JAR_PATH}" -version
-  - tree -a ${DEMO_PATH}
+  - tree ${DEMO_PATH}
   - cloc plantumlcli && cloc test
 script:
   - pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
