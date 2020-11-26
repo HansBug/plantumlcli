@@ -8,6 +8,9 @@ python:
   - 'pypy3.5'
   - 'pypy3.6-7.0.0'
 sudo: required
+cache:
+  directories:
+    - demo/jar
 env:
   global:
     - secure: kDRCa2JvYzifmiz3hYsotZwf6aHOIJs4WFF1rT6b3p6+PDdFlyjgZHEZLxRiE5gvi2VGzLXlSmnDwJ+fUfVV3G5IdlRSGq80Bpx6QSSihqmU4Pogi0d2Qs57zdUE2Sb4ccj4MWPvKGRD7EECFdo5GEctqSSZmnH+7nzoNGAPvG3wyD9iiSvkYvyEC+26mYtn0nm06AdYJqn2uUY0NiPeCMJd2CtjdCUXYbdP8meIcK2PH0mYcNkAzZYHtyqjanM+Q0RBMSI/lAA0DyDD9pcKqVA5KyFakYDl0x1iOjpkZAfLZQVHU4EvoJfyydVdhh7mK8FcbHiBYupbKe4LSQFAfsh8/2seAPAQ/ogC4r6MYCFjw9j+igmm48/49cGmC/sLFSgm67mHh2TL/qCtYTX9Ek4obkop6CNT84h6QNgQ1UJZhva6gO8bYsNSeIJIeaDJ/AJlaFj6TfzfokSXKxzLt5GUvYrLTsMUFsYsj/XzKVWB/8CW9jKsiLQTtahDrjwkM1gJJpxgMwORTCtEhVBWp8g46UF1nOYi4zwxPVcnfDpOkLQHqUWP+0WmBPIpQvokdB6e4AXKl/PqhSgp9grltRIUAGu8nOvS3dl0RmQa0Yd5RtnOI91r/5PRyfvA4P/UCGD7l+9/+hiRWU9KbpGnG2+qzQ2yggWq486kjGWuCis=
