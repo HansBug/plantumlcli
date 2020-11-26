@@ -30,6 +30,8 @@ install:
     && pip install -r requirements-test.txt
     && python -V && pip --version && pytest --version
   - source env.sh
+    && java -jar "${PRIMARY_JAR_PATH}" -version
+    && java -jar "${ASSISTANT_JAR_PATH}" -version
   - tree -a ${DEMO_PATH}
   - cloc plantumlcli && cloc test
 script:
