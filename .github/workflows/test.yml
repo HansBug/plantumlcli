@@ -78,9 +78,9 @@ jobs:
           pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
           pytest ./test -sv -m benchmark --durations=0
       - name: Coveralls
-          uses: AndreMiras/coveralls-python-action@develop
-          with:
-            parallel: true
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel: true
 
   coveralls_finish:
     needs: unit_test
