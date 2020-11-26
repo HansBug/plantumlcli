@@ -30,9 +30,9 @@ export ASSISTANT_JAR_URL="https://sourceforge.net/projects/plantuml/files/${ASSI
 
 if [ ! -f "${PRIMARY_JAR_PATH}" ]; then
   wget -O "${PRIMARY_JAR_PATH}" "${PRIMARY_JAR_URL}"
-  python -c "import time, random;time.sleep(random.random() * 5);"
+  python -c "import time, random;time.sleep(random.random() * 10 + 5);"
 fi
 if [ ! -f "${ASSISTANT_JAR_PATH}" ]; then
   wget -O "${ASSISTANT_JAR_PATH}" "${ASSISTANT_JAR_URL}"
-  python -c "import time, random;time.sleep(random.random() * 5);"
+  python -c "import time, random;time.sleep(random.random() * 10 + 5);"
 fi
