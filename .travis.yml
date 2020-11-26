@@ -10,7 +10,9 @@ python:
 sudo: required
 env:
   global:
-    secure: kDRCa2JvYzifmiz3hYsotZwf6aHOIJs4WFF1rT6b3p6+PDdFlyjgZHEZLxRiE5gvi2VGzLXlSmnDwJ+fUfVV3G5IdlRSGq80Bpx6QSSihqmU4Pogi0d2Qs57zdUE2Sb4ccj4MWPvKGRD7EECFdo5GEctqSSZmnH+7nzoNGAPvG3wyD9iiSvkYvyEC+26mYtn0nm06AdYJqn2uUY0NiPeCMJd2CtjdCUXYbdP8meIcK2PH0mYcNkAzZYHtyqjanM+Q0RBMSI/lAA0DyDD9pcKqVA5KyFakYDl0x1iOjpkZAfLZQVHU4EvoJfyydVdhh7mK8FcbHiBYupbKe4LSQFAfsh8/2seAPAQ/ogC4r6MYCFjw9j+igmm48/49cGmC/sLFSgm67mHh2TL/qCtYTX9Ek4obkop6CNT84h6QNgQ1UJZhva6gO8bYsNSeIJIeaDJ/AJlaFj6TfzfokSXKxzLt5GUvYrLTsMUFsYsj/XzKVWB/8CW9jKsiLQTtahDrjwkM1gJJpxgMwORTCtEhVBWp8g46UF1nOYi4zwxPVcnfDpOkLQHqUWP+0WmBPIpQvokdB6e4AXKl/PqhSgp9grltRIUAGu8nOvS3dl0RmQa0Yd5RtnOI91r/5PRyfvA4P/UCGD7l+9/+hiRWU9KbpGnG2+qzQ2yggWq486kjGWuCis=
+    - secure: kDRCa2JvYzifmiz3hYsotZwf6aHOIJs4WFF1rT6b3p6+PDdFlyjgZHEZLxRiE5gvi2VGzLXlSmnDwJ+fUfVV3G5IdlRSGq80Bpx6QSSihqmU4Pogi0d2Qs57zdUE2Sb4ccj4MWPvKGRD7EECFdo5GEctqSSZmnH+7nzoNGAPvG3wyD9iiSvkYvyEC+26mYtn0nm06AdYJqn2uUY0NiPeCMJd2CtjdCUXYbdP8meIcK2PH0mYcNkAzZYHtyqjanM+Q0RBMSI/lAA0DyDD9pcKqVA5KyFakYDl0x1iOjpkZAfLZQVHU4EvoJfyydVdhh7mK8FcbHiBYupbKe4LSQFAfsh8/2seAPAQ/ogC4r6MYCFjw9j+igmm48/49cGmC/sLFSgm67mHh2TL/qCtYTX9Ek4obkop6CNT84h6QNgQ1UJZhva6gO8bYsNSeIJIeaDJ/AJlaFj6TfzfokSXKxzLt5GUvYrLTsMUFsYsj/XzKVWB/8CW9jKsiLQTtahDrjwkM1gJJpxgMwORTCtEhVBWp8g46UF1nOYi4zwxPVcnfDpOkLQHqUWP+0WmBPIpQvokdB6e4AXKl/PqhSgp9grltRIUAGu8nOvS3dl0RmQa0Yd5RtnOI91r/5PRyfvA4P/UCGD7l+9/+hiRWU9KbpGnG2+qzQ2yggWq486kjGWuCis=
+    - DEMO_PATH=demo
+    - DEMO_JAR_PATH=demo/jar
 install:
   - sudo apt-get update
   - sudo apt-get install -y curl wget make tree cloc
@@ -22,10 +24,10 @@ install:
     && pip install -r requirements.txt
     && pip install -r requirements-test.txt
     && python -V && pip --version && pytest --version
-  - mkdir -p demo
-  - mkdir -p demo/jars
-    && for v in 1.2017.20 1.2018.14 1.2019.13 1.2020.19; do wget -O "demo/jars/plantuml.$v.jar" "https://sourceforge.net/projects/plantuml/files/$v/plantuml.$v.jar/download"; done
-  - tree demo
+  - mkdir -p ${DEMO_PATH}
+  - mkdir -p ${DEMO_JAR_PATH}
+    && for v in 1.2017.20 1.2018.14 1.2019.13 1.2020.19; do wget -O "${DEMO_JAR_PATH}/plantuml.$v.jar" "https://sourceforge.net/projects/plantuml/files/$v/plantuml.$v.jar/download"; done
+  - tree -a ${DEMO_PATH}
   - cloc plantumlcli && cloc test
 script:
   - pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
