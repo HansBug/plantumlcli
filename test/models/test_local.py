@@ -20,6 +20,7 @@ def _get_test_class(version: str, path: str):
     _invalid_jar_condition = all_func(_common_condition, is_file_func(INVALID_JAR_PATH))
     _helloworld_condition = all_func(_common_condition, is_file_func(DEMO_HELLOWORLD_PUML))
 
+    # noinspection DuplicatedCode
     class _TestModelsLocal:
         @classmethod
         def _get_plantuml(cls, plantuml: str, java: Optional[str] = None) -> LocalPlantuml:
