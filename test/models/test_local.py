@@ -10,11 +10,11 @@ from plantumlcli import LocalPlantuml
 from plantumlcli.models.local import LocalPlantumlExecuteError
 from plantumlcli.utils import all_func
 from ..test import PRIMARY_JAR_VERSION, PRIMARY_JAR_PATH, ASSISTANT_JAR_VERSION, ASSISTANT_JAR_PATH, mark_select, \
-    DEAD_FILE_PATH, DEMO_HELLOWORLD_PUML, is_file_func, BROKEN_JAR_PATH, INVALID_JAR_PATH
+    DEAD_FILE_PATH, DEMO_HELLOWORLD_PUML, is_file_func, BROKEN_JAR_PATH, INVALID_JAR_PATH, exist_func
 
 
 def _get_test_class(version: str, path: str):
-    _common_condition = all_func(lambda: not not (version and path and os.path.exists(path) and where.first('java')))
+    _common_condition = all_func(exist_func(version), is_file_func(path), lambda: where.first('java'))
     _dead_file_condition = all_func(_common_condition, is_file_func(DEAD_FILE_PATH))
     _broken_jar_condition = all_func(_common_condition, is_file_func(BROKEN_JAR_PATH))
     _invalid_jar_condition = all_func(_common_condition, is_file_func(INVALID_JAR_PATH))
