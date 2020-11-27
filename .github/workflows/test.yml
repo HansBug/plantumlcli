@@ -31,7 +31,7 @@ jobs:
       plantuml:
         image: plantuml/plantuml-server
         ports:
-          - 8080:8080
+          - 8080:18080
 
     steps:
       - name: Checkout code
@@ -78,7 +78,7 @@ jobs:
           cloc test
       - name: Test the plantuml in use (${{ matrix.plantuml-version }} and ${{ matrix.assistant-plantuml-version }})
         env:
-          TEST_PLANTUML_HOST: http://plantuml:8080
+          TEST_PLANTUML_HOST: http://localhost:18080
         run: |
           java -jar demo/jar/plantuml.${{ matrix.plantuml-version }}.jar -version
           java -jar demo/jar/plantuml.${{ matrix.assistant-plantuml-version }}.jar -version
@@ -87,7 +87,7 @@ jobs:
         env:
           PRIMARY_JAR_VERSION: ${{ matrix.plantuml-version }}
           ASSISTANT_JAR_VERSION: ${{ matrix.assistant-plantuml-version }}
-          TEST_PLANTUML_HOST: http://plantuml:8080
+          TEST_PLANTUML_HOST: http://localhost:18080
         run: |
           source env.sh
           pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
