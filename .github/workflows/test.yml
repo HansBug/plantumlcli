@@ -31,7 +31,7 @@ jobs:
       plantuml:
         image: plantuml/plantuml-server
         ports:
-          - 8080:18080
+          - 18080:8080
 
     steps:
       - name: Checkout code
