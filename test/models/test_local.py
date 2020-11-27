@@ -1,20 +1,20 @@
 import os
+from pathlib import Path
 from typing import Optional
 
 import pytest
 import where
 
 from plantumlcli import LocalPlantuml
+from plantumlcli.utils import all_func
 from ..test import PRIMARY_JAR_VERSION, PRIMARY_JAR_PATH, ASSISTANT_JAR_VERSION, ASSISTANT_JAR_PATH, mark_select, \
-    DEAD_FILE_PATH
+    DEAD_FILE_PATH, DEMO_HELLOWORLD_PUML, is_file_func
 
 
 def _get_test_class(version: str, path: str):
-    def _common_condition() -> bool:
-        return not not (version and path and os.path.exists(path) and where.first('java'))
-
-    def _dead_file_condition() -> bool:
-        return not not (_common_condition() and DEAD_FILE_PATH and os.path.exists(DEAD_FILE_PATH))
+    _common_condition = all_func(lambda: not not (version and path and os.path.exists(path) and where.first('java')))
+    _dead_file_condition = all_func(_common_condition, is_file_func(DEAD_FILE_PATH))
+    _helloworld_condition = all_func(_common_condition, is_file_func(DEMO_HELLOWORLD_PUML))
 
     class _TestModelsLocal:
         @classmethod
@@ -77,6 +77,21 @@ def _get_test_class(version: str, path: str):
             plantuml = self._get_auto_plantuml()
             plantuml.check()
             assert plantuml.test()
+
+        _EXPECTED_TXT_LENGTH_FOR_HELLOWORLD = 224
+
+        @mark_select(_helloworld_condition)
+        def test_dump_txt(self):
+            plantuml = self._get_auto_plantuml()
+            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+            txt_result = plantuml.dump_txt(code)
+
+            assert 'Bob' in txt_result
+            assert 'Alice' in txt_result
+            assert 'hello' in txt_result
+
+            assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < len(
+                txt_result) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
 
     return _TestModelsLocal
 

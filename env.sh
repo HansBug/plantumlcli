@@ -29,3 +29,8 @@ if [ -z "${ASSISTANT_JAR_VERSION}" ]; then
   export ASSISTANT_JAR_VERSION="1.2020.16"
 fi
 export ASSISTANT_JAR_PATH="${DEMO_JAR_PATH}/plantuml.${ASSISTANT_JAR_VERSION}.jar"
+
+# puml demo configuration
+export DEMO_UML_PATH="${DEMO_PATH}/uml"
+
+export DEMO_HELLOWORLD_PUML="${DEMO_UML_PATH}/helloworld.puml"

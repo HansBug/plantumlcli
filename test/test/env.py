@@ -1,4 +1,7 @@
 import os
+from typing import Callable
+
+from plantumlcli.utils import all_func
 
 _env = os.environ
 
@@ -13,3 +16,21 @@ PRIMARY_JAR_PATH = _env.get('PRIMARY_JAR_PATH', None)
 
 ASSISTANT_JAR_VERSION = _env.get('ASSISTANT_JAR_VERSION', None)
 ASSISTANT_JAR_PATH = _env.get('ASSISTANT_JAR_PATH', None)
+
+DEMO_HELLOWORLD_PUML = _env.get('DEMO_HELLOWORLD_PUML', None)
+
+
+def exist_func(var) -> Callable[[], bool]:
+    return all_func(lambda: var)
+
+
+def path_exist_func(var) -> Callable[[], bool]:
+    return all_func(exist_func(var), lambda: os.path.exists(var))
+
+
+def is_file_func(var) -> Callable[[], bool]:
+    return all_func(path_exist_func(var), lambda: os.path.isfile(var))
+
+
+def is_dir_func(var) -> Callable[[], bool]:
+    return all_func(path_exist_func(var), lambda: os.path.isdir(var))
