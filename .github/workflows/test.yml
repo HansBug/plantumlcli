@@ -51,11 +51,11 @@ jobs:
       - name: Set up system dependences on macos
         if: ${{ runner.os == 'macOS' }}
         run: |
-          sudo port update
-          sudo port install -y tree cloc wget curl make
-          sudo port install -y graphviz
+          sudo brew update
+          sudo brew install tree cloc wget curl make
+          sudo brew install graphviz
           sudo dot -c
-          sudo port install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
+          sudo brew install libxml2-dev libxslt-dev python-dev  # need by pypy3
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
