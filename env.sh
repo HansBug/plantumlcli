@@ -31,7 +31,7 @@ fi
 export ASSISTANT_JAR_PATH="${DEMO_JAR_PATH}/plantuml.${ASSISTANT_JAR_VERSION}.jar"
 
 export BROKEN_JAR_PATH="${DEMO_JAR_PATH}/broken.jar"
-export INVALID_JAR_PATH="${DEMO_JAR_PATH}/checkstyle.jar"
+export INVALID_JAR_PATH="${DEMO_JAR_PATH}/helloworld.jar"
 
 # puml demo configuration
 export DEMO_UML_PATH="${DEMO_PATH}/uml"

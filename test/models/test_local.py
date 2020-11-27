@@ -7,14 +7,17 @@ import pytest
 import where
 
 from plantumlcli import LocalPlantuml
+from plantumlcli.models.local import LocalPlantumlExecuteError
 from plantumlcli.utils import all_func
 from ..test import PRIMARY_JAR_VERSION, PRIMARY_JAR_PATH, ASSISTANT_JAR_VERSION, ASSISTANT_JAR_PATH, mark_select, \
-    DEAD_FILE_PATH, DEMO_HELLOWORLD_PUML, is_file_func
+    DEAD_FILE_PATH, DEMO_HELLOWORLD_PUML, is_file_func, BROKEN_JAR_PATH, INVALID_JAR_PATH
 
 
 def _get_test_class(version: str, path: str):
     _common_condition = all_func(lambda: not not (version and path and os.path.exists(path) and where.first('java')))
     _dead_file_condition = all_func(_common_condition, is_file_func(DEAD_FILE_PATH))
+    _broken_jar_condition = all_func(_common_condition, is_file_func(BROKEN_JAR_PATH))
+    _invalid_jar_condition = all_func(_common_condition, is_file_func(INVALID_JAR_PATH))
     _helloworld_condition = all_func(_common_condition, is_file_func(DEMO_HELLOWORLD_PUML))
 
     class _TestModelsLocal:
@@ -54,6 +57,22 @@ def _get_test_class(version: str, path: str):
                 _ = self._get_plantuml(java=DEAD_FILE_PATH, plantuml=path)
             with pytest.raises(PermissionError):
                 _ = self._get_plantuml(plantuml=DEAD_FILE_PATH)
+
+        @mark_select(_broken_jar_condition)
+        def test_version_broken(self):
+            plantuml = self._get_plantuml(plantuml=BROKEN_JAR_PATH)
+            with pytest.raises(LocalPlantumlExecuteError) as e:
+                _ = plantuml.version
+
+            err = e.value
+            assert err.exitcode == 1
+            assert "invalid or corrupt jarfile" in err.stderr.lower()
+
+        @mark_select(_invalid_jar_condition)
+        def test_version_invalid(self):
+            plantuml = self._get_plantuml(plantuml=INVALID_JAR_PATH)
+            with pytest.raises(ValueError) as e:
+                _ = plantuml.version
 
         @mark_select(_common_condition)
         def test_java(self):
