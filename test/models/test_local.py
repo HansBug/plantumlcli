@@ -71,7 +71,7 @@ def _get_test_class(version: str, path: str):
         @mark_select(_invalid_jar_condition)
         def test_version_invalid(self):
             plantuml = self._get_plantuml(plantuml=INVALID_JAR_PATH)
-            with pytest.raises(ValueError) as e:
+            with pytest.raises(ValueError):
                 _ = plantuml.version
 
         @mark_select(_common_condition)
@@ -99,6 +99,9 @@ def _get_test_class(version: str, path: str):
             assert plantuml.test()
 
         _EXPECTED_TXT_LENGTH_FOR_HELLOWORLD = 224
+        _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD = 2211
+        _EXPECTED_SVG_LENGTH_FOR_HELLOWORLD = 2771
+        _EXPECTED_EPS_LENGTH_FOR_HELLOWORLD = 11926
 
         @mark_select(_helloworld_condition)
         def test_dump_txt(self):
@@ -114,17 +117,47 @@ def _get_test_class(version: str, path: str):
                 txt_result) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
 
         @mark_select(_helloworld_condition)
-        def test_dump_binary(self):
+        def test_dump_binary_txt(self):
             plantuml = self._get_auto_plantuml()
             code = Path(DEMO_HELLOWORLD_PUML).read_text()
 
-            _txt_data = plantuml.dump_binary('txt', code)
-            assert isinstance(_txt_data, bytes)
+            _data = plantuml.dump_binary('txt', code)
+            assert isinstance(_data, bytes)
             assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < len(
-                _txt_data) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
+                _data) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
 
         @mark_select(_helloworld_condition)
-        def test_dump(self):
+        def test_dump_binary_png(self):
+            plantuml = self._get_auto_plantuml()
+            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+
+            _data = plantuml.dump_binary('png', code)
+            assert isinstance(_data, bytes)
+            assert self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 0.8 < len(
+                _data) < self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 1.2
+
+        @mark_select(_helloworld_condition)
+        def test_dump_binary_svg(self):
+            plantuml = self._get_auto_plantuml()
+            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+
+            _data = plantuml.dump_binary('svg', code)
+            assert isinstance(_data, bytes)
+            assert self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 0.8 < len(
+                _data) < self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 1.2
+
+        @mark_select(_helloworld_condition)
+        def test_dump_binary_eps(self):
+            plantuml = self._get_auto_plantuml()
+            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+
+            _data = plantuml.dump_binary('eps', code)
+            assert isinstance(_data, bytes)
+            assert self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < len(
+                _data) < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2
+
+        @mark_select(_helloworld_condition)
+        def test_dump_file_txt(self):
             plantuml = self._get_auto_plantuml()
             code = Path(DEMO_HELLOWORLD_PUML).read_text()
 
@@ -133,6 +166,39 @@ def _get_test_class(version: str, path: str):
                 assert os.path.exists(file.name)
                 assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
                     file.name) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
+
+        @mark_select(_helloworld_condition)
+        def test_dump_file_png(self):
+            plantuml = self._get_auto_plantuml()
+            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+
+            with NamedTemporaryFile() as file:
+                plantuml.dump(file.name, 'png', code)
+                assert os.path.exists(file.name)
+                assert self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
+                    file.name) < self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 1.2
+
+        @mark_select(_helloworld_condition)
+        def test_dump_file_svg(self):
+            plantuml = self._get_auto_plantuml()
+            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+
+            with NamedTemporaryFile() as file:
+                plantuml.dump(file.name, 'svg', code)
+                assert os.path.exists(file.name)
+                assert self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
+                    file.name) < self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 1.2
+
+        @mark_select(_helloworld_condition)
+        def test_dump_file_eps(self):
+            plantuml = self._get_auto_plantuml()
+            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+
+            with NamedTemporaryFile() as file:
+                plantuml.dump(file.name, 'eps', code)
+                assert os.path.exists(file.name)
+                assert self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
+                    file.name) < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2
 
     return _TestModelsLocal
 
