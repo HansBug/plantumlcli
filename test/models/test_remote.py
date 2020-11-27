@@ -8,7 +8,7 @@ from urlobject import URLObject
 
 from plantumlcli.models.remote import OFFICIAL_PLANTUML_HOST, RemotePlantuml
 from plantumlcli.utils import all_func
-from ..test import exist_func, mark_select, unittest, DEMO_HELLOWORLD_PUML, is_file_func
+from ..test import exist_func, mark_select, unittest, DEMO_HELLOWORLD_PUML, is_file_func, TEST_PLANTUML_HOST
 
 
 def _get_test_class(host: str):
@@ -57,7 +57,7 @@ def _get_test_class(host: str):
         @mark_select(_common_condition)
         def test_repr(self):
             plantuml = self._get_auto_plantuml()
-            assert repr(plantuml) == '<RemotePlantuml host: {host}>'.format(host=repr(OFFICIAL_PLANTUML_HOST))
+            assert repr(plantuml) == '<RemotePlantuml host: {host}>'.format(host=repr(host))
 
         @mark_select(_helloworld_condition)
         def test_homepage_url(self):
@@ -117,7 +117,8 @@ def _get_test_class(host: str):
                 txt_result) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD_STR * 1.2
 
         _EXPECTED_TXT_LENGTH_FOR_HELLOWORLD = 372
-        _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD = 3020
+        _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 = 3020
+        _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 = 2300
         _EXPECTED_SVG_LENGTH_FOR_HELLOWORLD = 2742
         _EXPECTED_EPS_LENGTH_FOR_HELLOWORLD = 11048
 
@@ -138,8 +139,10 @@ def _get_test_class(host: str):
 
             _data = plantuml.dump_binary('png', code)
             assert isinstance(_data, bytes)
-            assert self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 0.8 < len(
-                _data) < self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 1.2
+            assert (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 0.8 < len(_data) <
+                    self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 1.2) or \
+                   (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 0.8 < len(_data) <
+                    self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 1.2)
 
         @mark_select(_helloworld_condition)
         def test_dump_binary_svg(self):
@@ -180,8 +183,10 @@ def _get_test_class(host: str):
             with NamedTemporaryFile() as file:
                 plantuml.dump(file.name, 'png', code)
                 assert os.path.exists(file.name)
-                assert self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
-                    file.name) < self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 1.2
+                assert (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 0.8 < os.path.getsize(file.name) <
+                        self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 1.2) or \
+                       (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 0.8 < os.path.getsize(file.name) <
+                        self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 1.2)
 
         @mark_select(_helloworld_condition)
         def test_dump_file_svg(self):
@@ -209,6 +214,10 @@ def _get_test_class(host: str):
 
 
 class TestModelsRemoteDefault(_get_test_class(OFFICIAL_PLANTUML_HOST)):
+    pass
+
+
+class TestModelsRemoteTest(_get_test_class(TEST_PLANTUML_HOST)):
     pass
 
 

@@ -33,6 +33,9 @@ export ASSISTANT_JAR_PATH="${DEMO_JAR_PATH}/plantuml.${ASSISTANT_JAR_VERSION}.ja
 export BROKEN_JAR_PATH="${DEMO_JAR_PATH}/broken.jar"
 export INVALID_JAR_PATH="${DEMO_JAR_PATH}/helloworld.jar"
 
+# test host configuration
+# there should be a TEST_PLANTUML_HOST here, defined outside
+
 # puml demo configuration
 export DEMO_UML_PATH="${DEMO_PATH}/uml"
 
