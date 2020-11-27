@@ -47,6 +47,7 @@ jobs:
           sudo apt-get install -y tree cloc wget curl make
           sudo apt-get install -y graphviz
           sudo dot -c
+          sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
       - name: Set up system dependences on macos
         if: ${{ runner.os == 'macOS' }}
         run: |
@@ -54,6 +55,7 @@ jobs:
           sudo port install -y tree cloc wget curl make
           sudo port install -y graphviz
           sudo dot -c
+          sudo port install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -62,10 +64,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
-      - name: Install packages for pypy3
-        if: ${{ runner.os == 'Linux' && startsWith( matrix.python-version, 'pypy3' ) }}
-        run: |
-          sudo apt-get install -y libxml2-dev libxslt-dev python-dev
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
