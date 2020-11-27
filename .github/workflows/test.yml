@@ -37,7 +37,8 @@ jobs:
           repository: HansBug/plantumlcli-testfile
           path: demo
           fetch-depth: 20
-      - name: Set up system dependences
+      - name: Set up system dependences on linux
+        if: ${{ runner.os == 'Linux' }}
         run: |
           sudo apt-get update
           sudo apt-get install -y tree cloc wget curl make
@@ -51,9 +52,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
+      - name: Install packages for pypy3
+        if: ${{ runner.os == 'Linux' && startsWith( matrix.python-version, 'pypy3' ) }}
+        run: |
+          sudo apt-get install -y libxml2-dev libxslt-dev python-dev
       - name: Install dependencies
         run: |
-          sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
           python -m pip install --upgrade pip
           pip install --upgrade flake8 setuptools wheel twine
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
