@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from typing import Optional
 
 import pytest
 from urlobject import URLObject
@@ -23,6 +24,10 @@ def _get_test_class(host: str):
         @classmethod
         def _get_auto_plantuml(cls) -> RemotePlantuml:
             return RemotePlantuml.autoload(host=host)
+
+        @classmethod
+        def _append_path(cls, path: str, host_addr: Optional[str] = None) -> str:
+            return str(URLObject(host_addr or host).without_query().without_fragment().add_path(path))
 
         @mark_select(_common_condition)
         def test_init(self):
@@ -60,11 +65,12 @@ def _get_test_class(host: str):
             code = Path(DEMO_HELLOWORLD_PUML).read_text()
 
             assert plantuml.get_homepage_url(
-                code) == 'http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+                code) == self._append_path('uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
 
             plantuml2 = self._get_plantuml('https://demo-host-for-plantuml')
             assert plantuml2.get_homepage_url(
-                code) == 'https://demo-host-for-plantuml/uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+                code) == self._append_path('uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
+                                           'https://demo-host-for-plantuml')
 
         @mark_select(_helloworld_condition)
         def test_url(self):
@@ -72,24 +78,28 @@ def _get_test_class(host: str):
             code = Path(DEMO_HELLOWORLD_PUML).read_text()
 
             assert plantuml.get_url('png', code) \
-                   == 'http://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+                   == self._append_path('png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
             assert plantuml.get_url('txt', code) \
-                   == 'http://www.plantuml.com/plantuml/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+                   == self._append_path('txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
             assert plantuml.get_url('svg', code) \
-                   == 'http://www.plantuml.com/plantuml/svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+                   == self._append_path('svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
             assert plantuml.get_url('eps', code) \
-                   == 'http://www.plantuml.com/plantuml/eps/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+                   == self._append_path('eps/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
 
             plantuml2 = self._get_plantuml('https://demo-host-for-plantuml')
 
             assert plantuml2.get_url('png', code) \
-                   == 'https://demo-host-for-plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+                   == self._append_path('png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
+                                        'https://demo-host-for-plantuml')
             assert plantuml2.get_url('txt', code) \
-                   == 'https://demo-host-for-plantuml/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+                   == self._append_path('txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
+                                        'https://demo-host-for-plantuml')
             assert plantuml2.get_url('svg', code) \
-                   == 'https://demo-host-for-plantuml/svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+                   == self._append_path('svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
+                                        'https://demo-host-for-plantuml')
             assert plantuml2.get_url('eps', code) \
-                   == 'https://demo-host-for-plantuml/eps/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+                   == self._append_path('eps/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
+                                        'https://demo-host-for-plantuml')
 
         _EXPECTED_TXT_LENGTH_FOR_HELLOWORLD_STR = 224
 
