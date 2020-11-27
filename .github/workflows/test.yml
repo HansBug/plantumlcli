@@ -10,7 +10,6 @@ jobs:
       matrix:
         os:
           - 'ubuntu-latest'
-          - 'macos-latest'
         python-version:
           - '3.5'
           - '3.6'
@@ -23,12 +22,10 @@ jobs:
         plantuml-version:
           - '1.2020.19'
         assistant-plantuml-version:
-          - '1.2020.19'
           - '1.2020.16'
           - '1.2019.13'
           - '1.2018.14'
           - '1.2017.20'
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -48,14 +45,6 @@ jobs:
           sudo apt-get install -y graphviz
           sudo dot -c
           sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
-      - name: Set up system dependences on macos
-        if: ${{ runner.os == 'macOS' }}
-        run: |
-          brew update
-          brew install tree cloc wget curl make
-          brew install graphviz
-          dot -c
-          brew install libxml2-dev libxslt-dev python-dev  # need by pypy3
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
