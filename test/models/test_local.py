@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 from typing import Optional
 
 import pytest
@@ -92,6 +93,27 @@ def _get_test_class(version: str, path: str):
 
             assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < len(
                 txt_result) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
+
+        @mark_select(_helloworld_condition)
+        def test_dump_binary(self):
+            plantuml = self._get_auto_plantuml()
+            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+
+            _txt_data = plantuml.dump_binary('txt', code)
+            assert isinstance(_txt_data, bytes)
+            assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < len(
+                _txt_data) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
+
+        @mark_select(_helloworld_condition)
+        def test_dump(self):
+            plantuml = self._get_auto_plantuml()
+            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+
+            with NamedTemporaryFile() as file:
+                plantuml.dump(file.name, 'txt', code)
+                assert os.path.exists(file.name)
+                assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
+                    file.name) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
 
     return _TestModelsLocal
 

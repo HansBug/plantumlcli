@@ -106,7 +106,11 @@ class LocalPlantuml(Plantuml):
 
     def _get_version(self) -> str:
         _stdout, _ = self.__execute('-version')
-        _first_line = _stdout.strip().splitlines()[0].strip()
+        _lines = _stdout.strip().splitlines()
+        if _lines:
+            _first_line = _lines[0].strip()
+        else:
+            _first_line = ""
         _line, _ = re.subn(r'\([^()]*?\)', '', _first_line)
         _line, _ = re.subn(r'\\s+', '', _line)
         return _line.strip()
