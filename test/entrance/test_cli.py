@@ -1,9 +1,12 @@
 import os
+from unittest.mock import Mock
 
 import pytest
 from click.testing import CliRunner
+from requests import HTTPError
 
 from plantumlcli.entrance import cli
+from plantumlcli.models import Plantuml
 from plantumlcli.utils import all_func
 from ..test import unittest, PRIMARY_JAR_PATH, is_file_func, mark_select, DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML, \
     DEMO_CHINESE_PUML, DEMO_LARGE_PUML, DEMO_INVALID_PUML, TEST_PLANTUML_HOST, exist_func, DEMO_HELLOWORLD_PUML_ABS, \
@@ -323,6 +326,22 @@ class TestEntranceCli:
         assert ('No diagram found' in result.stdout) or ('No expected file found' in result.stdout)
         assert '认证中心' in result.stdout
         assert 'Handle claim' in result.stdout
+
+        _dump_txt_func, Plantuml.dump_txt = Plantuml.dump_txt, Mock(
+            side_effect=OSError('This is an os error.'))
+        result = runner.invoke(cli, args=['-T', DEMO_HELLOWORLD_PUML], env={'PLANTUML_HOST': TEST_PLANTUML_HOST})
+        assert result.exit_code != 0
+        assert 'OSError' in result.stdout
+        assert 'This is an os error.' in result.stdout
+        Plantuml.dump_txt = _dump_txt_func
+
+        _dump_txt_func, Plantuml.dump_txt = Plantuml.dump_txt, Mock(
+            side_effect=HTTPError('This is a http error.'))
+        result = runner.invoke(cli, args=['-T', DEMO_HELLOWORLD_PUML], env={'PLANTUML_HOST': TEST_PLANTUML_HOST})
+        assert result.exit_code != 0
+        assert 'HTTPError' in result.stdout
+        assert 'This is a http error.' in result.stdout
+        Plantuml.dump_txt = _dump_txt_func
 
     _EXPECTED_TXT_LENGTH_FOR_HELLOWORLD = 372
     _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 = 3020
