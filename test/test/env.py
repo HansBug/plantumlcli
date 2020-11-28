@@ -26,6 +26,7 @@ DEMO_HELLOWORLD_PUML = _env.get('DEMO_HELLOWORLD_PUML', None)
 DEMO_COMMON_PUML = _env.get('DEMO_COMMON_PUML', None)
 DEMO_CHINESE_PUML = _env.get('DEMO_CHINESE_PUML', None)
 DEMO_LARGE_PUML = _env.get('DEMO_LARGE_PUML', None)
+DEMO_INVALID_PUML = _env.get('DEMO_INVALID_PUML', None)
 
 
 def exist_func(var) -> Callable[[], bool]:

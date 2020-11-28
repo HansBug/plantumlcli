@@ -6,14 +6,19 @@ from click.testing import CliRunner
 from plantumlcli.entrance import cli
 from plantumlcli.utils import all_func
 from ..test import unittest, PRIMARY_JAR_PATH, is_file_func, mark_select, DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML, \
-    DEMO_CHINESE_PUML, DEMO_LARGE_PUML
+    DEMO_CHINESE_PUML, DEMO_LARGE_PUML, DEMO_INVALID_PUML, TEST_PLANTUML_HOST, exist_func
 
 _primary_jar_condition = is_file_func(PRIMARY_JAR_PATH)
 _helloworld_condition = is_file_func(DEMO_HELLOWORLD_PUML)
 _common_condition = is_file_func(DEMO_COMMON_PUML)
 _chinese_condition = is_file_func(DEMO_CHINESE_PUML)
 _large_condition = is_file_func(DEMO_LARGE_PUML)
+_invalid_condition = is_file_func(DEMO_INVALID_PUML)
+
 _all_puml_condition = all_func(_helloworld_condition, _chinese_condition, _chinese_condition, _large_condition)
+_all_with_invalid_condition = all_func(_all_puml_condition, _invalid_condition)
+
+_test_host_condition = exist_func(TEST_PLANTUML_HOST)
 
 
 class TestEntranceCli:
@@ -266,6 +271,31 @@ class TestEntranceCli:
         assert result.exit_code == 0
         assert 'Alice' in result.stdout
         assert 'Dialing' in result.stdout
+        assert '认证中心' in result.stdout
+        assert 'Handle claim' in result.stdout
+
+    @mark_select(all_func(_all_with_invalid_condition, _test_host_condition, _primary_jar_condition))
+    def test_text_graph_error(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, args=['-T', DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML, DEMO_INVALID_PUML,
+                                          DEMO_CHINESE_PUML, DEMO_LARGE_PUML],
+                               env={'PLANTUML_HOST': TEST_PLANTUML_HOST})
+
+        assert result.exit_code == -2
+        assert 'Alice' in result.stdout
+        assert 'Dialing' in result.stdout
+        assert 'Syntax Error' in result.stdout
+        assert '认证中心' in result.stdout
+        assert 'Handle claim' in result.stdout
+
+        result = runner.invoke(cli, args=['-T', DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML, DEMO_INVALID_PUML,
+                                          DEMO_CHINESE_PUML, DEMO_LARGE_PUML],
+                               env={'PLANTUML_JAR': PRIMARY_JAR_PATH})
+
+        assert result.exit_code == -2
+        assert 'Alice' in result.stdout
+        assert 'Dialing' in result.stdout
+        assert 'No diagram found' in result.stdout
         assert '认证中心' in result.stdout
         assert 'Handle claim' in result.stdout
 

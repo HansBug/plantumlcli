@@ -96,14 +96,13 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
 
                 if code:
                     click.secho('{source}: [{cls} {code}]'.format(
-                        source=src, cls=type(_data).__name__, code=code), fg='red', file=sys.stderr)
+                        source=src, cls=type(_data).__name__, code=code), fg='red')
                 else:
-                    click.secho('{source}: [{cls}]'.format(source=src, cls=type(_data).__name__),
-                                fg='red', file=sys.stderr)
+                    click.secho('{source}: [{cls}]'.format(source=src, cls=type(_data).__name__), fg='red')
 
-                click.secho(str(_data), fg='red', file=sys.stderr)
+                click.secho(str(_data), fg='red')
                 if response is not None and code and response.content:
-                    click.secho(auto_decode(response.content), fg='red', file=sys.stderr)
+                    click.secho(auto_decode(response.content), fg='red')
 
             _error_count += 1
 
