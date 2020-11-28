@@ -6,7 +6,8 @@ from click.testing import CliRunner
 from plantumlcli.entrance import cli
 from plantumlcli.utils import all_func
 from ..test import unittest, PRIMARY_JAR_PATH, is_file_func, mark_select, DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML, \
-    DEMO_CHINESE_PUML, DEMO_LARGE_PUML, DEMO_INVALID_PUML, TEST_PLANTUML_HOST, exist_func
+    DEMO_CHINESE_PUML, DEMO_LARGE_PUML, DEMO_INVALID_PUML, TEST_PLANTUML_HOST, exist_func, DEMO_HELLOWORLD_PUML_ABS, \
+    DEMO_CHINESE_PUML_ABS, DEMO_LARGE_PUML_ABS, DEMO_COMMON_PUML_ABS
 
 _primary_jar_condition = is_file_func(PRIMARY_JAR_PATH)
 _helloworld_condition = is_file_func(DEMO_HELLOWORLD_PUML)
@@ -21,6 +22,7 @@ _all_with_invalid_condition = all_func(_all_puml_condition, _invalid_condition)
 _test_host_condition = exist_func(TEST_PLANTUML_HOST)
 
 
+# noinspection DuplicatedCode
 class TestEntranceCli:
     @unittest
     def test_version(self):
@@ -321,6 +323,99 @@ class TestEntranceCli:
         assert ('No diagram found' in result.stdout) or ('No expected file found' in result.stdout)
         assert '认证中心' in result.stdout
         assert 'Handle claim' in result.stdout
+
+    _EXPECTED_TXT_LENGTH_FOR_HELLOWORLD = 372
+    _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 = 3020
+    _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 = 2300
+    _EXPECTED_SVG_LENGTH_FOR_HELLOWORLD = 2742
+    _EXPECTED_EPS_LENGTH_FOR_HELLOWORLD = 11048
+
+    _EXPECTED_EPS_LENGTH_FOR_COMMON = 28748
+    _EXPECTED_EPS_LENGTH_FOR_CHINESE = 93907
+    _EXPECTED_EPS_LENGTH_FOR_LARGE = 100685
+
+    @mark_select(all_func(_all_puml_condition, _primary_jar_condition, _test_host_condition))
+    def test_file_dump(self):
+        runner = CliRunner()
+
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, [DEMO_HELLOWORLD_PUML_ABS])
+
+            assert result.exit_code == 0
+            assert os.path.exists('helloworld.png')
+            assert (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 0.8 < os.path.getsize('helloworld.png')
+                    < self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 1.2) or \
+                   (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 0.8 < os.path.getsize('helloworld.png')
+                    < self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 1.2)
+
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['-t', 'eps', DEMO_HELLOWORLD_PUML_ABS])
+
+            assert result.exit_code == 0
+            assert os.path.exists('helloworld.eps')
+            assert (self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize('helloworld.eps')
+                    < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2)
+
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['-t', 'eps', '-o', 'new_file.eps', DEMO_HELLOWORLD_PUML_ABS])
+
+            assert result.exit_code == 0
+            assert os.path.exists('new_file.eps')
+            assert (self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize('new_file.eps')
+                    < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2)
+
+        with runner.isolated_filesystem():
+            os.makedirs('new/path', exist_ok=True)
+            result = runner.invoke(cli, ['-t', 'eps', '-o', 'new_file.eps', '-O', 'new/path', DEMO_HELLOWORLD_PUML_ABS])
+
+            assert result.exit_code == 0
+            assert os.path.exists('new/path/new_file.eps')
+            assert (self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize('new/path/new_file.eps')
+                    < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2)
+
+        with runner.isolated_filesystem():
+            os.makedirs('new/path', exist_ok=True)
+            result = runner.invoke(cli, ['-t', 'eps', '-o', 'new_file.eps', '-o', 'new_file_2.eps',
+                                         '-O', 'new/path', DEMO_HELLOWORLD_PUML_ABS, DEMO_CHINESE_PUML_ABS])
+
+            assert result.exit_code == 0
+            assert os.path.exists('new/path/new_file.eps')
+            assert (self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize('new/path/new_file.eps')
+                    < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2)
+            assert os.path.exists('new/path/new_file_2.eps')
+            assert (self._EXPECTED_EPS_LENGTH_FOR_CHINESE * 0.8 < os.path.getsize('new/path/new_file_2.eps')
+                    < self._EXPECTED_EPS_LENGTH_FOR_CHINESE * 1.2)
+
+        with runner.isolated_filesystem():
+            os.makedirs('new/path', exist_ok=True)
+            result = runner.invoke(cli, ['-t', 'eps', '-o', 'new_file.eps', '-o', 'new_file_2.eps',
+                                         '-o', 'new_file_3.eps', '-o', 'new_file_4.eps',
+                                         '-O', 'new/path', DEMO_HELLOWORLD_PUML_ABS, DEMO_COMMON_PUML_ABS,
+                                         DEMO_CHINESE_PUML_ABS, DEMO_LARGE_PUML_ABS])
+
+            assert result.exit_code == 0
+            assert os.path.exists('new/path/new_file.eps')
+            assert (self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize('new/path/new_file.eps')
+                    < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2)
+            assert os.path.exists('new/path/new_file_2.eps')
+            assert (self._EXPECTED_EPS_LENGTH_FOR_COMMON * 0.8 < os.path.getsize('new/path/new_file_2.eps')
+                    < self._EXPECTED_EPS_LENGTH_FOR_COMMON * 1.2)
+            assert os.path.exists('new/path/new_file_3.eps')
+            assert (self._EXPECTED_EPS_LENGTH_FOR_CHINESE * 0.8 < os.path.getsize('new/path/new_file_3.eps')
+                    < self._EXPECTED_EPS_LENGTH_FOR_CHINESE * 1.2)
+            assert os.path.exists('new/path/new_file_4.eps')
+            assert (self._EXPECTED_EPS_LENGTH_FOR_LARGE * 0.8 < os.path.getsize('new/path/new_file_4.eps')
+                    < self._EXPECTED_EPS_LENGTH_FOR_LARGE * 1.2)
+
+    @mark_select(all_func(_all_with_invalid_condition, _primary_jar_condition, _test_host_condition))
+    def test_file_dump_error(self):
+        runner = CliRunner()
+
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['-t', 'eps', '-o', 'new_file.eps', '-o', 'new_file_2.eps',
+                                         DEMO_HELLOWORLD_PUML_ABS])
+
+            assert result.exit_code != 0
 
     @mark_select(_helloworld_condition)
     def test_auto_select_error(self):
