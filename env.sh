@@ -40,3 +40,6 @@ export INVALID_JAR_PATH="${DEMO_JAR_PATH}/helloworld.jar"
 export DEMO_UML_PATH="${DEMO_PATH}/uml"
 
 export DEMO_HELLOWORLD_PUML="${DEMO_UML_PATH}/helloworld.puml"
+export DEMO_COMMON_PUML="${DEMO_UML_PATH}/common.puml"
+export DEMO_CHINESE_PUML="${DEMO_UML_PATH}/chinese.puml"
+export DEMO_LARGE_PUML="${DEMO_UML_PATH}/large.puml"

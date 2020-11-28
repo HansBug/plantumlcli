@@ -23,6 +23,9 @@ INVALID_JAR_PATH = _env.get('INVALID_JAR_PATH', None)
 TEST_PLANTUML_HOST = _env.get('TEST_PLANTUML_HOST', None)
 
 DEMO_HELLOWORLD_PUML = _env.get('DEMO_HELLOWORLD_PUML', None)
+DEMO_COMMON_PUML = _env.get('DEMO_COMMON_PUML', None)
+DEMO_CHINESE_PUML = _env.get('DEMO_CHINESE_PUML', None)
+DEMO_LARGE_PUML = _env.get('DEMO_LARGE_PUML', None)
 
 
 def exist_func(var) -> Callable[[], bool]:
