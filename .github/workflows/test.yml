@@ -90,8 +90,8 @@ jobs:
           ASSISTANT_JAR_VERSION: ${{ matrix.assistant-plantuml-version }}
           TEST_PLANTUML_HOST: http://localhost:18080
         with:
+          timeout_minutes: 10
           max_attempts: 3
-          retry_on: error
           command: |
             source env.sh
             pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
