@@ -117,5 +117,9 @@ class LocalPlantuml(Plantuml):
             with NamedTemporaryFile(prefix='puml', suffix='.puml') as input_file:
                 save_text_file(input_file.name, code)
                 self.__execute('-t{type}'.format(type=type_.name.lower()), '-o', output_path_name, input_file.name)
-                output_filename = os.path.join(output_path_name, os.listdir(output_path_name)[0])
-                return load_binary_file(output_filename)
+                _file_list = os.listdir(output_path_name)
+                if _file_list:
+                    output_filename = os.path.join(output_path_name, _file_list[0])
+                    return load_binary_file(output_filename)
+                else:
+                    raise FileNotFoundError('No expected file found in {path}.'.format(path=repr(output_path_name)))

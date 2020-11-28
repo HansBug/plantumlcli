@@ -295,7 +295,7 @@ class TestEntranceCli:
         assert result.exit_code == -2
         assert 'Alice' in result.stdout
         assert 'Dialing' in result.stdout
-        assert 'No diagram found' in result.stdout
+        assert ('No diagram found' in result.stdout) or ('No expected file found' in result.stdout)
         assert '认证中心' in result.stdout
         assert 'Handle claim' in result.stdout
 

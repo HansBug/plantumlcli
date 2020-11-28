@@ -1,5 +1,4 @@
 import os
-import sys
 from enum import IntEnum
 from typing import Optional, Tuple, Union
 
@@ -103,6 +102,7 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
                 click.secho(str(_data), fg='red')
                 if response is not None and code and response.content:
                     click.secho(auto_decode(response.content), fg='red')
+                click.secho('', fg='red')
 
             _error_count += 1
 
