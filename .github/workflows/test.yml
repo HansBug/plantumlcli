@@ -88,24 +88,18 @@ jobs:
           PRIMARY_JAR_VERSION: ${{ matrix.plantuml-version }}
           ASSISTANT_JAR_VERSION: ${{ matrix.assistant-plantuml-version }}
           TEST_PLANTUML_HOST: http://localhost:18080
-          RETRY_SLEEP: 5
           WORKERS: 4
         run: |
           source env.sh
-          make unittest WORKERS=${WORKERS} ||
-          (sleep ${RETRY_SLEEP} && make unittest WORKERS=${WORKERS}) ||
-          (sleep ${RETRY_SLEEP} && make unittest WORKERS=${WORKERS})
+          make unittest WORKERS=${WORKERS}
       - name: Run benchmark
         env:
           PRIMARY_JAR_VERSION: ${{ matrix.plantuml-version }}
           ASSISTANT_JAR_VERSION: ${{ matrix.assistant-plantuml-version }}
           TEST_PLANTUML_HOST: http://localhost:18080
-          RETRY_SLEEP: 5
         run: |
           source env.sh
-          make benchmark ||
-          (sleep ${RETRY_SLEEP} && make benchmark) ||
-          (sleep ${RETRY_SLEEP} && make benchmark)
+          make benchmark
       - name: Upload coverage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
