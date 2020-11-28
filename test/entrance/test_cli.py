@@ -4,9 +4,10 @@ import pytest
 from click.testing import CliRunner
 
 from plantumlcli.entrance import cli
-from ..test import unittest, PRIMARY_JAR_PATH, is_file_func, mark_select
+from ..test import unittest, PRIMARY_JAR_PATH, is_file_func, mark_select, DEMO_HELLOWORLD_PUML
 
 _primary_jar_condition = is_file_func(PRIMARY_JAR_PATH)
+_helloworld_condition = is_file_func(DEMO_HELLOWORLD_PUML)
 
 
 class TestEntranceCli:
@@ -95,6 +96,119 @@ class TestEntranceCli:
         assert "Local plantuml not detected or has problem." in result.stdout
         assert "Remote plantuml detected." not in result.stdout
         assert "Remote plantuml not detected or has problem." not in result.stdout
+
+    @mark_select(_helloworld_condition)
+    def test_homepage_url(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, args=['--homepage-url', DEMO_HELLOWORLD_PUML])
+
+        assert result.exit_code == 0
+        _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        assert len(_lines) == 1
+        assert _lines[0] == 'http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+
+        result = runner.invoke(cli, args=['--homepage-url', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML])
+
+        assert result.exit_code == 0
+        _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        assert len(_lines) == 2
+        assert _lines[0] == 'http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+        assert _lines[1] == 'http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+
+        result = runner.invoke(cli, args=['--homepage-url', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML],
+                               env={'PLANTUML_HOST': 'http://this-is-a-host'})
+        assert result.exit_code == 0
+        _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        assert len(_lines) == 2
+        assert _lines[0] == 'http://this-is-a-host/uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+        assert _lines[1] == 'http://this-is-a-host/uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+
+    @mark_select(_helloworld_condition)
+    def test_homepage_url_error(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, args=['--homepage-url', DEMO_HELLOWORLD_PUML, '-r', 'socks5://this-is-a-host'])
+
+        assert result.exit_code != 0
+
+    @mark_select(_helloworld_condition)
+    def test_url(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, args=['-u', DEMO_HELLOWORLD_PUML])
+
+        assert result.exit_code == 0
+        _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        assert len(_lines) == 1
+        assert _lines[0] == 'http://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+
+        result = runner.invoke(cli, args=['-u', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML])
+
+        assert result.exit_code == 0
+        _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        assert len(_lines) == 2
+        assert _lines[0] == 'http://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+        assert _lines[1] == 'http://www.plantuml.com/plantuml/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+
+        result = runner.invoke(cli, args=['-u', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML],
+                               env={'PLANTUML_HOST': 'http://this-is-a-host'})
+        assert result.exit_code == 0
+        _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        assert len(_lines) == 2
+        assert _lines[0] == 'http://this-is-a-host/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+        assert _lines[1] == 'http://this-is-a-host/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+
+        result = runner.invoke(cli, args=['-u', '-t', 'txt', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML],
+                               env={'PLANTUML_HOST': 'http://this-is-a-host'})
+        assert result.exit_code == 0
+        _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        assert len(_lines) == 2
+        assert _lines[0] == 'http://this-is-a-host/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+        assert _lines[1] == 'http://this-is-a-host/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+
+        result = runner.invoke(cli, args=['-u', '-t', 'png', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML],
+                               env={'PLANTUML_HOST': 'http://this-is-a-host'})
+        assert result.exit_code == 0
+        _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        assert len(_lines) == 2
+        assert _lines[0] == 'http://this-is-a-host/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+        assert _lines[1] == 'http://this-is-a-host/png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+
+        result = runner.invoke(cli, args=['-u', '-t', 'eps', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML],
+                               env={'PLANTUML_HOST': 'http://this-is-a-host'})
+        assert result.exit_code == 0
+        _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        assert len(_lines) == 2
+        assert _lines[0] == 'http://this-is-a-host/eps/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+        assert _lines[1] == 'http://this-is-a-host/eps/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+
+        result = runner.invoke(cli, args=['-u', '-t', 'svg', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML],
+                               env={'PLANTUML_HOST': 'http://this-is-a-host'})
+        assert result.exit_code == 0
+        _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        assert len(_lines) == 2
+        assert _lines[0] == 'http://this-is-a-host/svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+        assert _lines[1] == 'http://this-is-a-host/svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
+
+    @mark_select(_helloworld_condition)
+    def test_url_error(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, args=['-u', DEMO_HELLOWORLD_PUML, '-r', 'socks5://this-is-a-host'])
+
+        assert result.exit_code != 0
+
+    @mark_select(_helloworld_condition)
+    def test_concurrency_error(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, args=['-u', '-n', '4', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML,
+                                          DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML])
+
+        assert result.exit_code == 0
+
+    @mark_select(_helloworld_condition)
+    def test_concurrency_error(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, args=['-u', '-n', '0', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML])
+
+        assert result.exit_code != 0
 
     if __name__ == "__main__":
         pytest.main([os.path.abspath(__file__)])
