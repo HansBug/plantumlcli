@@ -1,4 +1,5 @@
 import os
+import sys
 from enum import IntEnum
 from typing import Optional, Tuple, Union
 
@@ -11,7 +12,7 @@ from .remote import _check_remote_plantuml, print_remote_check_info
 from ..models.base import PlantumlType, Plantuml, PlantumlResourceType
 from ..models.local import LocalPlantuml, LocalPlantumlExecuteError
 from ..models.remote import RemotePlantuml
-from ..utils import load_text_file, linear_process, save_binary_file
+from ..utils import load_text_file, linear_process, save_binary_file, auto_decode
 
 
 def print_double_check_info(local_ok: bool, local: LocalPlantuml,
@@ -85,20 +86,24 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
                 click.secho(_data.stderr, fg='red')
             else:
                 if hasattr(_data, 'response'):
-                    r = getattr(_data, 'response')
-                    if hasattr(r, 'status_code'):
-                        code = getattr(r, 'status_code')
+                    response = getattr(_data, 'response')
+                    if hasattr(response, 'status_code'):
+                        code = getattr(response, 'status_code')
                     else:
                         code = None
                 else:
-                    r, code = None, None
+                    response, code = None, None
 
                 if code:
                     click.secho('{source}: [{cls} {code}]'.format(
-                        source=src, cls=type(_data).__name__, code=code), fg='red')
+                        source=src, cls=type(_data).__name__, code=code), fg='red', file=sys.stderr)
                 else:
-                    click.secho('{source}: [{cls}]'.format(source=src, cls=type(_data).__name__), fg='red')
-                click.secho(str(_data), fg='red')
+                    click.secho('{source}: [{cls}]'.format(source=src, cls=type(_data).__name__),
+                                fg='red', file=sys.stderr)
+
+                click.secho(str(_data), fg='red', file=sys.stderr)
+                if response is not None and code and response.content:
+                    click.secho(auto_decode(response.content), fg='red', file=sys.stderr)
 
             _error_count += 1
 
