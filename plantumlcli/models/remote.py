@@ -18,7 +18,7 @@ def find_plantuml_host_from_env() -> Optional[None]:
     return os.environ.get(PLANTUML_HOST_ENV, None)
 
 
-def find_plantuml_host(plantuml_host: Optional[str]) -> Optional[str]:
+def find_plantuml_host(plantuml_host: Optional[str] = None) -> Optional[str]:
     return plantuml_host or find_plantuml_host_from_env() or OFFICIAL_PLANTUML_HOST
 
 

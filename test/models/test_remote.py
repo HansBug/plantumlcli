@@ -2,11 +2,13 @@ import os
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Optional
+from unittest.mock import Mock
 
 import pytest
 from urlobject import URLObject
 
-from plantumlcli.models.remote import OFFICIAL_PLANTUML_HOST, RemotePlantuml
+from plantumlcli.models.remote import OFFICIAL_PLANTUML_HOST, RemotePlantuml, find_plantuml_host_from_env, \
+    find_plantuml_host
 from plantumlcli.utils import all_func
 from ..test import exist_func, mark_select, unittest, DEMO_HELLOWORLD_PUML, is_file_func, TEST_PLANTUML_HOST
 
@@ -219,6 +221,31 @@ class TestModelsRemoteDefault(_get_test_class(OFFICIAL_PLANTUML_HOST)):
 
 class TestModelsRemoteTest(_get_test_class(TEST_PLANTUML_HOST)):
     pass
+
+
+@unittest
+class TestModelsRemoteCommon:
+    def test_find_plantuml_host_from_env(self):
+        _get_func, os.environ.get = os.environ.get, Mock(
+            side_effect=[OFFICIAL_PLANTUML_HOST, 'https://plantuml-host', ''])
+
+        assert find_plantuml_host_from_env() == OFFICIAL_PLANTUML_HOST
+        assert find_plantuml_host_from_env() == 'https://plantuml-host'
+        assert not find_plantuml_host_from_env()
+
+        os.environ.get = _get_func
+
+    def test_find_plantuml_host(self):
+        _get_func, os.environ.get = os.environ.get, Mock(
+            side_effect=[OFFICIAL_PLANTUML_HOST, 'https://plantuml-host', ''])
+
+        assert find_plantuml_host('https://this-is-a-host') == 'https://this-is-a-host'
+        assert find_plantuml_host(OFFICIAL_PLANTUML_HOST) == OFFICIAL_PLANTUML_HOST
+        assert find_plantuml_host() == OFFICIAL_PLANTUML_HOST
+        assert find_plantuml_host() == 'https://plantuml-host'
+        assert find_plantuml_host() == OFFICIAL_PLANTUML_HOST
+
+        os.environ.get = _get_func
 
 
 if __name__ == "__main__":

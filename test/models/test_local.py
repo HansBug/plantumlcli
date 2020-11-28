@@ -2,15 +2,17 @@ import os
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Optional
+from unittest.mock import Mock
 
 import pytest
 import where
 
 from plantumlcli import LocalPlantuml
-from plantumlcli.models.local import LocalPlantumlExecuteError
+from plantumlcli.models.local import LocalPlantumlExecuteError, find_java_from_env, find_java, find_plantuml_from_env, \
+    find_plantuml
 from plantumlcli.utils import all_func
 from ..test import PRIMARY_JAR_VERSION, PRIMARY_JAR_PATH, ASSISTANT_JAR_VERSION, ASSISTANT_JAR_PATH, mark_select, \
-    DEAD_FILE_PATH, DEMO_HELLOWORLD_PUML, is_file_func, BROKEN_JAR_PATH, INVALID_JAR_PATH, exist_func
+    DEAD_FILE_PATH, DEMO_HELLOWORLD_PUML, is_file_func, BROKEN_JAR_PATH, INVALID_JAR_PATH, exist_func, unittest
 
 
 def _get_test_class(version: str, path: str):
@@ -31,13 +33,7 @@ def _get_test_class(version: str, path: str):
             return LocalPlantuml.autoload(plantuml=path)
 
         @mark_select(_common_condition)
-        def test_version(self):
-            plantuml = self._get_auto_plantuml()
-            assert version in plantuml.version
-            assert 'plantuml' in plantuml.version.lower()
-
-        @mark_select(_common_condition)
-        def test_version_error(self):
+        def test_init_error(self):
             with pytest.raises(ValueError):
                 _ = self._get_plantuml(java='', plantuml=path)
             with pytest.raises(FileNotFoundError):
@@ -53,11 +49,17 @@ def _get_test_class(version: str, path: str):
                 _ = self._get_plantuml(plantuml=os.path.dirname(path))
 
         @mark_select(_dead_file_condition)
-        def test_version_error_dead(self):
+        def test_init_error_dead(self):
             with pytest.raises(PermissionError):
                 _ = self._get_plantuml(java=DEAD_FILE_PATH, plantuml=path)
             with pytest.raises(PermissionError):
                 _ = self._get_plantuml(plantuml=DEAD_FILE_PATH)
+
+        @mark_select(_common_condition)
+        def test_version(self):
+            plantuml = self._get_auto_plantuml()
+            assert version in plantuml.version
+            assert 'plantuml' in plantuml.version.lower()
 
         @mark_select(_broken_jar_condition)
         def test_version_broken(self):
@@ -210,6 +212,49 @@ class TestModelsLocalPrimary(_get_test_class(PRIMARY_JAR_VERSION, PRIMARY_JAR_PA
 
 class TestModelsLocalAssistant(_get_test_class(ASSISTANT_JAR_VERSION, ASSISTANT_JAR_PATH)):
     pass
+
+
+@unittest
+class TestModelsLocalCommon:
+    def test_find_java_from_env(self):
+        _first_func, where.first = where.first, Mock(side_effect=['/usr/bin/java', '/another/java', None])
+
+        assert find_java_from_env() == '/usr/bin/java'
+        assert find_java_from_env() == '/another/java'
+        assert find_java_from_env() is None
+
+        where.first = _first_func
+
+    def test_find_java(self):
+        _first_func, where.first = where.first, Mock(side_effect=['/usr/bin/java', '/another/java', None])
+
+        assert find_java('/local/java') == '/local/java'
+        assert find_java('') == '/usr/bin/java'
+        assert find_java() == '/another/java'
+        assert find_java() is None
+
+        where.first = _first_func
+
+    def test_find_plantuml_from_env(self):
+        _get_func, os.environ.get = os.environ.get, Mock(
+            side_effect=['/usr/local/plantuml.jar', '/another/plantuml.jar', None])
+
+        assert find_plantuml_from_env() == '/usr/local/plantuml.jar'
+        assert find_plantuml_from_env() == '/another/plantuml.jar'
+        assert find_plantuml_from_env() is None
+
+        os.environ.get = _get_func
+
+    def test_find_plantuml(self):
+        _get_func, os.environ.get = os.environ.get, Mock(
+            side_effect=['/usr/local/plantuml.jar', '/another/plantuml.jar', None])
+
+        assert find_plantuml('/usr/bin/plantuml.jar') == '/usr/bin/plantuml.jar'
+        assert find_plantuml() == '/usr/local/plantuml.jar'
+        assert find_plantuml() == '/another/plantuml.jar'
+        assert find_plantuml() is None
+
+        os.environ.get = _get_func
 
 
 if __name__ == "__main__":
