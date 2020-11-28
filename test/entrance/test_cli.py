@@ -120,10 +120,10 @@ class TestEntranceCli:
         _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
         assert len(_lines) == 4
         assert _lines[0] == 'http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
-        assert _lines[1] == 'http://www.plantuml.com/plantuml/uml/LP2n3eCm34HtVuN5M8aVw50XjKlNhbM7a1Ym6X84GOY_' \
-                            'hmC4g9JXSk-Sir8CGVLXR2qqR0YfxSACXWRTSnVOEm091CBiQInbg0Pa4SbyiQlbB7w_weGUYcr2XfKze' \
-                            'RkoEzAh1dXVFfZVbjVnYfsVg4UfN-xYHxpRLGKxs6e5ijE-ZJA-2ScNoDOHvrb_SUoEwMqpGNuCjT-da_' \
-                            'ytNH8gDyW6PCw1RMNdIszcW9JFZP_SWHibdbGNv4pyxXy%3D'
+        assert _lines[1] == 'http://www.plantuml.com/plantuml/uml/LP2n3eCm34HtVuN5M8aVw50XjKlNhbM7a1Y86k88WX1_' \
+                            'NmS8RQKCbtldd9LgZ6g8K--WiuQG-X0ND3JgmOPesGD8818MT-EeG3MY5P7DX_MjdDKVDftHpIgNaTbqH' \
+                            'bVb3gGt3V0ylR2yhA_Z6GFFDA3KhtVn4pxife43xBK2hTVS9vdUXEnBPEz8yrQ_SGhVwNqpGJp5be_fxF' \
+                            'zDruJAZx81cT_0lhBdciq2aFEbuTb_SQV4a-gAl4dV_G4%3D'
         assert _lines[2] == 'http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuNe-PSMpZkqAkdOABzOjUR6-yScEjK_t' \
                             'DrifF9-v--dUgSyczpxPEuSBMGgazFcUoK_Nph1I01BFfkpJo4wjj2t9pqxDqyuiq2bBp2bDXN0rmIGNp' \
                             '0uRNHGx5AoWt6ST4vvspN-nVyhJsVCWEd0vwicExcTh5hvOj__bz7LFbsnvsRpYsOHTJtSi0-k2A4LrAz' \
@@ -149,10 +149,10 @@ class TestEntranceCli:
         assert len(_lines) == 4
 
         assert _lines[0] == 'http://this-is-a-host/uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
-        assert _lines[1] == 'http://this-is-a-host/uml/LP2n3eCm34HtVuN5M8aVw50XjKlNhbM7a1Ym6X84GOY_' \
-                            'hmC4g9JXSk-Sir8CGVLXR2qqR0YfxSACXWRTSnVOEm091CBiQInbg0Pa4SbyiQlbB7w_weGUYcr2XfKze' \
-                            'RkoEzAh1dXVFfZVbjVnYfsVg4UfN-xYHxpRLGKxs6e5ijE-ZJA-2ScNoDOHvrb_SUoEwMqpGNuCjT-da_' \
-                            'ytNH8gDyW6PCw1RMNdIszcW9JFZP_SWHibdbGNv4pyxXy%3D'
+        assert _lines[1] == 'http://this-is-a-host/uml/LP2n3eCm34HtVuN5M8aVw50XjKlNhbM7a1Y86k88WX1_' \
+                            'NmS8RQKCbtldd9LgZ6g8K--WiuQG-X0ND3JgmOPesGD8818MT-EeG3MY5P7DX_MjdDKVDftHpIgNaTbqH' \
+                            'bVb3gGt3V0ylR2yhA_Z6GFFDA3KhtVn4pxife43xBK2hTVS9vdUXEnBPEz8yrQ_SGhVwNqpGJp5be_fxF' \
+                            'zDruJAZx81cT_0lhBdciq2aFEbuTb_SQV4a-gAl4dV_G4%3D'
         assert _lines[2] == 'http://this-is-a-host/uml/SoWkIImgAStDuNe-PSMpZkqAkdOABzOjUR6-yScEjK_t' \
                             'DrifF9-v--dUgSyczpxPEuSBMGgazFcUoK_Nph1I01BFfkpJo4wjj2t9pqxDqyuiq2bBp2bDXN0rmIGNp' \
                             '0uRNHGx5AoWt6ST4vvspN-nVyhJsVCWEd0vwicExcTh5hvOj__bz7LFbsnvsRpYsOHTJtSi0-k2A4LrAz' \
@@ -257,5 +257,18 @@ class TestEntranceCli:
 
         assert result.exit_code != 0
 
-    if __name__ == "__main__":
-        pytest.main([os.path.abspath(__file__)])
+    @mark_select(_all_puml_condition)
+    def test_text_graph(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, args=['-T', DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML,
+                                          DEMO_CHINESE_PUML, DEMO_LARGE_PUML])
+
+        assert result.exit_code == 0
+        assert 'Alice' in result.stdout
+        assert 'Dialing' in result.stdout
+        assert '认证中心' in result.stdout
+        assert 'Handle claim' in result.stdout
+
+
+if __name__ == "__main__":
+    pytest.main([os.path.abspath(__file__)])
