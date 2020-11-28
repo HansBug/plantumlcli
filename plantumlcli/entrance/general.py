@@ -35,17 +35,6 @@ class PlantumlCheckType(IntEnum):
     BOTH = 3
 
 
-def _get_check_type(check: bool, check_local: bool, check_remote: bool) -> Optional[PlantumlCheckType]:
-    if check:
-        return PlantumlCheckType.BOTH
-    elif check_local:
-        return PlantumlCheckType.LOCAL
-    elif check_remote:
-        return PlantumlCheckType.REMOTE
-    else:
-        return None
-
-
 def print_check_info(check_type: PlantumlCheckType,
                      local_ok: bool, local: LocalPlantuml,
                      remote_ok: bool, remote: RemotePlantuml) -> None:

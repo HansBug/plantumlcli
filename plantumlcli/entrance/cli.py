@@ -4,7 +4,7 @@ import click
 from click.core import Context, Option
 
 from .base import _DEFAULT_CONCURRENCY
-from .general import _get_check_type, print_check_info, print_text_graph, process_plantuml
+from .general import print_check_info, print_text_graph, process_plantuml, PlantumlCheckType
 from .remote import print_url, print_homepage_url
 from ..config.meta import __TITLE__, __VERSION__, __AUTHOR__, __AUTHOR_EMAIL__
 from ..models.base import try_plantuml, PlantumlResourceType, Plantuml
@@ -78,9 +78,7 @@ CONTEXT_SETTINGS = dict(
               show_default=True)
 @click.option('-L', '--use-local', is_flag=True, help='Use local plantuml only.')
 @click.option('-R', '--use-remote', is_flag=True, help='Use remote plantuml only.')
-@click.option('-c', '--check', is_flag=True, help='Check usable plantuml (ignore -L and -R).')
-@click.option('--check-local', is_flag=True, help='Check local plantuml.')
-@click.option('--check-remote', is_flag=True, help='Check remote plantuml.')
+@click.option('-c', '--check', is_flag=True, help='Check usable plantuml.')
 @click.option('-u', '--url', is_flag=True, help='Print url of remote plantuml resource (ignore -L and -R).')
 @click.option('--homepage-url', is_flag=True, help='Print url of remote plantuml editor (ignore -L, -R and -u).')
 @click.option('-t', '--type', 'resource_type', default=PlantumlResourceType.PNG.name,
@@ -95,19 +93,21 @@ CONTEXT_SETTINGS = dict(
               help='Concurrency when running plantuml.', show_default=True)
 @click.argument('sources', nargs=-1, type=click.Path(exists=True, dir_okay=False, readable=True))
 def cli(java: str, plantuml: Optional[str], remote_host: str,
-        use_local: bool, use_remote: bool,
-        check: bool, check_local: bool, check_remote: bool,
+        use_local: bool, use_remote: bool, check: bool,
         url: bool, homepage_url: bool,
         resource_type: str, text: bool, output: Tuple[str], output_dir: str,
         concurrency: Optional[int], sources: Tuple[str]):
     _local_ok, _local = try_plantuml(LocalPlantuml, java=java, plantuml=plantuml)
     _remote_ok, _remote = try_plantuml(RemotePlantuml, host=remote_host)
 
-    if check or check_local or check_remote:  # check plantuml environment
-        print_check_info(
-            _get_check_type(check, check_local, check_remote),
-            _local_ok, _local, _remote_ok, _remote
-        )
+    if check:  # check plantuml environment
+        if use_local:
+            _check_type = PlantumlCheckType.LOCAL
+        elif use_remote:
+            _check_type = PlantumlCheckType.REMOTE
+        else:
+            _check_type = PlantumlCheckType.BOTH
+        print_check_info(_check_type, _local_ok, _local, _remote_ok, _remote)
     elif url or homepage_url:  # print url of remote plantuml
         if homepage_url:
             print_homepage_url(_remote_ok, _remote, sources, concurrency)
