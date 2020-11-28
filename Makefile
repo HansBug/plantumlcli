@@ -10,7 +10,6 @@ unittest:
 	pytest ${TEST_DIR} \
 		--cov-report term-missing --cov=./plantumlcli \
 		--reruns ${RERUNS} --reruns-delay ${RERUNS_DELAY} \
-		--only-rerun requests.exceptions.HTTPError \
 		--durations=10 \
 		-sv -m unittest ${WORKERS_COMMAND}
 
