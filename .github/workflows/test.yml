@@ -84,25 +84,27 @@ jobs:
           java -jar demo/jar/plantuml.${{ matrix.assistant-plantuml-version }}.jar -version
           curl -L "${TEST_PLANTUML_HOST}/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80"
       - name: Run unittest
-        uses: nick-invision/retry@v2
         env:
           PRIMARY_JAR_VERSION: ${{ matrix.plantuml-version }}
           ASSISTANT_JAR_VERSION: ${{ matrix.assistant-plantuml-version }}
           TEST_PLANTUML_HOST: http://localhost:18080
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: |
-            source env.sh
-            pytest ./test --cov-report term-missing --cov=./plantumlcli -sv -m unittest --durations=10
+          RETRY_SLEEP: 5
+        run: |
+          source env.sh
+          make unittest ||
+          (sleep ${RETRY_SLEEP} && make unittest) ||
+          (sleep ${RETRY_SLEEP} && make unittest)
       - name: Run benchmark
         env:
           PRIMARY_JAR_VERSION: ${{ matrix.plantuml-version }}
           ASSISTANT_JAR_VERSION: ${{ matrix.assistant-plantuml-version }}
           TEST_PLANTUML_HOST: http://localhost:18080
+          RETRY_SLEEP: 5
         run: |
           source env.sh
-          pytest ./test -sv -m benchmark --durations=0
+          make benchmark ||
+          (sleep ${RETRY_SLEEP} && make benchmark) ||
+          (sleep ${RETRY_SLEEP} && make benchmark)
       - name: Upload coverage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
