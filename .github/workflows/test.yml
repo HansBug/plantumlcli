@@ -89,11 +89,12 @@ jobs:
           ASSISTANT_JAR_VERSION: ${{ matrix.assistant-plantuml-version }}
           TEST_PLANTUML_HOST: http://localhost:18080
           RETRY_SLEEP: 5
+          WORKERS: 4
         run: |
           source env.sh
-          make unittest ||
-          (sleep ${RETRY_SLEEP} && make unittest) ||
-          (sleep ${RETRY_SLEEP} && make unittest)
+          make unittest WORKERS=${WORKERS} ||
+          (sleep ${RETRY_SLEEP} && make unittest WORKERS=${WORKERS}) ||
+          (sleep ${RETRY_SLEEP} && make unittest WORKERS=${WORKERS})
       - name: Run benchmark
         env:
           PRIMARY_JAR_VERSION: ${{ matrix.plantuml-version }}
