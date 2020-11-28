@@ -299,6 +299,37 @@ class TestEntranceCli:
         assert '认证中心' in result.stdout
         assert 'Handle claim' in result.stdout
 
+        runner = CliRunner()
+        result = runner.invoke(cli, args=['-TR', DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML, DEMO_INVALID_PUML,
+                                          DEMO_CHINESE_PUML, DEMO_LARGE_PUML],
+                               env={'PLANTUML_HOST': TEST_PLANTUML_HOST})
+
+        assert result.exit_code == -2
+        assert 'Alice' in result.stdout
+        assert 'Dialing' in result.stdout
+        assert 'Syntax Error' in result.stdout
+        assert '认证中心' in result.stdout
+        assert 'Handle claim' in result.stdout
+
+        result = runner.invoke(cli, args=['-TL', DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML, DEMO_INVALID_PUML,
+                                          DEMO_CHINESE_PUML, DEMO_LARGE_PUML],
+                               env={'PLANTUML_JAR': PRIMARY_JAR_PATH})
+
+        assert result.exit_code == -2
+        assert 'Alice' in result.stdout
+        assert 'Dialing' in result.stdout
+        assert ('No diagram found' in result.stdout) or ('No expected file found' in result.stdout)
+        assert '认证中心' in result.stdout
+        assert 'Handle claim' in result.stdout
+
+    @mark_select(_helloworld_condition)
+    def test_auto_select_error(self):
+        runner = CliRunner()
+        result = runner.invoke(cli, args=['-T', DEMO_HELLOWORLD_PUML],
+                               env={'PLANTUML_HOST': 'socks5://this-is-an-invalid-host'})
+
+        assert result.exit_code != 0
+
 
 if __name__ == "__main__":
     pytest.main([os.path.abspath(__file__)])

@@ -26,7 +26,7 @@ def _select_plantuml(
         elif remote_ok:
             plantuml = remote
         else:
-            raise RuntimeError('No plantuml available.')
+            plantuml = RuntimeError('No plantuml available.')
 
     if isinstance(plantuml, Plantuml):
         return plantuml
