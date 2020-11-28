@@ -7,7 +7,7 @@ from plantumlcli.entrance import cli
 from plantumlcli.utils import all_func
 from ..test import unittest, PRIMARY_JAR_PATH, is_file_func, mark_select, DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML, \
     DEMO_CHINESE_PUML, DEMO_LARGE_PUML, DEMO_INVALID_PUML, TEST_PLANTUML_HOST, exist_func, DEMO_HELLOWORLD_PUML_ABS, \
-    DEMO_CHINESE_PUML_ABS, DEMO_LARGE_PUML_ABS, DEMO_COMMON_PUML_ABS
+    DEMO_CHINESE_PUML_ABS, DEMO_LARGE_PUML_ABS, DEMO_COMMON_PUML_ABS, DEMO_INVALID_PUML_ABS
 
 _primary_jar_condition = is_file_func(PRIMARY_JAR_PATH)
 _helloworld_condition = is_file_func(DEMO_HELLOWORLD_PUML)
@@ -416,6 +416,18 @@ class TestEntranceCli:
                                          DEMO_HELLOWORLD_PUML_ABS])
 
             assert result.exit_code != 0
+
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['-t', 'eps', '-o', 'new_file.eps', '-o', 'new_file_2.eps', '-o',
+                                         'new_file_3.eps', DEMO_HELLOWORLD_PUML_ABS, DEMO_INVALID_PUML_ABS,
+                                         DEMO_COMMON_PUML_ABS])
+
+            assert result.exit_code != 0
+            assert os.path.exists('new_file.eps')
+            assert (self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize('new_file.eps')
+                    < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2)
+            assert not os.path.exists('new_file_2.eps')
+            assert not os.path.exists('new_file_3.eps')
 
     @mark_select(_helloworld_condition)
     def test_auto_select_error(self):
