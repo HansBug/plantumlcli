@@ -53,6 +53,7 @@ setup(
     project_urls={
         'Documentation': 'https://github.com/HansBug/plantumlcli/blob/main/README.md',
         'Source': 'https://github.com/HansBug/plantumlcli',
+        "Issue tracker": "https://github.com/HansBug/plantumlcli/issues",
     },
     entry_points={
         'console_scripts': [
