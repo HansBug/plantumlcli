@@ -130,6 +130,7 @@ jobs:
     name: Publish to test pypi
     needs: test
     runs-on: ${{ matrix.os }}
+    if: ${{ github.repository == 'HansBug/plantumlcli' }}
     strategy:
       matrix:
         os:
