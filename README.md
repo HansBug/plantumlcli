@@ -109,7 +109,27 @@ if __name__ == "__main__":
 
 ```
 
+## Contributing
 
+Thank you for considering contributing to plantumlcli!
 
-TODO: Add some sort of emmmm...., conclusion, here
+The contribution guide will be completed soon after. (TODO: complete contribution guide)
+
+## Links
+
+Github: [https://github.com/HansBug/plantumlcli](https://github.com/HansBug/plantumlcli)
+
+Documentation(just readme yet, will be written soon): [https://github.com/HansBug/plantumlcli/blob/main/README.md](https://github.com/HansBug/plantumlcli/blob/main/README.md)
+
+Issue Tracker: [https://github.com/HansBug/plantumlcli/issues](https://github.com/HansBug/plantumlcli/issues)
+
+Pypi: [https://test.pypi.org/project/plantumlcli/](https://test.pypi.org/project/plantumlcli/)
+
+## Change log
+
+### Version 0.0.1
+
+Released 2020-11-29
+
+* The first official `plantumlcli` version, cheers!!! :beers:
 
