@@ -2,8 +2,7 @@ name: Package Release
 
 on:
   release:
-    types:
-      - published
+    types: [ published ]
 
 jobs:
   release:
