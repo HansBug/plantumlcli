@@ -82,6 +82,34 @@ plantumlcli -u helloworld.puml common.puml  # get png URL of the 2 puml files (o
 
 ## Using from python
 
-(not complete yet)
+You can also use plantumlcli in python source code by `import`
 
-TODO : Complete this part, make some examples
+```python
+# environment variables
+# PLANTUML_JAR=/path/to/plantuml.jar
+# PLANTUML_HOST=https://plantuml.example.com
+
+from pathlib import Path
+from plantumlcli import LocalPlantuml, RemotePlantuml
+
+if __name__ == "__main__":
+    code = Path('source.puml').read_text()
+
+    local = LocalPlantuml.autoload()
+    print(local.dump_txt(code))                           # print text graph of code
+    local.dump('/my/path/source_local.png', 'png', code)  # save png to /my/path/source_local.png
+    local.dump('/my/path/source_local.eps', 'eps', code)  # save eps to /my/path/source_local.eps
+
+    remote = RemotePlantuml.autoload()
+    print(remote.dump_txt(code))                            # print text graph of code
+    remote.dump('/my/path/source_remote.png', 'png', code)  # save png to /my/path/source_remote.png
+    remote.dump('/my/path/source_remote.eps', 'eps', code)  # save eps to /my/path/source_remote.eps
+    print(remote.get_url('png', code))                      # get png url from remote host
+    print(remote.get_homepage_url(code))                    # get online editor's url from remote host
+
+```
+
+
+
+TODO: Add some sort of emmmm...., conclusion, here
+
