@@ -102,7 +102,8 @@ def _get_test_class(version: str, path: str):
             assert plantuml.test()
 
         _EXPECTED_TXT_LENGTH_FOR_HELLOWORLD = 224
-        _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD = 2211
+        _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 = 2211
+        _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 = 3020
         _EXPECTED_SVG_LENGTH_FOR_HELLOWORLD = 2771
         _EXPECTED_EPS_LENGTH_FOR_HELLOWORLD = 11926
 
@@ -136,8 +137,10 @@ def _get_test_class(version: str, path: str):
 
             _data = plantuml.dump_binary('png', code)
             assert isinstance(_data, bytes)
-            assert self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 0.8 < len(
-                _data) < self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 1.2
+            assert (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 0.8 < len(_data) <
+                    self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 1.2) or \
+                   (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 0.8 < len(_data) <
+                    self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 1.2)
 
         @mark_select(_helloworld_condition)
         def test_dump_binary_svg(self):
@@ -178,8 +181,10 @@ def _get_test_class(version: str, path: str):
             with NamedTemporaryFile() as file:
                 plantuml.dump(file.name, 'png', code)
                 assert os.path.exists(file.name)
-                assert self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
-                    file.name) < self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD * 1.2
+                assert (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 0.8 < os.path.getsize(file.name) <
+                        self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 1.2) or \
+                       (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 0.8 < os.path.getsize(file.name) <
+                        self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 1.2)
 
         @mark_select(_helloworld_condition)
         def test_dump_file_svg(self):
