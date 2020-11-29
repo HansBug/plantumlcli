@@ -42,20 +42,22 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 20
-      - name: Checkout demo code
-        uses: actions/checkout@v2
-        with:
-          repository: HansBug/plantumlcli-testfile
-          path: demo
-          fetch-depth: 20
       - name: Set up system dependences on linux
         if: ${{ runner.os == 'Linux' }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y tree cloc wget curl make
+          sudo apt-get install -y tree cloc wget curl make tar
           sudo apt-get install -y graphviz
           sudo dot -c
           sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
+      - name: Load testfile
+        env:
+          TESTFILE_VERSION: 0.0.1
+        run: |
+          curl -LJ -o testfile.tar.gz 'https://github.com/HansBug/plantumlcli-testfile/archive/v${TESTFILE_VERSION}.tar.gz'
+          tar -zxvf testfile.tar.gz
+          mv plantumlcli-testfile-${TESTFILE_VERSION} demo
+          rm -rf testfile.tar.gz
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
