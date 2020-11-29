@@ -54,7 +54,7 @@ jobs:
         env:
           TESTFILE_VERSION: 0.0.1
         run: |
-          curl -LJ -o testfile.tar.gz 'https://github.com/HansBug/plantumlcli-testfile/archive/v${TESTFILE_VERSION}.tar.gz'
+          curl -LJ -o testfile.tar.gz "https://github.com/HansBug/plantumlcli-testfile/archive/v${TESTFILE_VERSION}.tar.gz"
           tar -zxvf testfile.tar.gz
           mv plantumlcli-testfile-${TESTFILE_VERSION} demo
           rm -rf testfile.tar.gz
