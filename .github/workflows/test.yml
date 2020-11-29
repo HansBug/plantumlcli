@@ -1,6 +1,8 @@
 name: Code Test
 
-on: [ push, pull_request ]
+on:
+  - push
+  - pull_request
 
 jobs:
   test:
@@ -105,7 +107,7 @@ jobs:
       - name: Upload coverage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: ${{ format('{0}-{1}-{2}-{3}', runner.os, matrix.python-version, matrix.java-version, matrix.assistant-plantuml-version) }}
+          COVERALLS_FLAG_NAME: ${{ format('{0}-{1}-{2}-{3}', matrix.os, matrix.python-version, matrix.java-version, matrix.assistant-plantuml-version) }}
           COVERALLS_PARALLEL: true
         run: |
           pip3 install --upgrade coveralls
