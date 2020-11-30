@@ -127,6 +127,12 @@ Pypi: [https://test.pypi.org/project/plantumlcli/](https://test.pypi.org/project
 
 ## Change log
 
+### Version 0.0.2
+
+Released 2020-11-30
+
+* Fix a bug on windows platform, issue: [https://github.com/HansBug/plantumlcli/issues/1](https://github.com/HansBug/plantumlcli/issues/1)
+
 ### Version 0.0.1
 
 Released 2020-11-29
