@@ -133,12 +133,12 @@ class TestEntranceCli:
         assert _lines[1] == 'http://www.plantuml.com/plantuml/uml/LP2n3eCm34HtVuN5M8aVw50XjKlNhbM7a1Y86k88WX1_' \
                             'NmS8RQKCbtldd9LgZ6g8K--WiuQG-X0ND3JgmOPesGD8818MT-EeG3MY5P7DX_MjdDKVDftHpIgNaTbqH' \
                             'bVb3gGt3V0ylR2yhA_Z6GFFDA3KhtVn4pxife43xBK2hTVS9vdUXEnBPEz8yrQ_SGhVwNqpGJp5be_fxF' \
-                            'zDruJAZx81cT_0lhBdciq2aFEbuTb_SQV4a-gAl4dV_G4%3D'
+                            'zDruJAZx81cT_0lhBdciq2aFEbuTb_SQV4a-gAl4dV_G4%253D'
         assert _lines[2] == 'http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuNe-PSMpZkqAkdOABzOjUR6-yScEjK_t' \
                             'DrifF9-v--dUgSyczpxPEuSBMGgazFcUoK_Nph1I01BFfkpJo4wjj2t9pqxDqyuiq2bBp2bDXN0rmIGNp' \
                             '0uRNHGx5AoWt6ST4vvspN-nVyhJsVCWEd0vwicExcTh5hvOj__bz7LFbsnvsRpYsOHTJtSi0-k2A4LrAz' \
                             '1Ac5kH7VcYR_lJ_caGkvwsRdkoUzgpERrFknQYEn7imwTpLZpPCUNPWeKlL_L0dFgqO-QBxPjVx5tpj6C' \
-                            '3nAalrcz_jh7f-QmMPDDGZGO56rWjq1lx5pvhNC_ba9gN0ee200%3D%3D'
+                            '3nAalrcz_jh7f-QmMPDDGZGO56rWjq1lx5pvhNC_ba9gN0ee200%253D%253D'
         assert _lines[3] == 'http://www.plantuml.com/plantuml/uml/fLLDRzim33rFlqBeXc4Ru0uOi4kH1VNIjScXdR40EVN2' \
                             'saoYrQ8CIMvNRFtle-puAqk3fiiX2KNoYO-ao5FdmVfIvyBTAYh0WfOMKm-qod4qki4rt2bZnsFvMxoof' \
                             'gHiOYoXbPy-YqVX2giyoZStYJKfEYT_WZq1cwwL1eyVRqgdY8-ZebQtzZ17UwTItBA7eiXL2buPYbnjqR' \
@@ -149,7 +149,7 @@ class TestEntranceCli:
                             'LQ6yg_HxtOfvo99lPQvkPeqz2uRnqC--VCf6NmlwPB85XX_N_-u3pggZPdbzLxxeROdW9V8CzNoAzfykD' \
                             'o0CBoFo1FeamvaVAjZE-1HqrYsAGQENts5UWqJk9dXpO0FLS4bAeGwIxSynsuMnqGid9S5iT_nksZwvyr' \
                             'AHU1-EPiTuk8YaLZigFGeWgdmQsBBKIEAwHCvhZqujilq0LpN5gZfLypsJYi65TQ9idB0nnAvykCfzoxx' \
-                            'mNI1I_3ulsnc2EAB_mHlQadJvhD9vlDjp5f7uOyaRt59PjjrvXrITiox3OSXgKMuXUd_1Ks-5y%3D'
+                            'mNI1I_3ulsnc2EAB_mHlQadJvhD9vlDjp5f7uOyaRt59PjjrvXrITiox3OSXgKMuXUd_1Ks-5y%253D'
 
         result = runner.invoke(cli, args=['--homepage-url', DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML,
                                           DEMO_CHINESE_PUML, DEMO_LARGE_PUML],
@@ -162,12 +162,12 @@ class TestEntranceCli:
         assert _lines[1] == 'http://this-is-a-host/uml/LP2n3eCm34HtVuN5M8aVw50XjKlNhbM7a1Y86k88WX1_' \
                             'NmS8RQKCbtldd9LgZ6g8K--WiuQG-X0ND3JgmOPesGD8818MT-EeG3MY5P7DX_MjdDKVDftHpIgNaTbqH' \
                             'bVb3gGt3V0ylR2yhA_Z6GFFDA3KhtVn4pxife43xBK2hTVS9vdUXEnBPEz8yrQ_SGhVwNqpGJp5be_fxF' \
-                            'zDruJAZx81cT_0lhBdciq2aFEbuTb_SQV4a-gAl4dV_G4%3D'
+                            'zDruJAZx81cT_0lhBdciq2aFEbuTb_SQV4a-gAl4dV_G4%253D'
         assert _lines[2] == 'http://this-is-a-host/uml/SoWkIImgAStDuNe-PSMpZkqAkdOABzOjUR6-yScEjK_t' \
                             'DrifF9-v--dUgSyczpxPEuSBMGgazFcUoK_Nph1I01BFfkpJo4wjj2t9pqxDqyuiq2bBp2bDXN0rmIGNp' \
                             '0uRNHGx5AoWt6ST4vvspN-nVyhJsVCWEd0vwicExcTh5hvOj__bz7LFbsnvsRpYsOHTJtSi0-k2A4LrAz' \
                             '1Ac5kH7VcYR_lJ_caGkvwsRdkoUzgpERrFknQYEn7imwTpLZpPCUNPWeKlL_L0dFgqO-QBxPjVx5tpj6C' \
-                            '3nAalrcz_jh7f-QmMPDDGZGO56rWjq1lx5pvhNC_ba9gN0ee200%3D%3D'
+                            '3nAalrcz_jh7f-QmMPDDGZGO56rWjq1lx5pvhNC_ba9gN0ee200%253D%253D'
         assert _lines[3] == 'http://this-is-a-host/uml/fLLDRzim33rFlqBeXc4Ru0uOi4kH1VNIjScXdR40EVN2' \
                             'saoYrQ8CIMvNRFtle-puAqk3fiiX2KNoYO-ao5FdmVfIvyBTAYh0WfOMKm-qod4qki4rt2bZnsFvMxoof' \
                             'gHiOYoXbPy-YqVX2giyoZStYJKfEYT_WZq1cwwL1eyVRqgdY8-ZebQtzZ17UwTItBA7eiXL2buPYbnjqR' \
@@ -178,7 +178,7 @@ class TestEntranceCli:
                             'LQ6yg_HxtOfvo99lPQvkPeqz2uRnqC--VCf6NmlwPB85XX_N_-u3pggZPdbzLxxeROdW9V8CzNoAzfykD' \
                             'o0CBoFo1FeamvaVAjZE-1HqrYsAGQENts5UWqJk9dXpO0FLS4bAeGwIxSynsuMnqGid9S5iT_nksZwvyr' \
                             'AHU1-EPiTuk8YaLZigFGeWgdmQsBBKIEAwHCvhZqujilq0LpN5gZfLypsJYi65TQ9idB0nnAvykCfzoxx' \
-                            'mNI1I_3ulsnc2EAB_mHlQadJvhD9vlDjp5f7uOyaRt59PjjrvXrITiox3OSXgKMuXUd_1Ks-5y%3D'
+                            'mNI1I_3ulsnc2EAB_mHlQadJvhD9vlDjp5f7uOyaRt59PjjrvXrITiox3OSXgKMuXUd_1Ks-5y%253D'
 
     @mark_select(_helloworld_condition)
     def test_homepage_url_error(self):
