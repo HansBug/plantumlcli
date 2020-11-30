@@ -44,3 +44,7 @@ export DEMO_COMMON_PUML="${DEMO_UML_PATH}/common.puml"
 export DEMO_CHINESE_PUML="${DEMO_UML_PATH}/chinese.puml"
 export DEMO_LARGE_PUML="${DEMO_UML_PATH}/large.puml"
 export DEMO_INVALID_PUML="${DEMO_UML_PATH}/invalid.puml"
+
+# Remove default envs
+export PLANTUML_HOST=""
+export PLANTUML_JAR=""
