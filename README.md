@@ -5,7 +5,7 @@
 [![Code Test](https://github.com/HansBug/plantumlcli/workflows/Code%20Test/badge.svg)](https://github.com/HansBug/plantumlcli/actions?query=workflow%3A%22Code+Test%22)
 [![Coverage Status](https://coveralls.io/repos/github/HansBug/plantumlcli/badge.svg?branch=main)](https://coveralls.io/github/HansBug/plantumlcli?branch=main)
 
-Python cli and package interface for local and remote plantuml
+An easy-to-use plantuml cli for everyone.
 
 ## Install
 
@@ -49,7 +49,7 @@ plantumlcli -cR  # check remote environment only
 In default, no local plantuml jar can be used, the remote host is set to the official one (http://www.plantuml.com/plantuml). But don't worry, you can specify your plantuml jar file or remote host by environment variables or command lines.
 
 ```bash
-plantumlcli -c                                             # local not okay, remote is okay
+plantumlcli -c                                             # local not okay, remote okay
 PLANTUML_HOST=http://plantuml.example.com plantumlcli -cR  # remote okay
 plantumlcli -cR -r http://plantuml.example.com             # remote okay
 PLANTUML_JAR=/my/path/plantuml.jar plantumlcli -cL         # local okay
