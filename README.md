@@ -12,7 +12,7 @@ An easy-to-use plantuml cli for everyone.
 Install from official pypi
 
 ```bash
-pip install plantumlcli  # not online yet, do not use
+pip install plantumlcli
 ```
 
 Install from source code
@@ -21,6 +21,8 @@ Install from source code
 git clone https://github.com/HansBug/plantumlcli
 cd plantumlcli && pip install .
 ```
+
+Python 3.5+ is required, pypy is also tested to be okay.
 
 ## Using with cli
 
