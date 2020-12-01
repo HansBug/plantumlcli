@@ -7,7 +7,7 @@ on:
     - cron:  '0 1 * * *'
 
 jobs:
-  build:
+  sync:
     runs-on: ubuntu-latest
     steps:
     - name: Mirror the Github organization repos to Gitee
