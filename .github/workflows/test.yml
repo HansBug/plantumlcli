@@ -119,7 +119,8 @@ jobs:
     strategy:
       matrix:
         os:
-          - 'windows-latest'
+#          - 'windows-latest'
+          - 'macos-latest'
         python-version:
 #          - '3.5'
 #          - '3.6'
@@ -147,6 +148,12 @@ jobs:
         run: |
           choco install tree cloc wget curl make
           choco install graphviz
+          dot -c
+      - name: Set up system dependences on windows
+        if: ${{ runner.os == 'macOS' }}
+        run: |
+          brew install tree cloc wget curl make
+          brew install graphviz
           dot -c
       - name: Load testfile
         env:
