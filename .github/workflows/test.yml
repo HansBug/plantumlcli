@@ -228,7 +228,9 @@ jobs:
 
   test_publish:
     name: Publish to test pypi
-    needs: test
+    needs:
+      - test_for_linux
+      - test_for_windows_and_macos
     runs-on: ${{ matrix.os }}
     if: ${{ github.repository == 'HansBug/plantumlcli' }}
     strategy:
