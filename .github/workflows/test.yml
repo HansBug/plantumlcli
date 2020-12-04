@@ -6,19 +6,19 @@ on:
 
 jobs:
   test_for_linux:
-    name: Run unit test and benchmark on linux
+    name: Code test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os:
-#          - 'ubuntu-16.04'
-#          - 'ubuntu-18.04'
+          #          - 'ubuntu-16.04'
+          #          - 'ubuntu-18.04'
           - 'ubuntu-20.04'
         python-version:
-#          - '3.5'
-#          - '3.6'
-#          - '3.7'
-#          - '3.8'
+          #          - '3.5'
+          #          - '3.6'
+          #          - '3.7'
+          #          - '3.8'
           - '3.9'
           - 'pypy3'
         java-version:
@@ -113,19 +113,19 @@ jobs:
           coveralls
 
 
-  test_for_windows_and_macos:
-    name: Run unit test and benchmark on windows and macos
+  test_for_macos:
+    name: Code test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os:
-#          - 'windows-latest'
+          #          - 'windows-latest'
           - 'macos-latest'
         python-version:
-#          - '3.5'
-#          - '3.6'
-#          - '3.7'
-#          - '3.8'
+          #          - '3.5'
+          #          - '3.6'
+          #          - '3.7'
+          #          - '3.8'
           - '3.9'
           - 'pypy3'
         java-version:
@@ -143,12 +143,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 20
-      - name: Set up system dependences on windows
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          choco install tree cloc wget curl make
-          choco install graphviz
-          dot -c
       - name: Set up system dependences on macos
         if: ${{ runner.os == 'macOS' }}
         run: |
@@ -216,7 +210,7 @@ jobs:
     name: Finish coveralls
     needs:
       - test_for_linux
-      - test_for_windows_and_macos
+      - test_for_macos
     runs-on: ubuntu-latest
     container: python:3-slim
     steps:
@@ -231,7 +225,7 @@ jobs:
     name: Publish to test pypi
     needs:
       - test_for_linux
-      - test_for_windows_and_macos
+      - test_for_macos
     runs-on: ${{ matrix.os }}
     if: ${{ github.repository == 'HansBug/plantumlcli' }}
     strategy:
