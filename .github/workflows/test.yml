@@ -149,12 +149,12 @@ jobs:
           choco install tree cloc wget curl make
           choco install graphviz
           dot -c
-      - name: Set up system dependences on windows
+      - name: Set up system dependences on macos
         if: ${{ runner.os == 'macOS' }}
         run: |
           brew install tree cloc wget curl make
           brew install graphviz
-          dot -c
+          sudo dot -c
       - name: Load testfile
         env:
           TESTFILE_VERSION: 0.0.1
