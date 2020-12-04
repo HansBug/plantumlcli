@@ -3,11 +3,11 @@ from unittest.mock import Mock
 
 import pytest
 from click.testing import CliRunner
-from requests import HTTPError
-
 from plantumlcli.entrance import cli
 from plantumlcli.models import Plantuml
 from plantumlcli.utils import all_func
+from requests import HTTPError
+
 from ..test import unittest, PRIMARY_JAR_PATH, is_file_func, mark_select, DEMO_HELLOWORLD_PUML, DEMO_COMMON_PUML, \
     DEMO_CHINESE_PUML, DEMO_LARGE_PUML, DEMO_INVALID_PUML, TEST_PLANTUML_HOST, exist_func, DEMO_HELLOWORLD_PUML_ABS, \
     DEMO_CHINESE_PUML_ABS, DEMO_LARGE_PUML_ABS, DEMO_COMMON_PUML_ABS, DEMO_INVALID_PUML_ABS
@@ -353,7 +353,7 @@ class TestEntranceCli:
     _EXPECTED_EPS_LENGTH_FOR_CHINESE = 93907
     _EXPECTED_EPS_LENGTH_FOR_LARGE = 100685
 
-    @mark_select(all_func(_all_puml_condition, _primary_jar_condition, _test_host_condition))
+    @mark_select(all_func(_all_puml_condition, _primary_jar_condition))
     def test_file_dump(self):
         runner = CliRunner()
 
@@ -426,7 +426,7 @@ class TestEntranceCli:
             assert (self._EXPECTED_EPS_LENGTH_FOR_LARGE * 0.8 < os.path.getsize('new/path/new_file_4.eps')
                     < self._EXPECTED_EPS_LENGTH_FOR_LARGE * 1.2)
 
-    @mark_select(all_func(_all_with_invalid_condition, _primary_jar_condition, _test_host_condition))
+    @mark_select(all_func(_all_with_invalid_condition, _primary_jar_condition))
     def test_file_dump_error(self):
         runner = CliRunner()
 
