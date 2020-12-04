@@ -125,7 +125,9 @@ Documentation(just readme yet, will be written soon): [https://github.com/HansBu
 
 Issue Tracker: [https://github.com/HansBug/plantumlcli/issues](https://github.com/HansBug/plantumlcli/issues)
 
-Pypi: [https://test.pypi.org/project/plantumlcli/](https://test.pypi.org/project/plantumlcli/)
+Pypi: [https://pypi.org/project/plantumlcli/](https://pypi.org/project/plantumlcli/)
+
+Test pypi(pre-released versions can be found here): [https://test.pypi.org/project/plantumlcli/](https://test.pypi.org/project/plantumlcli/)
 
 ## Change log
 
