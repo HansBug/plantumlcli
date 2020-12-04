@@ -14,7 +14,6 @@ jobs:
           - 'ubuntu-16.04'
           - 'ubuntu-18.04'
           - 'ubuntu-20.04'
-          - 'macos-latest'
         python-version:
           - '3.5'
           - '3.6'
@@ -51,12 +50,6 @@ jobs:
           sudo apt-get install -y graphviz
           sudo dot -c
           sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
-      - name: Set up system dependences on windows
-        if: ${{ runner.os == 'macOS' }}
-        run: |
-          brew install tree cloc wget curl make
-          brew install graphviz
-          dot -c
       - name: Load testfile
         env:
           TESTFILE_VERSION: 0.0.1
