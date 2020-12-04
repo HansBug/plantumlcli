@@ -11,14 +11,14 @@ jobs:
     strategy:
       matrix:
         os:
-          - 'ubuntu-16.04'
-          - 'ubuntu-18.04'
+#          - 'ubuntu-16.04'
+#          - 'ubuntu-18.04'
           - 'ubuntu-20.04'
         python-version:
-          - '3.5'
-          - '3.6'
-          - '3.7'
-          - '3.8'
+#          - '3.5'
+#          - '3.6'
+#          - '3.7'
+#          - '3.8'
           - '3.9'
           - 'pypy3'
         java-version:
@@ -54,10 +54,7 @@ jobs:
         env:
           TESTFILE_VERSION: 0.0.1
         run: |
-          curl -LJ -o testfile.tar.gz "https://github.com/HansBug/plantumlcli-testfile/archive/v${TESTFILE_VERSION}.tar.gz"
-          tar -zxvf testfile.tar.gz
-          mv plantumlcli-testfile-${TESTFILE_VERSION} demo
-          rm -rf testfile.tar.gz
+          git clone "https://github.com/HansBug/plantumlcli-testfile" "demo"
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -124,10 +121,10 @@ jobs:
         os:
           - 'windows-latest'
         python-version:
-          - '3.5'
-          - '3.6'
-          - '3.7'
-          - '3.8'
+#          - '3.5'
+#          - '3.6'
+#          - '3.7'
+#          - '3.8'
           - '3.9'
           - 'pypy3'
         java-version:
@@ -155,10 +152,7 @@ jobs:
         env:
           TESTFILE_VERSION: 0.0.1
         run: |
-          curl -LJ -o testfile.tar.gz "https://github.com/HansBug/plantumlcli-testfile/archive/v${TESTFILE_VERSION}.tar.gz"
-          tar -zxvf testfile.tar.gz
-          mv plantumlcli-testfile-${TESTFILE_VERSION} demo
-          rm -rf testfile.tar.gz
+          git clone "https://github.com/HansBug/plantumlcli-testfile" "demo"
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
