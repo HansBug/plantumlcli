@@ -9,6 +9,7 @@ jobs:
     name: Code test
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os:
           - 'ubuntu-latest'
@@ -101,20 +102,21 @@ jobs:
         run: |
           source env.sh
           make benchmark
-      - name: Upload coverage
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: ${{ format('{0}-{1}-{2}-{3}', matrix.os, matrix.python-version, matrix.java-version, matrix.assistant-plantuml-version) }}
-          COVERALLS_PARALLEL: true
-        run: |
-          pip3 install --upgrade coveralls
-          coveralls
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
 
 
   test_for_macos:
     name: Code test
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os:
           - 'macos-latest'
@@ -194,66 +196,11 @@ jobs:
         run: |
           source env.sh
           make benchmark
-      - name: Upload coverage
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_FLAG_NAME: ${{ format('{0}-{1}-{2}-{3}', matrix.os, matrix.python-version, matrix.java-version, matrix.assistant-plantuml-version) }}
-          COVERALLS_PARALLEL: true
-        run: |
-          pip3 install --upgrade coveralls
-          coveralls
-
-  coveralls:
-    name: Finish coveralls
-    needs:
-      - test_for_linux
-      - test_for_macos
-    runs-on: ubuntu-latest
-    container: python:3-slim
-    steps:
-      - name: Finished
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          pip3 install --upgrade coveralls
-          coveralls --finish
-
-  test_publish:
-    name: Publish to test pypi
-    needs:
-      - test_for_linux
-      - test_for_macos
-    runs-on: ${{ matrix.os }}
-    if: ${{ github.repository == 'HansBug/plantumlcli' }}
-    strategy:
-      matrix:
-        os:
-          - 'ubuntu-latest'
-        python-version:
-          - '3.8'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
         with:
-          fetch-depth: 20
-      - name: Set up python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Set up python dependences
-        run: |
-          pip install --upgrade pip
-          pip install --upgrade flake8 setuptools wheel twine
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f requirements-test.txt ]; then pip install -r requirements-test.txt; fi
-          pip install --upgrade build
-      - name: Build packages
-        run: |
-          python -m build --sdist --wheel --outdir dist/
-      - name: Publish distribution 📦 to Test PyPI
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-          skip_existing: true
-          password: ${{ secrets.TEST_PYPI_PASSWORD }}
-          repository_url: https://test.pypi.org/legacy/
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false

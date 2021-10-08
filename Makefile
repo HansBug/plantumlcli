@@ -1,7 +1,15 @@
 WORKERS  ?=
-TEST_DIR ?= ./test
-CI       := $(shell echo ${CI})
 RERUN    ?=
+
+PROJ_DIR := $(shell readlink -f ${CURDIR})
+
+DOC_DIR  := ${PROJ_DIR}/docs
+TEST_DIR := ${PROJ_DIR}/test
+SRC_DIR  := ${PROJ_DIR}/plantumlcli
+
+RANGE_DIR      ?= .
+RANGE_TEST_DIR := ${TEST_DIR}/${RANGE_DIR}
+RANGE_SRC_DIR  := ${SRC_DIR}/${RANGE_DIR}
 
 CI_DEFAULT_RERUNS       := 5
 CI_DEFAULT_RERUNS_DELAY := 10
@@ -10,15 +18,19 @@ DEFAULT_RERUNS_DELAY    := 5
 RERUNS                  ?= $(if ${CI},${CI_DEFAULT_RERUNS},${DEFAULT_RERUNS})
 RERUNS_DELAY            ?= $(if ${CI},${CI_DEFAULT_RERUNS_DELAY},${DEFAULT_RERUNS_DELAY})
 
-WORKERS_COMMAND = $(if ${WORKERS},-n ${WORKERS},)
-RERUN_COMMAND   = $(if ${CI}${RERUN},--reruns ${RERUNS} --reruns-delay ${RERUNS_DELAY},)
+COV_TYPES ?= xml term-missing
+
+test: unittest
 
 unittest:
-	pytest ${TEST_DIR} \
-		--cov-report term-missing --cov=./plantumlcli \
-		${RERUN_COMMAND} \
+	pytest "${RANGE_TEST_DIR}" \
+		-sv -m unittest \
+		$(shell for type in ${COV_TYPES}; do echo "--cov-report=$$type"; done) \
+		--cov="${RANGE_SRC_DIR}" \
+		$(if ${MIN_COVERAGE},--cov-fail-under=${MIN_COVERAGE},) \
+		$(if ${WORKERS},-n ${WORKERS},) \
 		--durations=10 \
-		-sv -m unittest ${WORKERS_COMMAND}
+		$(if ${CI}${RERUN},--reruns ${RERUNS} --reruns-delay ${RERUNS_DELAY},)
 
 benchmark:
-	pytest ${TEST_DIR} -sv -m benchmark -n 1 --durations=0
+	pytest ${RANGE_TEST_DIR} -sv -m benchmark -n 1 --durations=0
