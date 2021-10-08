@@ -99,8 +99,7 @@ class LocalPlantuml(Plantuml):
     def __execute(self, *args) -> Tuple[str, str]:
         return execute(self.__java, '-jar', self.__plantuml, *args, exc=LocalPlantumlExecuteError)
 
-    @classmethod
-    def _check_version(cls, version: str):
+    def _check_version(self, version: str):
         if (not version) or ("plantuml" not in version.lower()):
             raise ValueError("Invalid version of plantuml - {version}.".format(version=repr(version)))
 

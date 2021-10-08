@@ -99,14 +99,21 @@ class RemotePlantuml(Plantuml):
     def __get_homepage(self):
         return self.__request('')
 
-    @classmethod
-    def _check_version(cls, version: str):
-        if (not version) or ("plantuml" not in version.lower()) or ("version" not in version.lower()):
-            raise ValueError("Invalid version information from homepage - {info}.".format(info=repr(version)))
+    def _is_official(self):
+        return self.__host.hostname in ('plantuml.com', 'www.plantuml.com') and \
+               len(self.__host.path.segments) > 0 and self.__host.path.segments[0] == 'plantuml'
+
+    def _check_version(self, version: str):
+        if not self._is_official():
+            if (not version) or ("plantuml" not in version.lower()) or ("version" not in version.lower()):
+                raise ValueError("Invalid version information from homepage - {info}.".format(info=repr(version)))
 
     def _get_version(self) -> str:
-        r = self.__get_homepage()
-        return PyQuery(r.content.decode()).find('#footer').text().strip()
+        if not self._is_official():
+            r = self.__get_homepage()
+            return PyQuery(r.content.decode()).find('#footer').text().strip()
+        else:
+            return 'Official Site'
 
     def __get_uml_url(self, type_: str, code: str) -> str:
         return self.__request_url(str(URLPath.join_segments([type_, self.__compress(code)], absolute=False)))

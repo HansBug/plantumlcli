@@ -55,8 +55,7 @@ class Plantuml(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    @classmethod
-    def _check_version(cls, version: str):
+    def _check_version(self, version: str):
         pass
 
     @abstractmethod
