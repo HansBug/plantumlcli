@@ -1,3 +1,5 @@
+.PHONY: docs pdocs test unittest benchmark
+
 WORKERS  ?=
 RERUN    ?=
 
@@ -34,3 +36,8 @@ unittest:
 
 benchmark:
 	pytest ${RANGE_TEST_DIR} -sv -m benchmark -n 1 --durations=0
+
+docs:
+	$(MAKE) -C "${DOC_DIR}" build
+pdocs:
+	$(MAKE) -C "${DOC_DIR}" prod
