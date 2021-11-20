@@ -119,7 +119,7 @@ class RemotePlantuml(Plantuml):
         return self.__request_url(str(URLPath.join_segments([type_, self.__compress(code)], absolute=False)))
 
     def __get_uml(self, type_: str, code: str) -> bytes:
-        r = self.__request(str(URLPath.join_segments([type_, self.__compress(code)], absolute=False)))
+        r = self.__request("{}/{}".format(type_, self.__compress(code)))
         return r.content
 
     def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
