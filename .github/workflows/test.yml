@@ -1,13 +1,16 @@
 name: Code Test
 
 on:
-  - push
-  - pull_request
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 0 1 * *'
 
 jobs:
   test_for_linux:
     name: Code test
     runs-on: ${{ matrix.os }}
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       fail-fast: false
       matrix:
@@ -23,9 +26,10 @@ jobs:
         java-version:
           - '8'
         plantuml-server-version:
-          - 'jetty-v1.2019.11'
-          - 'jetty-v1.2020.19'
+          - 'latest'
           - 'jetty-v1.2021.14'
+          - 'jetty-v1.2020.19'
+          - 'jetty-v1.2019.11'
         plantuml-version:
           - '1.2021.12'
         assistant-plantuml-version:
