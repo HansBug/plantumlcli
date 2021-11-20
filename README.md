@@ -130,7 +130,9 @@ if __name__ == "__main__":
 
 Thank you for considering contributing to plantumlcli!
 
-The contribution guide will be completed soon after. (TODO: complete contribution guide)
+We appreciate all contributions to improve plantumlcli, both logic and system designs. Please refer to CONTRIBUTING.md for more guides.
+
+And users can join our [slack communication channel](https://join.slack.com/t/hansbug/shared_invite/zt-z3rtyooz-Rf6QZ9eNy6t5vvUGnicfdw), or contact the core developer [HansBug](https://github.com/HansBug) for more detailed discussion.
 
 ## Links
 
@@ -145,6 +147,13 @@ Pypi: [https://pypi.org/project/plantumlcli/](https://pypi.org/project/plantumlc
 Test pypi(pre-released versions can be found here): [https://test.pypi.org/project/plantumlcli/](https://test.pypi.org/project/plantumlcli/)
 
 ## Change log
+
+### Version 0.0.3
+
+Released 2021-10-8
+
+* Fix the problem when using official site.
+* click version requirement changed to >= 7.0, will not conflict with other packages any more.
 
 ### Version 0.0.2
 
