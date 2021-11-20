@@ -22,6 +22,10 @@ jobs:
           - 'pypy3'
         java-version:
           - '8'
+        plantuml-server-version:
+          - 'jetty-v1.2019.11'
+          - 'jetty-v1.2020.19'
+          - 'jetty-v1.2021.14'
         plantuml-version:
           - '1.2021.12'
         assistant-plantuml-version:
@@ -33,7 +37,7 @@ jobs:
 
     services:
       plantuml:
-        image: plantuml/plantuml-server
+        image: plantuml/plantuml-server:${{ matrix.plantuml-server-version }}
         ports:
           - 18080:8080
 
