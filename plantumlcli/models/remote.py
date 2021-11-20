@@ -7,7 +7,6 @@ from typing import Optional, Mapping, Any, Union
 import requests
 from pyquery import PyQuery
 from urlobject import URLObject
-from urlobject.path import URLPath
 
 from .base import Plantuml, PlantumlResourceType
 
@@ -115,11 +114,14 @@ class RemotePlantuml(Plantuml):
         else:
             return 'Official Site'
 
+    def __get_uml_path(self, type_: str, code: str):
+        return "{}/{}".format(type_, self.__compress(code))
+
     def __get_uml_url(self, type_: str, code: str) -> str:
-        return self.__request_url(str(URLPath.join_segments([type_, self.__compress(code)], absolute=False)))
+        return self.__request_url(self.__get_uml_path(type_, code))
 
     def __get_uml(self, type_: str, code: str) -> bytes:
-        r = self.__request("{}/{}".format(type_, self.__compress(code)))
+        r = self.__request(self.__get_uml_path(type_, code))
         return r.content
 
     def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
