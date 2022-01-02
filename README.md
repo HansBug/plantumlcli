@@ -37,7 +37,7 @@ git clone https://github.com/HansBug/plantumlcli
 cd plantumlcli && pip install .
 ```
 
-Python 3.5+ is required, pypy is also tested to be okay.
+Python 3.6+ is required, pypy is also tested to be okay.
 
 ## Using with cli
 

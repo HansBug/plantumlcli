@@ -1,7 +1,8 @@
 .PHONY: docs pdocs test unittest benchmark
 
-WORKERS  ?=
-RERUN    ?=
+RERUN       ?=
+RERUN_DELAY ?=
+TIMEOUT     ?=
 
 PROJ_DIR := $(shell readlink -f ${CURDIR})
 
@@ -13,12 +14,20 @@ RANGE_DIR      ?= .
 RANGE_TEST_DIR := ${TEST_DIR}/${RANGE_DIR}
 RANGE_SRC_DIR  := ${SRC_DIR}/${RANGE_DIR}
 
-CI_DEFAULT_RERUNS       := 5
-CI_DEFAULT_RERUNS_DELAY := 10
-DEFAULT_RERUNS          := 3
-DEFAULT_RERUNS_DELAY    := 5
-RERUNS                  ?= $(if ${CI},${CI_DEFAULT_RERUNS},${DEFAULT_RERUNS})
-RERUNS_DELAY            ?= $(if ${CI},${CI_DEFAULT_RERUNS_DELAY},${DEFAULT_RERUNS_DELAY})
+CI_DEFAULT_RERUN          := 5
+LOCAL_DEFAULT_RERUN       := 3
+DEFAULT_RERUN             ?= $(if ${CI},${CI_DEFAULT_RERUN},${LOCAL_DEFAULT_RERUN})
+ACTUAL_RERUN              := $(if ${RERUN},${RERUN},${DEFAULT_RERUN})
+
+CI_DEFAULT_RERUN_DELAY    := 10
+LOCAL_DEFAULT_RERUN_DELAY := 5
+DEFAULT_RERUN_DELAY       ?= $(if ${CI},${CI_DEFAULT_RERUN_DELAY},${LOCAL_DEFAULT_RERUN_DELAY})
+ACTUAL_RERUN_DELAY        := $(if ${RERUN_DELAY},${RERUN_DELAY},${DEFAULT_RERUN_DELAY})
+
+CI_DEFAULT_TIMEOUT        := 30
+LOCAL_DEFAULT_TIMEOUT     := 15
+DEFAULT_TIMEOUT           ?= $(if ${CI},${CI_DEFAULT_TIMEOUT},${LOCAL_DEFAULT_TIMEOUT})
+ACTUAL_TIMEOUT            := $(if ${TIMEOUT},${TIMEOUT},${DEFAULT_TIMEOUT})
 
 COV_TYPES ?= xml term-missing
 
@@ -30,12 +39,12 @@ unittest:
 		$(shell for type in ${COV_TYPES}; do echo "--cov-report=$$type"; done) \
 		--cov="${RANGE_SRC_DIR}" \
 		$(if ${MIN_COVERAGE},--cov-fail-under=${MIN_COVERAGE},) \
-		$(if ${WORKERS},-n ${WORKERS},) \
 		--durations=10 \
-		$(if ${CI}${RERUN},--reruns ${RERUNS} --reruns-delay ${RERUNS_DELAY},)
+		$(if ${CI}${ACTUAL_RERUN},--reruns ${ACTUAL_RERUN} --reruns-delay ${ACTUAL_RERUN_DELAY},) \
+		$(if ${ACTUAL_TIMEOUT},--timeout=${ACTUAL_TIMEOUT},)
 
 benchmark:
-	pytest ${RANGE_TEST_DIR} -sv -m benchmark -n 1 --durations=0
+	pytest ${RANGE_TEST_DIR} -sv -m benchmark --durations=0
 
 docs:
 	$(MAKE) -C "${DOC_DIR}" build

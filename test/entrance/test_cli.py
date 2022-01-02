@@ -253,7 +253,7 @@ class TestEntranceCli:
         assert result.exit_code != 0
 
     @mark_select(_helloworld_condition)
-    def test_concurrency_error(self):
+    def test_concurrency(self):
         runner = CliRunner()
         result = runner.invoke(cli, args=['-u', '-n', '4', DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML,
                                           DEMO_HELLOWORLD_PUML, DEMO_HELLOWORLD_PUML])
