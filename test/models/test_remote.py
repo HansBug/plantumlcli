@@ -1,252 +1,180 @@
 import os
-from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import Optional
-from unittest.mock import Mock
+from typing import Optional, List
+from unittest.mock import patch
 
 import pytest
 from urlobject import URLObject
 
 from plantumlcli.models.remote import OFFICIAL_PLANTUML_HOST, RemotePlantuml, find_plantuml_host_from_env, \
     find_plantuml_host
-from plantumlcli.utils import all_func
-from ..test import exist_func, mark_select, unittest, DEMO_HELLOWORLD_PUML, is_file_func, TEST_PLANTUML_HOST
 
 
-def _get_test_class(host: str):
-    _common_condition = exist_func(host)
-    _helloworld_condition = all_func(_common_condition, is_file_func(DEMO_HELLOWORLD_PUML))
+@pytest.mark.unittest
+@pytest.mark.parametrize(['is_official'], [(True,), (False,)])
+class TestModelsRemote:
+    @pytest.fixture()
+    def host(self, is_official, plantuml_host):
+        return OFFICIAL_PLANTUML_HOST if is_official else plantuml_host
 
-    # noinspection DuplicatedCode
-    class _TestModelsRemote:
-        @classmethod
-        def _get_plantuml(cls, host_addr: str) -> RemotePlantuml:
-            return RemotePlantuml(host_addr)
+    @pytest.fixture()
+    def plantuml(self, host):
+        return RemotePlantuml.autoload(host=host)
 
-        @classmethod
-        def _get_auto_plantuml(cls) -> RemotePlantuml:
-            return RemotePlantuml.autoload(host=host)
+    def test_init(self, host):
+        plantuml = RemotePlantuml(host)
+        assert plantuml.host == host
 
-        @classmethod
-        def _append_path(cls, path: str, host_addr: Optional[str] = None) -> str:
-            return str(URLObject(host_addr or host).without_query().without_fragment().add_path(path))
+    def test_init_invalid(self, host):
+        with pytest.raises(ValueError):
+            RemotePlantuml('')
+        with pytest.raises(ValueError):
+            RemotePlantuml(str(URLObject(host).with_scheme('socks5')))
 
-        @mark_select(_common_condition)
-        def test_init(self):
-            plantuml = self._get_plantuml(host)
-            assert plantuml.host == host
+    def test_check(self, plantuml):
+        assert plantuml.test()
+        plantuml.check()
 
-        @mark_select(_common_condition)
-        def test_init_invalid(self):
-            with pytest.raises(ValueError):
-                self._get_plantuml('')
-            with pytest.raises(ValueError):
-                self._get_plantuml(str(URLObject(host).with_scheme('socks5')))
-
-        @mark_select(_common_condition)
-        def test_check(self):
-            plantuml = self._get_auto_plantuml()
-            assert plantuml.test()
+    def test_check_invalid(self, is_official):
+        _ = is_official
+        plantuml = RemotePlantuml('https://www.baidu.com')
+        assert not plantuml.test()
+        with pytest.raises(ValueError):
             plantuml.check()
 
-        @unittest
-        def test_check_invalid(self):
-            plantuml = self._get_plantuml('https://www.baidu.com')
-            assert not plantuml.test()
-            with pytest.raises(ValueError):
-                plantuml.check()
+    def test_repr(self, host, plantuml):
+        assert repr(plantuml) == f'<RemotePlantuml host: {host!r}>'
 
-        @mark_select(_common_condition)
-        def test_repr(self):
-            plantuml = self._get_auto_plantuml()
-            assert repr(plantuml) == '<RemotePlantuml host: {host}>'.format(host=repr(host))
+    def test_homepage_url(self, plantuml, uml_helloworld, uml_helloworld_code, host):
+        def _append_path(path: str, host_addr: Optional[str] = None) -> str:
+            return str(URLObject(host_addr or host).without_query().without_fragment().add_path(path))
 
-        @mark_select(_helloworld_condition)
-        def test_homepage_url(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+        assert plantuml.get_homepage_url(
+            uml_helloworld_code) == _append_path('uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
 
-            assert plantuml.get_homepage_url(
-                code) == self._append_path('uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
+        plantuml2 = RemotePlantuml('https://demo-host-for-plantuml')
+        assert plantuml2.get_homepage_url(
+            uml_helloworld_code) == _append_path('uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
+                                                 'https://demo-host-for-plantuml')
 
-            plantuml2 = self._get_plantuml('https://demo-host-for-plantuml')
-            assert plantuml2.get_homepage_url(
-                code) == self._append_path('uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
-                                           'https://demo-host-for-plantuml')
+    def test_url(self, plantuml, uml_helloworld, uml_helloworld_code, host):
+        def _append_path(path: str, host_addr: Optional[str] = None) -> str:
+            return str(URLObject(host_addr or host).without_query().without_fragment().add_path(path))
 
-        @mark_select(_helloworld_condition)
-        def test_url(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+        assert plantuml.get_url('png', uml_helloworld_code) \
+               == _append_path('png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
+        assert plantuml.get_url('txt', uml_helloworld_code) \
+               == _append_path('txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
+        assert plantuml.get_url('svg', uml_helloworld_code) \
+               == _append_path('svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
+        assert plantuml.get_url('eps', uml_helloworld_code) \
+               == _append_path('eps/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
 
-            assert plantuml.get_url('png', code) \
-                   == self._append_path('png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
-            assert plantuml.get_url('txt', code) \
-                   == self._append_path('txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
-            assert plantuml.get_url('svg', code) \
-                   == self._append_path('svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
-            assert plantuml.get_url('eps', code) \
-                   == self._append_path('eps/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80')
+        plantuml2 = RemotePlantuml('https://demo-host-for-plantuml')
 
-            plantuml2 = self._get_plantuml('https://demo-host-for-plantuml')
+        assert plantuml2.get_url('png', uml_helloworld_code) \
+               == _append_path('png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
+                               'https://demo-host-for-plantuml')
+        assert plantuml2.get_url('txt', uml_helloworld_code) \
+               == _append_path('txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
+                               'https://demo-host-for-plantuml')
+        assert plantuml2.get_url('svg', uml_helloworld_code) \
+               == _append_path('svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
+                               'https://demo-host-for-plantuml')
+        assert plantuml2.get_url('eps', uml_helloworld_code) \
+               == _append_path('eps/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
+                               'https://demo-host-for-plantuml')
 
-            assert plantuml2.get_url('png', code) \
-                   == self._append_path('png/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
-                                        'https://demo-host-for-plantuml')
-            assert plantuml2.get_url('txt', code) \
-                   == self._append_path('txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
-                                        'https://demo-host-for-plantuml')
-            assert plantuml2.get_url('svg', code) \
-                   == self._append_path('svg/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
-                                        'https://demo-host-for-plantuml')
-            assert plantuml2.get_url('eps', code) \
-                   == self._append_path('eps/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80',
-                                        'https://demo-host-for-plantuml')
+    _TXT_SIZES = [224, 372]
+    _PNG_SIZES = [3020, 2300]
+    _SVG_SIZES = [2742, 2003]
+    _EPS_SIZES = [11048, 7938]
 
-        _EXPECTED_TXT_LENGTH_FOR_HELLOWORLD_STR = 224
+    @classmethod
+    def _size_check(cls, expected_sizes: List[int], size: int):
+        ranges = [(int(0.8 * exp_size), int(1.2 * exp_size)) for exp_size in expected_sizes]
+        assert any(l <= size <= r for l, r in ranges), \
+            f'Size in range {ranges!r} expected, but {size!r} found.'
 
-        @mark_select(_helloworld_condition)
-        def test_dump_txt(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
-            txt_result = plantuml.dump_txt(code)
+    def test_dump_txt(self, plantuml, uml_helloworld, uml_helloworld_code):
+        txt_result = plantuml.dump_txt(uml_helloworld_code)
 
-            assert 'Bob' in txt_result
-            assert 'Alice' in txt_result
-            assert 'hello' in txt_result
+        assert 'Bob' in txt_result
+        assert 'Alice' in txt_result
+        assert 'hello' in txt_result
 
-            assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD_STR * 0.8 < len(
-                txt_result) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD_STR * 1.2
+        self._size_check(self._TXT_SIZES, len(txt_result))
 
-        _EXPECTED_TXT_LENGTH_FOR_HELLOWORLD = 372
-        _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 = 3020
-        _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 = 2300
-        _EXPECTED_SVG_LENGTH_FOR_HELLOWORLD = 2742
-        _EXPECTED_EPS_LENGTH_FOR_HELLOWORLD = 11048
+    def test_dump_binary_txt(self, plantuml, uml_helloworld, uml_helloworld_code):
+        _data = plantuml.dump_binary('txt', uml_helloworld_code)
+        assert isinstance(_data, bytes)
+        self._size_check(self._TXT_SIZES, len(_data))
 
-        @mark_select(_helloworld_condition)
-        def test_dump_binary_txt(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+    def test_dump_binary_png(self, plantuml, uml_helloworld, uml_helloworld_code):
+        _data = plantuml.dump_binary('png', uml_helloworld_code)
+        assert isinstance(_data, bytes)
+        self._size_check(self._PNG_SIZES, len(_data))
 
-            _data = plantuml.dump_binary('txt', code)
-            assert isinstance(_data, bytes)
-            assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < len(
-                _data) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
+    def test_dump_binary_svg(self, plantuml, uml_helloworld, uml_helloworld_code):
+        _data = plantuml.dump_binary('svg', uml_helloworld_code)
+        assert isinstance(_data, bytes)
+        self._size_check(self._SVG_SIZES, len(_data))
 
-        @mark_select(_helloworld_condition)
-        def test_dump_binary_png(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+    def test_dump_binary_eps(self, plantuml, uml_helloworld, uml_helloworld_code):
+        _data = plantuml.dump_binary('eps', uml_helloworld_code)
+        assert isinstance(_data, bytes)
+        self._size_check(self._EPS_SIZES, len(_data))
 
-            _data = plantuml.dump_binary('png', code)
-            assert isinstance(_data, bytes)
-            assert (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 0.8 < len(_data) <
-                    self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 1.2) or \
-                   (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 0.8 < len(_data) <
-                    self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 1.2)
+    def test_dump_file_txt(self, plantuml, uml_helloworld, uml_helloworld_code):
+        with NamedTemporaryFile() as file:
+            plantuml.dump(file.name, 'txt', uml_helloworld_code)
+            assert os.path.exists(file.name)
+            self._size_check(self._TXT_SIZES, os.path.getsize(file.name))
 
-        @mark_select(_helloworld_condition)
-        def test_dump_binary_svg(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
+    def test_dump_file_png(self, plantuml, uml_helloworld, uml_helloworld_code):
+        with NamedTemporaryFile() as file:
+            plantuml.dump(file.name, 'png', uml_helloworld_code)
+            assert os.path.exists(file.name)
+            self._size_check(self._PNG_SIZES, os.path.getsize(file.name))
 
-            _data = plantuml.dump_binary('svg', code)
-            assert isinstance(_data, bytes)
-            assert self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 0.8 < len(
-                _data) < self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 1.2
+    def test_dump_file_svg(self, plantuml, uml_helloworld, uml_helloworld_code):
+        with NamedTemporaryFile() as file:
+            plantuml.dump(file.name, 'svg', uml_helloworld_code)
+            assert os.path.exists(file.name)
+            self._size_check(self._SVG_SIZES, os.path.getsize(file.name))
 
-        @mark_select(_helloworld_condition)
-        def test_dump_binary_eps(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
-
-            _data = plantuml.dump_binary('eps', code)
-            assert isinstance(_data, bytes)
-            assert self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < len(
-                _data) < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2
-
-        @mark_select(_helloworld_condition)
-        def test_dump_file_txt(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
-
-            with NamedTemporaryFile() as file:
-                plantuml.dump(file.name, 'txt', code)
-                assert os.path.exists(file.name)
-                assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
-                    file.name) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
-
-        @mark_select(_helloworld_condition)
-        def test_dump_file_png(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
-
-            with NamedTemporaryFile() as file:
-                plantuml.dump(file.name, 'png', code)
-                assert os.path.exists(file.name)
-                assert (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 0.8 < os.path.getsize(file.name) <
-                        self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 1.2) or \
-                       (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 0.8 < os.path.getsize(file.name) <
-                        self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 1.2)
-
-        @mark_select(_helloworld_condition)
-        def test_dump_file_svg(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
-
-            with NamedTemporaryFile() as file:
-                plantuml.dump(file.name, 'svg', code)
-                assert os.path.exists(file.name)
-                assert self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
-                    file.name) < self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 1.2
-
-        @mark_select(_helloworld_condition)
-        def test_dump_file_eps(self):
-            plantuml = self._get_auto_plantuml()
-            code = Path(DEMO_HELLOWORLD_PUML).read_text()
-
-            with NamedTemporaryFile() as file:
-                plantuml.dump(file.name, 'eps', code)
-                assert os.path.exists(file.name)
-                assert self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
-                    file.name) < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2
-
-    return _TestModelsRemote
+    def test_dump_file_eps(self, plantuml, uml_helloworld, uml_helloworld_code):
+        with NamedTemporaryFile() as file:
+            plantuml.dump(file.name, 'eps', uml_helloworld_code)
+            assert os.path.exists(file.name)
+            self._size_check(self._EPS_SIZES, os.path.getsize(file.name))
 
 
-class TestModelsRemoteDefault(_get_test_class(OFFICIAL_PLANTUML_HOST)):
-    pass
-
-
-class TestModelsRemoteTest(_get_test_class(TEST_PLANTUML_HOST)):
-    pass
-
-
-@unittest
+@pytest.mark.unittest
 class TestModelsRemoteCommon:
     def test_find_plantuml_host_from_env(self):
-        _get_func, os.environ.get = os.environ.get, Mock(
-            side_effect=[OFFICIAL_PLANTUML_HOST, 'https://plantuml-host', ''])
-
-        assert find_plantuml_host_from_env() == OFFICIAL_PLANTUML_HOST
-        assert find_plantuml_host_from_env() == 'https://plantuml-host'
-        assert not find_plantuml_host_from_env()
-
-        os.environ.get = _get_func
+        with patch.dict(os.environ, {'PLANTUML_HOST': OFFICIAL_PLANTUML_HOST}):
+            assert find_plantuml_host_from_env() == OFFICIAL_PLANTUML_HOST
+        with patch.dict(os.environ, {'PLANTUML_HOST': 'https://plantuml-host'}):
+            assert find_plantuml_host_from_env() == 'https://plantuml-host'
+        with patch.dict(os.environ, {'PLANTUML_HOST': ''}):
+            assert not find_plantuml_host_from_env()
 
     def test_find_plantuml_host(self):
-        _get_func, os.environ.get = os.environ.get, Mock(
-            side_effect=[OFFICIAL_PLANTUML_HOST, 'https://plantuml-host', ''])
-
         assert find_plantuml_host('https://this-is-a-host') == 'https://this-is-a-host'
         assert find_plantuml_host(OFFICIAL_PLANTUML_HOST) == OFFICIAL_PLANTUML_HOST
-        assert find_plantuml_host() == OFFICIAL_PLANTUML_HOST
-        assert find_plantuml_host() == 'https://plantuml-host'
-        assert find_plantuml_host() == OFFICIAL_PLANTUML_HOST
 
-        os.environ.get = _get_func
+        with patch.dict(os.environ, {'PLANTUML_HOST': OFFICIAL_PLANTUML_HOST}):
+            assert find_plantuml_host('https://this-is-a-host') == 'https://this-is-a-host'
+            assert find_plantuml_host(OFFICIAL_PLANTUML_HOST) == OFFICIAL_PLANTUML_HOST
+            assert find_plantuml_host() == OFFICIAL_PLANTUML_HOST
 
+        with patch.dict(os.environ, {'PLANTUML_HOST': 'https://plantuml-host'}):
+            assert find_plantuml_host('https://this-is-a-host') == 'https://this-is-a-host'
+            assert find_plantuml_host(OFFICIAL_PLANTUML_HOST) == OFFICIAL_PLANTUML_HOST
+            assert find_plantuml_host() == 'https://plantuml-host'
 
-if __name__ == "__main__":
-    pytest.main([os.path.abspath(__file__)])
+        with patch.dict(os.environ, {'PLANTUML_HOST': ''}):
+            assert find_plantuml_host('https://this-is-a-host') == 'https://this-is-a-host'
+            assert find_plantuml_host(OFFICIAL_PLANTUML_HOST) == OFFICIAL_PLANTUML_HOST
+            assert find_plantuml_host() == OFFICIAL_PLANTUML_HOST

@@ -4,10 +4,9 @@ import pytest
 import where
 
 from plantumlcli.utils import execute, CommandLineExecuteError
-from ..test import unittest
 
 
-@unittest
+@pytest.mark.unittest
 class TestUtilsExecute:
     def test_execute(self):
         _stdout, _stderr = execute('echo', 'this_is_content')

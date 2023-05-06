@@ -17,22 +17,25 @@ jobs:
         os:
           - 'ubuntu-latest'
         python-version:
-          - '3.6'
           - '3.7'
           - '3.8'
           - '3.9'
+          - '3.10'
+          - '3.11'
           - 'pypy-3.6'
           - 'pypy-3.8'
         java-version:
           - '8'
         plantuml-server-version:
           - 'latest'
+          - 'jetty-v1.2023.6'
+          - 'jetty-v1.2022.14'
           - 'jetty-v1.2021.14'
           - 'jetty-v1.2020.19'
           - 'jetty-v1.2019.11'
         plantuml-version:
-          - '1.2021.12'
-        assistant-plantuml-version:
+          - '1.2023.6'
+          - '1.2022.14'
           - '1.2021.12'
           - '1.2020.19'
           - '1.2019.13'
@@ -87,29 +90,24 @@ jobs:
           tree .
           cloc plantuml
           cloc test
-      - name: Test the plantuml in use (${{ matrix.plantuml-version }} and ${{ matrix.assistant-plantuml-version }})
+      - name: Test the plantuml in use (${{ matrix.plantuml-version }}
         env:
-          TEST_PLANTUML_HOST: http://localhost:18080
+          PLANTUML_HOST: http://localhost:18080
         run: |
           java -jar demo/jar/plantuml.${{ matrix.plantuml-version }}.jar -version
-          java -jar demo/jar/plantuml.${{ matrix.assistant-plantuml-version }}.jar -version
-          curl -L "${TEST_PLANTUML_HOST}/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80"
+          curl -L "${PLANTUML_HOST}/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80"
       - name: Run unittest
         env:
-          PRIMARY_JAR_VERSION: ${{ matrix.plantuml-version }}
-          ASSISTANT_JAR_VERSION: ${{ matrix.assistant-plantuml-version }}
-          TEST_PLANTUML_HOST: http://localhost:18080
+          PLANTUML_JAR_VERSION: ${{ matrix.plantuml-version }}
+          PLANTUML_HOST: http://localhost:18080
           TIMEOUT: '30'
         run: |
-          source env.sh
           make unittest WORKERS=${WORKERS}
       - name: Run benchmark
         env:
-          PRIMARY_JAR_VERSION: ${{ matrix.plantuml-version }}
-          ASSISTANT_JAR_VERSION: ${{ matrix.assistant-plantuml-version }}
-          TEST_PLANTUML_HOST: http://localhost:18080
+          PLANTUML_JAR_VERSION: ${{ matrix.plantuml-version }}
+          PLANTUML_HOST: http://localhost:18080
         run: |
-          source env.sh
           make benchmark
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1

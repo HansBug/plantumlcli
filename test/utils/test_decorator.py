@@ -4,10 +4,9 @@ import time
 import pytest
 
 from plantumlcli.utils import check_func, timing_func
-from ..test import unittest
 
 
-@unittest
+@pytest.mark.unittest
 class TestUtilsDecorator:
     def test_check_func(self):
         @check_func(keep_return=True)

@@ -1,0 +1,20 @@
+@startuml
+hide empty description
+
+state "Idle" as idle
+state "Ringing" as ringing
+state "Dialing" as dialing
+state "Calling" as calling
+
+[*] -> idle : power on
+idle -> [*] : power off
+
+idle -> ringing : incoming call
+ringing -> calling : pick up
+
+idle -> dialing : outgoing call
+dialing -> calling : be answered
+dialing -> idle : nobody
+
+calling -down-> idle : hang up
+@enduml

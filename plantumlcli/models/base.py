@@ -51,16 +51,16 @@ class Plantuml(metaclass=ABCMeta):
     def autoload(cls, *args, **kwargs):
         """
         Autoload plantuml object from given arguments
-        :return: auto-loaded plantuml object
+        :return: autoloaded plantuml object
         """
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def _check_version(self, version: str):
         pass
 
     @abstractmethod
     def _get_version(self) -> str:
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     @property
     def version(self) -> str:
@@ -92,7 +92,7 @@ class Plantuml(metaclass=ABCMeta):
 
     @abstractmethod
     def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
     def dump(self, path: str, type_: Union[int, str, PlantumlResourceType], code: str):
         """
@@ -135,7 +135,7 @@ _Tp = TypeVar('_Tp', bound=Plantuml)
 
 def try_plantuml(cls: Type[_Tp], *args, **kwargs) -> Tuple[bool, Union[Optional[_Tp], Exception]]:
     """
-    Try initialize plantuml object
+    Try to initialize plantuml object
     :param cls: plantuml class
     :param args: arguments
     :param kwargs: key-word arguments
