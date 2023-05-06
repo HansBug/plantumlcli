@@ -42,7 +42,7 @@ setup(
     author=meta['__AUTHOR__'],
     author_email=meta['__AUTHOR_EMAIL__'],
     license='Apache License, Version 2.0',
-    keywords='An easy-to-use plantuml cli for everyone.',
+    keywords='python, plantuml, diagrams',
     url='https://github.com/HansBug/plantumlcli',
 
     # environment
