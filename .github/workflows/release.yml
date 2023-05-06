@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - 'ubuntu-18.04'
+          - 'ubuntu-latest'
         python-version:
           - '3.8'
 
@@ -39,3 +39,11 @@ jobs:
         uses: pypa/gh-action-pypi-publish@master
         with:
           password: ${{ secrets.PYPI_PASSWORD }}
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: dist/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
