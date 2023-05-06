@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Installation &mdash; plantumlcli 0.0.4 documentation</title>
@@ -84,7 +85,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Tutorials</span></p>
+              <p><span class="caption-text">Tutorials</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
 </ul>
@@ -153,41 +154,41 @@
             
     
     
-  <div class="section" id="installation">
+  <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>Plantumlcli is currently hosted on PyPI. It required python &gt;= 3.6.</p>
 <p>You can simply install plantumlcli from PyPI with the following command:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install plantumlcli
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>plantumlcli
 </pre></div>
 </div>
 <p>You can also install with the newest version through GitHub:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip install -U git+https://github.com/hansbug/plantumlcli.git@main
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>git+https://github.com/hansbug/plantumlcli.git@main
 </pre></div>
 </div>
 <p>You can check your installation by the following python script:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight-python notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">plantumlcli.config.meta</span> <span class="kn">import</span> <span class="n">__TITLE__</span><span class="p">,</span> <span class="n">__AUTHOR__</span><span class="p">,</span> <span class="n">__VERSION__</span><span class="p">,</span> <span class="n">__DESCRIPTION__</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><span class="kn">from</span> <span class="nn">plantumlcli.config.meta</span> <span class="kn">import</span> <span class="n">__TITLE__</span><span class="p">,</span> <span class="n">__AUTHOR__</span><span class="p">,</span> <span class="n">__VERSION__</span><span class="p">,</span> <span class="n">__DESCRIPTION__</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">__TITLE__</span><span class="p">,</span> <span class="n">__VERSION__</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Developed and maintained by&#39;</span><span class="p">,</span> <span class="n">__AUTHOR__</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">__DESCRIPTION__</span><span class="p">)</span>
-</pre></div>
-</td></tr></table></div>
+</pre></div></td></tr></table></div>
+</div>
 <p>The output should be like below, which means your installation is successful.</p>
-<div class="highlight-text notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight-text notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
-<span class="normal">3</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span>plantumlcli 0.0.3
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span>plantumlcli 0.0.3
 Developed and maintained by HansBug
 An easy-to-use plantuml cli for everyone.
-</pre></div>
-</td></tr></table></div>
-<p>Plantumlcli is still under development, you can also check out the documents in stable version through <a class="reference external" href="https://hansbug.github.io/plantumlcli/">https://hansbug.github.io/plantumlcli/</a>.</p>
+</pre></div></td></tr></table></div>
 </div>
+<p>Plantumlcli is still under development, you can also check out the documents in stable version through <a class="reference external" href="https://hansbug.github.io/plantumlcli/">https://hansbug.github.io/plantumlcli/</a>.</p>
+</section>
 
 
 
@@ -208,7 +209,7 @@ An easy-to-use plantuml cli for everyone.
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2022, HansBug
+        &copy; Copyright 2023, HansBug
 
     </p>
   </div>
@@ -236,6 +237,7 @@ An easy-to-use plantuml cli for everyone.
                 </dl>
                 <dl>
                     <dt>Branches</dt>
+                        <dd><a href="../../../refactor/tutorials/installation/index.html">dev/refactor</a></dd>
                         <dd><a href="index.html">dev/px</a></dd>
                         <dd><a href="../../../../main/tutorials/installation/index.html">main</a></dd>
                 </dl>
