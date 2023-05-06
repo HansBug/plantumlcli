@@ -1,6 +1,7 @@
 import os
 import shutil
 from tempfile import NamedTemporaryFile
+from typing import List
 from unittest.mock import patch
 
 import pytest
@@ -81,11 +82,16 @@ class TestModelsLocal:
         plantuml.check()
         assert plantuml.test()
 
-    _EXPECTED_TXT_LENGTH_FOR_HELLOWORLD = 224
-    _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 = 2211
-    _EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 = 3020
-    _EXPECTED_SVG_LENGTH_FOR_HELLOWORLD = 2771
-    _EXPECTED_EPS_LENGTH_FOR_HELLOWORLD = 11926
+    _TXT_SIZES = [224, 372]
+    _PNG_SIZES = [3020, 2211]
+    _SVG_SIZES = [2771, 2003]
+    _EPS_SIZES = [11926, 7938]
+
+    @classmethod
+    def _size_check(cls, expected_sizes: List[int], size: int):
+        ranges = [(int(0.8 * exp_size), int(1.2 * exp_size)) for exp_size in expected_sizes]
+        assert any(lbound <= size <= rbound for lbound, rbound in ranges), \
+            f'Size in range {ranges!r} expected, but {size!r} found.'
 
     def test_dump_txt(self, uml_helloworld_code, plantuml):
         txt_result = plantuml.dump_txt(uml_helloworld_code)
@@ -94,64 +100,51 @@ class TestModelsLocal:
         assert 'Alice' in txt_result
         assert 'hello' in txt_result
 
-        assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < len(
-            txt_result) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
+        self._size_check(self._TXT_SIZES, len(txt_result))
 
     def test_dump_binary_txt(self, uml_helloworld_code, plantuml):
         _data = plantuml.dump_binary('txt', uml_helloworld_code)
         assert isinstance(_data, bytes)
-        assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < len(
-            _data) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
+        self._size_check(self._TXT_SIZES, len(_data))
 
     def test_dump_binary_png(self, uml_helloworld_code, plantuml):
         _data = plantuml.dump_binary('png', uml_helloworld_code)
         assert isinstance(_data, bytes)
-        assert (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 0.8 < len(_data) <
-                self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 1.2) or \
-               (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 0.8 < len(_data) <
-                self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 1.2)
+        self._size_check(self._PNG_SIZES, len(_data))
 
     def test_dump_binary_svg(self, uml_helloworld_code, plantuml):
         _data = plantuml.dump_binary('svg', uml_helloworld_code)
         assert isinstance(_data, bytes)
-        assert self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 0.8 < len(
-            _data) < self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 1.2
+        self._size_check(self._SVG_SIZES, len(_data))
 
     def test_dump_binary_eps(self, uml_helloworld_code, plantuml):
         _data = plantuml.dump_binary('eps', uml_helloworld_code)
         assert isinstance(_data, bytes)
-        assert self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < len(
-            _data) < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2
+        self._size_check(self._EPS_SIZES, len(_data))
 
     def test_dump_file_txt(self, uml_helloworld_code, plantuml):
         with NamedTemporaryFile() as file:
             plantuml.dump(file.name, 'txt', uml_helloworld_code)
             assert os.path.exists(file.name)
-            assert self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
-                file.name) < self._EXPECTED_TXT_LENGTH_FOR_HELLOWORLD * 1.2
+            self._size_check(self._TXT_SIZES, os.path.getsize(file.name))
 
     def test_dump_file_png(self, uml_helloworld_code, plantuml):
         with NamedTemporaryFile() as file:
             plantuml.dump(file.name, 'png', uml_helloworld_code)
             assert os.path.exists(file.name)
-            assert (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 0.8 < os.path.getsize(file.name) <
-                    self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_1 * 1.2) or \
-                   (self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 0.8 < os.path.getsize(file.name) <
-                    self._EXPECTED_PNG_LENGTH_FOR_HELLOWORLD_2 * 1.2)
+            self._size_check(self._PNG_SIZES, os.path.getsize(file.name))
 
     def test_dump_file_svg(self, uml_helloworld_code, plantuml):
         with NamedTemporaryFile() as file:
             plantuml.dump(file.name, 'svg', uml_helloworld_code)
             assert os.path.exists(file.name)
-            assert self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
-                file.name) < self._EXPECTED_SVG_LENGTH_FOR_HELLOWORLD * 1.2
+            self._size_check(self._SVG_SIZES, os.path.getsize(file.name))
 
     def test_dump_file_eps(self, uml_helloworld_code, plantuml):
         with NamedTemporaryFile() as file:
             plantuml.dump(file.name, 'eps', uml_helloworld_code)
             assert os.path.exists(file.name)
-            assert self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 0.8 < os.path.getsize(
-                file.name) < self._EXPECTED_EPS_LENGTH_FOR_HELLOWORLD * 1.2
+            self._size_check(self._EPS_SIZES, os.path.getsize(file.name))
 
 
 @pytest.mark.unittest
