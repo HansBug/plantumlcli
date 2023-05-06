@@ -479,3 +479,10 @@ __pycache__
 *.eps
 /get-pip.py
 !/test/testfile/**/*
+/docs/source/**/*.py.txt
+/docs/source/**/*.py.err
+/docs/source/**/*.py.exitcode
+/docs/source/**/*.sh.txt
+/docs/source/**/*.sh.err
+/docs/source/**/*.sh.exitcode
+/docs/source/**/*.dat.*

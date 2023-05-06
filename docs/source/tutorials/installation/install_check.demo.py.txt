@@ -1,3 +1,0 @@
-plantumlcli 0.0.3
-Developed and maintained by HansBug
-An easy-to-use plantuml cli for everyone.
