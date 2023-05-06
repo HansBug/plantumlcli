@@ -5,10 +5,9 @@ from pathlib import Path
 import pytest
 
 from plantumlcli.utils import save_binary_file, save_text_file, load_binary_file, load_text_file
-from ..test import unittest
 
 
-@unittest
+@pytest.mark.unittest
 class TestUtilsFile:
     def test_save_binary_file(self):
         with tempfile.NamedTemporaryFile() as fw:

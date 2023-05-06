@@ -2,20 +2,19 @@ name: Repository Sync
 
 on:
   push:
-  pull_request:
   schedule:
-    - cron:  '0 1 * * *'
+    - cron: '0 1 * * *'
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-    - name: Mirror the Github organization repos to Gitee
-      uses: Yikun/hub-mirror-action@master
-      with:
-        src: github/HansBug
-        dst: gitee/hansbug
-        dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
-        dst_token:  ${{ secrets.GITEE_TOKEN }}
-        static_list: "plantumlcli"
-        force_update: true
+      - name: Mirror the Github organization repos to Gitee
+        uses: Yikun/hub-mirror-action@master
+        with:
+          src: github/HansBug
+          dst: gitee/hansbug
+          dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
+          dst_token: ${{ secrets.GITEE_TOKEN }}
+          static_list: "plantumlcli"
+          force_update: true

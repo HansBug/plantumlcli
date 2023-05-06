@@ -1,19 +1,16 @@
 import os
-from typing import Optional
-from unittest.mock import Mock
+import shutil
+from unittest.mock import patch
 
 import pytest
-import where
 from urlobject import URLObject
 
 from plantumlcli import LocalPlantuml, RemotePlantuml
 from plantumlcli.models.base import PlantumlType, PlantumlResourceType, try_plantuml
 from plantumlcli.models.remote import OFFICIAL_PLANTUML_HOST
-from plantumlcli.utils import all_func
-from ..test import unittest, PRIMARY_JAR_PATH, mark_select, is_file_func
 
 
-@unittest
+@pytest.mark.unittest
 class TestModelsBaseEnums:
     def test_plantuml_type(self):
         assert PlantumlType.LOCAL == 1
@@ -57,66 +54,44 @@ class TestModelsBaseEnums:
             PlantumlResourceType.load(None)
 
 
-_primary_jar_condition = all_func(is_file_func(PRIMARY_JAR_PATH))
+@pytest.fixture()
+def plantuml_local(plantuml_jar_file):
+    ok, data = try_plantuml(LocalPlantuml, plantuml=plantuml_jar_file, java=shutil.which('java'))
+    if ok:
+        return data
+    else:
+        raise data
 
 
+@pytest.mark.unittest
 class TestModelsBaseTryPlantuml:
-    @classmethod
-    def _get_local_plantuml_by_try_plantuml(cls, plantuml: str, java: Optional[str] = None) -> LocalPlantuml:
-        _success, _data = try_plantuml(LocalPlantuml, plantuml=plantuml, java=java)
-        if _success:
-            return _data
-        else:
-            raise _data
+    def test_local_plantuml(self, plantuml_local, plantuml_jar_file):
+        assert isinstance(plantuml_local, LocalPlantuml)
+        assert plantuml_local.java == shutil.which('java')
+        assert plantuml_local.plantuml == plantuml_jar_file
 
-    @mark_select(_primary_jar_condition)
-    def test_local_plantuml(self):
-        plantuml = self._get_local_plantuml_by_try_plantuml(plantuml=PRIMARY_JAR_PATH)
-        assert isinstance(plantuml, LocalPlantuml)
-        assert plantuml.java == where.first('java')
-        assert plantuml.plantuml == PRIMARY_JAR_PATH
-
-    @mark_select(_primary_jar_condition)
-    def test_local_plantuml_error(self):
+    def test_local_plantuml_error(self, plantuml_jar_file):
         with pytest.raises(FileNotFoundError):
-            _ = self._get_local_plantuml_by_try_plantuml(java='path_not_exist', plantuml=PRIMARY_JAR_PATH)
+            _ = LocalPlantuml.autoload(java='path_not_exist', plantuml=plantuml_jar_file)
         with pytest.raises(IsADirectoryError):
-            _ = self._get_local_plantuml_by_try_plantuml(java=os.path.dirname(PRIMARY_JAR_PATH),
-                                                         plantuml=PRIMARY_JAR_PATH)
-
+            _ = LocalPlantuml.autoload(java=os.path.dirname(plantuml_jar_file), plantuml=plantuml_jar_file)
         with pytest.raises(FileNotFoundError):
-            _ = self._get_local_plantuml_by_try_plantuml(plantuml='path_not_exist')
+            _ = LocalPlantuml.autoload(java=None, plantuml='path_not_exist')
         with pytest.raises(IsADirectoryError):
-            _ = self._get_local_plantuml_by_try_plantuml(plantuml=os.path.dirname(PRIMARY_JAR_PATH))
+            _ = LocalPlantuml.autoload(java=None, plantuml=os.path.dirname(plantuml_jar_file))
 
-    @classmethod
-    def _get_remote_plantuml_by_try_plantuml(cls, host: Optional[str] = None) -> RemotePlantuml:
-        _success, _data = try_plantuml(RemotePlantuml, host=host)
-        if _success:
-            return _data
-        else:
-            raise _data
-
-    @unittest
     def test_remote_plantuml(self):
-        plantuml = self._get_remote_plantuml_by_try_plantuml(OFFICIAL_PLANTUML_HOST)
+        plantuml = RemotePlantuml.autoload(OFFICIAL_PLANTUML_HOST)
         assert plantuml.host == OFFICIAL_PLANTUML_HOST
 
-        _get_func, os.environ.get = os.environ.get, Mock(return_value='https://plantuml-host')
-        plantuml = self._get_remote_plantuml_by_try_plantuml()
-        assert plantuml.host == 'https://plantuml-host'
-        os.environ.get = _get_func
+        with patch.dict('os.environ', values={'PLANTUML_HOST': 'https://plantuml-host'}):
+            plantuml = RemotePlantuml.autoload()
+            assert plantuml.host == 'https://plantuml-host'
 
-        plantuml = self._get_remote_plantuml_by_try_plantuml()
-        assert plantuml.host == OFFICIAL_PLANTUML_HOST
+        with patch.dict('os.environ', values={'PLANTUML_HOST': OFFICIAL_PLANTUML_HOST}):
+            plantuml = RemotePlantuml.autoload()
+            assert plantuml.host == OFFICIAL_PLANTUML_HOST
 
-    @unittest
     def test_remote_plantuml_error(self):
         with pytest.raises(ValueError):
-            self._get_remote_plantuml_by_try_plantuml(str(URLObject(OFFICIAL_PLANTUML_HOST).with_scheme('socks5')))
-
-
-# TODO: Add test for try_plantuml and Plantuml (abstract class)
-
-if __name__ == "__main__":
-    pytest.main([os.path.abspath(__file__)])
+            RemotePlantuml.autoload(str(URLObject(OFFICIAL_PLANTUML_HOST).with_scheme('socks5')))

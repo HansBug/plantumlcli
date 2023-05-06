@@ -3,10 +3,9 @@ import os
 import pytest
 
 from plantumlcli.utils import all_func
-from ..test import unittest
 
 
-@unittest
+@pytest.mark.unittest
 class TestUtilsFunction:
     def test_all_func(self):
         _func1_count, _func2_count = 0, 0

@@ -478,3 +478,4 @@ __pycache__
 *.latex
 *.eps
 /get-pip.py
+!/test/testfile/**/*

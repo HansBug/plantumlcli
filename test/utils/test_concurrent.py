@@ -4,10 +4,10 @@ import time
 import pytest
 
 from plantumlcli.utils import linear_process, timing_func
-from ..test import unittest
 
 
-@unittest
+
+@pytest.mark.unittest
 class TestUtilsConcurrent:
     def test_linear_process(self):
         for _ in range(0, 1000):

@@ -3,10 +3,9 @@ import os
 import pytest
 
 from plantumlcli.utils.encoding import *
-from ..test import unittest
 
 
-@unittest
+@pytest.mark.unittest
 class TestUtilsEncoding:
     def test_auto_decode(self):
         assert auto_decode(b'kdsfjldsjflkdsmgds') == 'kdsfjldsjflkdsmgds'

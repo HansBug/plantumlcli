@@ -1,4 +1,4 @@
-.PHONY: docs pdocs test unittest benchmark
+.PHONY: docs pdocs test unittest
 
 RERUN       ?=
 RERUN_DELAY ?=
@@ -42,9 +42,6 @@ unittest:
 		--durations=10 \
 		$(if ${CI}${ACTUAL_RERUN},--reruns ${ACTUAL_RERUN} --reruns-delay ${ACTUAL_RERUN_DELAY},) \
 		$(if ${ACTUAL_TIMEOUT},--timeout=${ACTUAL_TIMEOUT},)
-
-benchmark:
-	pytest ${RANGE_TEST_DIR} -sv -m benchmark --durations=0
 
 docs:
 	$(MAKE) -C "${DOC_DIR}" build

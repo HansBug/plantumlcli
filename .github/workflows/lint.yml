@@ -1,6 +1,7 @@
 name: Code Lint
 
-on: [ push, pull_request ]
+on:
+  push:
 
 jobs:
   test:
@@ -14,16 +15,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 20
       - name: Set up python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
+          sudo apt-get update -y
+          sudo apt-get install -y tree make wget curl cloc graphviz
+          dot -V
           python -m pip install --upgrade pip
           pip install --upgrade flake8 setuptools wheel twine
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi

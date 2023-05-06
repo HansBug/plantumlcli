@@ -1,9 +1,8 @@
 import os
 import re
+import shutil
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 from typing import Tuple, Optional, Mapping, Any
-
-import where
 
 from .base import Plantuml, PlantumlResourceType
 from ..utils import load_binary_file, save_text_file, CommandLineExecuteError, execute
@@ -12,7 +11,7 @@ PLANTUML_JAR_ENV = 'PLANTUML_JAR'
 
 
 def find_java_from_env() -> Optional[str]:
-    return where.first('java')
+    return shutil.which('java')
 
 
 def find_java(java: Optional[str] = None) -> Optional[str]:
@@ -64,7 +63,7 @@ class LocalPlantuml(Plantuml):
         _check_local(self.__java, self.__plantuml)
 
     @classmethod
-    def autoload(cls, java: str = None, plantuml: str = None, **kwargs) -> 'LocalPlantuml':
+    def autoload(cls, java: Optional[str] = None, plantuml: Optional[str] = None, **kwargs) -> 'LocalPlantuml':
         """
         Autoload LocalPlantuml object from given parameters and the environment
         :param java: java executable file path
