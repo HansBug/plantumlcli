@@ -56,11 +56,9 @@ jobs:
       - name: Set up system dependences on linux
         if: ${{ runner.os == 'Linux' }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y tree cloc wget curl make
-          sudo apt-get install -y graphviz
-          sudo dot -c
-          sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
+          sudo apt-get update -y
+          sudo apt-get install -y tree make wget curl cloc graphviz
+          dot -V
       - name: Load testfile
         env:
           TESTFILE_VERSION: 0.0.1

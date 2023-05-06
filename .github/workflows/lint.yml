@@ -23,7 +23,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          sudo apt-get install -y libxml2-dev libxslt-dev python-dev  # need by pypy3
+          sudo apt-get update -y
+          sudo apt-get install -y tree make wget curl cloc graphviz
+          dot -V
           python -m pip install --upgrade pip
           pip install --upgrade flake8 setuptools wheel twine
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
