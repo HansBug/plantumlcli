@@ -53,11 +53,6 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y tree make wget curl cloc graphviz
           dot -V
-      - name: Load testfile
-        env:
-          TESTFILE_VERSION: 0.0.1
-        run: |
-          git clone "https://github.com/HansBug/plantumlcli-testfile" "demo"
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -86,7 +81,6 @@ jobs:
         env:
           PLANTUML_HOST: http://localhost:18080
         run: |
-          java -jar demo/jar/plantuml.${{ matrix.plantuml-version }}.jar -version
           curl -L "${PLANTUML_HOST}/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80"
       - name: Run unittest
         env:
