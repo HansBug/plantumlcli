@@ -30,20 +30,20 @@ def _check_local(java: str, plantuml: str):
     if not java:
         raise ValueError('Java executable not given.')
     if not os.path.exists(java):
-        raise FileNotFoundError('Java executable {exec} not found.'.format(exec=repr(java)))
+        raise FileNotFoundError(f'Java executable {java!r} not found.')
     if not os.path.isfile(java):
-        raise IsADirectoryError('Java executable {exec} is not a file.'.format(exec=repr(java)))
+        raise IsADirectoryError(f'Java executable {java!r} is not a file.')
     if not os.access(java, os.X_OK):
-        raise PermissionError('Java executable {exec} not executable.'.format(exec=repr(java)))
+        raise PermissionError(f'Java executable {java!r} not executable.')
 
     if not plantuml:
         raise ValueError('Plantuml jar file not given.')
     if not os.path.exists(plantuml):
-        raise FileNotFoundError('Plantuml jar file {jar} not found.'.format(jar=repr(plantuml)))
+        raise FileNotFoundError(f'Plantuml jar file {plantuml!r} not found.')
     if not os.path.isfile(plantuml):
-        raise IsADirectoryError('Plantuml jar file {jar} is not a file.'.format(jar=repr(plantuml)))
+        raise IsADirectoryError(f'Plantuml jar file {plantuml!r} is not a file.')
     if not os.access(plantuml, os.R_OK):
-        raise PermissionError('Plantuml jar file {jar} not readable.'.format(jar=repr(plantuml)))
+        raise PermissionError(f'Plantuml jar file {plantuml!r} not readable.')
 
 
 class LocalPlantumlExecuteError(CommandLineExecuteError):
@@ -100,7 +100,7 @@ class LocalPlantuml(Plantuml):
 
     def _check_version(self, version: str):
         if (not version) or ("plantuml" not in version.lower()):
-            raise ValueError("Invalid version of plantuml - {version}.".format(version=repr(version)))
+            raise ValueError(f"Invalid version of plantuml - {version!r}.")
 
     def _get_version(self) -> str:
         _stdout, _ = self.__execute('-version')
@@ -114,10 +114,10 @@ class LocalPlantuml(Plantuml):
         with TemporaryDirectory(prefix='puml') as output_path_name:
             with NamedTemporaryFile(prefix='puml', suffix='.puml') as input_file:
                 save_text_file(input_file.name, code)
-                self.__execute('-t{type}'.format(type=type_.name.lower()), '-o', output_path_name, input_file.name)
+                self.__execute(f'-t{type_.name.lower()}', '-o', output_path_name, input_file.name)
                 _file_list = os.listdir(output_path_name)
                 if _file_list:
                     output_filename = os.path.join(output_path_name, _file_list[0])
                     return load_binary_file(output_filename)
                 else:
-                    raise FileNotFoundError('No expected file found in {path}.'.format(path=repr(output_path_name)))
+                    raise FileNotFoundError(f'No expected file found in {output_path_name!r}.')

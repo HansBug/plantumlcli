@@ -1,7 +1,7 @@
 import os
+import shutil
 
 import pytest
-import where
 
 from plantumlcli.utils import execute, CommandLineExecuteError
 
@@ -16,7 +16,7 @@ class TestUtilsExecute:
 
     def test_execute_error(self):
         with pytest.raises(CommandLineExecuteError) as r:
-            execute(where.first('python'), '-c',
+            execute(shutil.which('python'), '-c',
                     r'import sys;print(2345678);print(2333333, file=sys.stderr);raise RuntimeError;')
 
         err = r.value
@@ -28,7 +28,7 @@ class TestUtilsExecute:
                ('-c', r'import sys;print(2345678);print(2333333, file=sys.stderr);raise RuntimeError;')
         assert repr(err) == "<CommandLineExecuteError exitcode: 1, command_line: ({python}, '-c', " \
                             "'import sys;print(2345678);print(2333333, file=sys.stderr);raise RuntimeError;')>" \
-            .format(python=repr(where.first('python')))
+            .format(python=repr(shutil.which('python')))
 
 
 if __name__ == "__main__":

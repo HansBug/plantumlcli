@@ -44,8 +44,8 @@ def print_version(ctx: Context, param: Option, value: bool) -> None:
     """
     if not value or ctx.resilient_parsing:
         return
-    click.echo('{title}, version {version}.'.format(title=__TITLE__.capitalize(), version=__VERSION__))
-    click.echo('Developed by {author}, {email}.'.format(author=__AUTHOR__, email=__AUTHOR_EMAIL__))
+    click.echo(f'{__TITLE__.capitalize()}, version {__VERSION__}.')
+    click.echo(f'Developed by {__AUTHOR__}, {__AUTHOR_EMAIL__}.')
     ctx.exit()
 
 
@@ -70,11 +70,9 @@ CONTEXT_SETTINGS = dict(
               help='Path of java executable file (will load from environment when not given).',
               show_default='java from ${PATH}')
 @click.option('-p', '--plantuml', envvar=PLANTUML_JAR_ENV, type=str, default=None,
-              help='Path of plantuml jar file (will load from ${{{env}}} when not given).'.format(
-                  env=PLANTUML_JAR_ENV))
+              help=f'Path of plantuml jar file (will load from ${{{PLANTUML_JAR_ENV}}} when not given).')
 @click.option('-r', '--remote-host', envvar=PLANTUML_HOST_ENV, type=str, default=OFFICIAL_PLANTUML_HOST,
-              help='Remote host of the online plantuml editor (will load from ${{{env}}} when not given).'.format(
-                  env=PLANTUML_HOST_ENV),
+              help=f'Remote host of the online plantuml editor (will load from ${{{PLANTUML_HOST_ENV}}} when not given).',
               show_default=True)
 @click.option('-L', '--use-local', is_flag=True, help='Use local plantuml only.')
 @click.option('-R', '--use-remote', is_flag=True, help='Use remote plantuml only.')

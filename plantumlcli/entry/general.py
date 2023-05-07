@@ -76,12 +76,12 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
         _success, _data = ret
 
         if _success:
-            click.secho('{source}: '.format(source=src), fg='green')
+            click.secho(f'{src}: ', fg='green')
             click.echo(_data)
         else:
             nonlocal _error_count
             if isinstance(_data, LocalPlantumlExecuteError):
-                click.secho('{source}: [error with exitcode {code}]'.format(source=src, code=_data.exitcode), fg='red')
+                click.secho(f'{src}: [error with exitcode {_data.exitcode}]', fg='red')
                 click.secho(_data.stderr, fg='red')
             else:
                 if hasattr(_data, 'response'):
@@ -94,10 +94,9 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
                     response, code = None, None
 
                 if code:
-                    click.secho('{source}: [{cls} {code}]'.format(
-                        source=src, cls=type(_data).__name__, code=code), fg='red')
+                    click.secho(f'{src}: [{type(_data).__name__} {code}]', fg='red')
                 else:
-                    click.secho('{source}: [{cls}]'.format(source=src, cls=type(_data).__name__), fg='red')
+                    click.secho(f'{src}: [{type(_data).__name__}]', fg='red')
 
                 click.secho(str(_data), fg='red')
                 if response is not None and code and response.content:
@@ -116,7 +115,7 @@ def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
     if _error_count > 0:
         raise _click_exception_with_exit_code(
             name='TextGraphError',
-            message='{count} error(s) found when generating text graph.'.format(count=_error_count),
+            message=f'{_error_count} error(s) found when generating text graph.',
             exitcode=-2,
         )
 
@@ -125,8 +124,7 @@ def process_plantuml(plantuml: Plantuml, sources: Tuple[str],
                      outputs: Tuple[str], output_dir: Optional[str],
                      type_: PlantumlResourceType, concurrency: int):
     if outputs and len(outputs) != len(sources):
-        raise ValueError('Amount of output file(s) should be {expect}, but {actual} found.'
-                         .format(expect=len(sources), actual=len(outputs)))
+        raise ValueError(f'Amount of output file(s) should be {len(sources)}, but {len(outputs)} found.')
 
     def _output_filename(index: int):
         if outputs:
@@ -134,7 +132,7 @@ def process_plantuml(plantuml: Plantuml, sources: Tuple[str],
         else:
             _, _filename = os.path.split(sources[index])
             _name, _ = os.path.splitext(_filename)
-            name = '{name}.{ext}'.format(name=_name, ext=type_.name.lower())
+            name = f'{_name}.{type_.name.lower()}'
         return os.path.join(output_dir or os.curdir, name)
 
     def _process_code(index: int):

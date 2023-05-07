@@ -34,12 +34,11 @@ def _host_process(host: str) -> URLObject:
 
 def _check_remote(host: str):
     if not host:
-        raise ValueError("Host should be present, but {actual} found.".format(actual=repr(host)))
+        raise ValueError(f"Host should be present, but {host!r} found.")
 
     _host_url = _host_process(host)
     if _host_url.scheme not in ['http', 'https']:
-        raise ValueError(
-            "Host's scheme should be http or https, but {actual} found.".format(actual=repr(_host_url.scheme)))
+        raise ValueError(f"Host's scheme should be http or https, but {_host_url.scheme!r} found.")
 
 
 class RemotePlantuml(Plantuml):
@@ -100,12 +99,12 @@ class RemotePlantuml(Plantuml):
 
     def _is_official(self):
         return self.__host.hostname in ('plantuml.com', 'www.plantuml.com') and \
-               len(self.__host.path.segments) > 0 and self.__host.path.segments[0] == 'plantuml'
+            len(self.__host.path.segments) > 0 and self.__host.path.segments[0] == 'plantuml'
 
     def _check_version(self, version: str):
         if not self._is_official():
             if (not version) or ("plantuml" not in version.lower()) or ("version" not in version.lower()):
-                raise ValueError("Invalid version information from homepage - {info}.".format(info=repr(version)))
+                raise ValueError(f"Invalid version information from homepage - {version!r}.")
 
     def _get_version(self) -> str:
         if not self._is_official():
@@ -115,7 +114,7 @@ class RemotePlantuml(Plantuml):
             return 'Official Site'
 
     def __get_uml_path(self, type_: str, code: str):
-        return "{}/{}".format(type_, self.__compress(code))
+        return f"{type_}/{self.__compress(code)}"
 
     def __get_uml_url(self, type_: str, code: str) -> str:
         return self.__request_url(self.__get_uml_path(type_, code))

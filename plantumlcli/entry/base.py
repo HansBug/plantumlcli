@@ -34,13 +34,13 @@ def _check_plantuml(name: str, success, plantuml: Union[_Tp, Exception],
             success, plantuml = False, e
 
     if success:
-        click.secho('{name} plantuml detected.'.format(name=name.capitalize()), fg='green')
+        click.secho(f'{name.capitalize()} plantuml detected.', fg='green')
 
         click.echo(_version)
         if callback:
             callback(plantuml, _duration)
     else:
-        click.secho('{name} plantuml not detected or has problem.'.format(name=name.capitalize()), fg='red')
-        click.echo('Error : {error}'.format(error=repr(plantuml)))
+        click.secho(f'{name.capitalize()} plantuml not detected or has problem.', fg='red')
+        click.echo(f'Error : {plantuml!r}')
 
     return success
