@@ -9,7 +9,7 @@ import requests
 from pyquery import PyQuery
 from urlobject import URLObject
 
-from .base import Plantuml, PlantumlResourceType
+from .base import Plantuml, PlantumlResourceType, _has_cairosvg
 
 PLANTUML_HOST_ENV = 'PLANTUML_HOST'
 OFFICIAL_PLANTUML_HOST = 'http://www.plantuml.com/plantuml'
@@ -109,12 +109,14 @@ class RemotePlantuml(Plantuml):
 
     def _check_type_supported(self, type_: PlantumlResourceType):
         if type_ == PlantumlResourceType.PDF:
-            if self._is_official():
-                raise ValueError(f'Resource type {type_!r} not supported for plantuml official site - {self.__host!r}.')
-            else:
-                if self._get_server_version() < (1, 2023):
-                    raise ValueError(f'Resource type {type_!r} not supported for '
-                                     f'plantuml server site lower than 1.2023 - {self._get_server_version()!r}.')
+            if not _has_cairosvg():
+                if self._is_official():
+                    raise ValueError(f'Resource type {type_!r} not supported for plantuml official '
+                                     f'site - {self.__host!r}.')
+                else:
+                    if self._get_server_version() < (1, 2023):
+                        raise ValueError(f'Resource type {type_!r} not supported for '
+                                         f'plantuml server site lower than 1.2023 - {self._get_server_version()!r}.')
 
     def _get_version(self) -> str:
         if not self._is_official():
@@ -140,7 +142,13 @@ class RemotePlantuml(Plantuml):
         return r.content
 
     def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
-        return self.__get_uml(type_.name.lower(), code)
+        if type_ == PlantumlResourceType.PDF and _has_cairosvg():
+            import cairosvg
+
+            binary = self.__get_uml(PlantumlResourceType.SVG.name.lower(), code)
+            return cairosvg.svg2pdf(bytestring=binary)
+        else:
+            return self.__get_uml(type_.name.lower(), code)
 
     def _generate_uml_url(self, type_: PlantumlResourceType, code: str) -> str:
         return self.__get_uml_url(type_.name.lower(), code)

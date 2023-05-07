@@ -5,6 +5,15 @@ from typing import TypeVar, Type, Optional, Tuple, Union, Any, Mapping
 from ..utils import check_func, save_binary_file, auto_decode
 
 
+def _has_cairosvg():
+    try:
+        import cairosvg
+    except (ImportError, ModuleNotFoundError):
+        return False
+    else:
+        return True
+
+
 @unique
 class PlantumlType(IntEnum):
     LOCAL = 1

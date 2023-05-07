@@ -4,7 +4,7 @@ import shutil
 from tempfile import TemporaryDirectory, NamedTemporaryFile
 from typing import Tuple, Optional, Mapping, Any
 
-from .base import Plantuml, PlantumlResourceType
+from .base import Plantuml, PlantumlResourceType, _has_cairosvg
 from ..utils import load_binary_file, save_text_file, CommandLineExecuteError, execute
 
 PLANTUML_JAR_ENV = 'PLANTUML_JAR'
@@ -111,14 +111,19 @@ class LocalPlantuml(Plantuml):
         return _line.strip()
 
     def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
-        with TemporaryDirectory(prefix='puml') as output_path_name:
-            with NamedTemporaryFile(prefix='puml', suffix='.puml') as input_file:
-                save_text_file(input_file.name, code)
-                self.__execute(f'-t{type_.name.lower()}', '-o', output_path_name, input_file.name)
-                _file_list = os.listdir(output_path_name)
-                if _file_list:
-                    output_filename = os.path.join(output_path_name, _file_list[0])
-                    return load_binary_file(output_filename)
-                else:
-                    # When you see this error, it means bug, please open an issue for help us fix this
-                    raise FileNotFoundError(f'No expected file found in {output_path_name!r}.')  # pragma: no cover
+        if type_ == PlantumlResourceType.PDF and _has_cairosvg():
+            import cairosvg
+
+            return cairosvg.svg2pdf(bytestring=self._generate_uml_data(PlantumlResourceType.SVG, code))
+        else:
+            with TemporaryDirectory(prefix='puml') as output_path_name:
+                with NamedTemporaryFile(prefix='puml', suffix='.puml') as input_file:
+                    save_text_file(input_file.name, code)
+                    self.__execute(f'-t{type_.name.lower()}', '-o', output_path_name, input_file.name)
+                    _file_list = os.listdir(output_path_name)
+                    if _file_list:
+                        output_filename = os.path.join(output_path_name, _file_list[0])
+                        return load_binary_file(output_filename)
+                    else:
+                        # When you see this error, it means bug, please open an issue for help us fix this
+                        raise FileNotFoundError(f'No expected file found in {output_path_name!r}.')  # pragma: no cover
