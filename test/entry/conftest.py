@@ -26,3 +26,12 @@ def uml_invalid():
 @pytest.fixture()
 def uml_large():
     return get_testfile('umls', 'large.puml')
+
+
+def _has_cairosvg():
+    try:
+        import cairosvg
+    except (ImportError, ModuleNotFoundError):
+        return False
+    else:
+        return True

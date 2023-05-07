@@ -8,6 +8,7 @@ from requests import HTTPError
 
 from plantumlcli.entry import cli
 from plantumlcli.models import Plantuml
+from .conftest import _has_cairosvg
 
 
 # noinspection DuplicatedCode,PyTypeChecker,HttpUrlsUsage
@@ -319,7 +320,7 @@ class TestEntranceCli:
     _PNG_SIZES = [3020, 2300]
     _SVG_SIZES = [2742, 2003]
     _EPS_SIZES = [11048, 7938]
-    _PDF_SIZES = [1811]
+    _PDF_SIZES = [1811] if not _has_cairosvg() else [6326]
     _EPS_COMMON_SIZES = [28748]
     _EPS_CHINESE_SIZES = [93907, 74166]
     _EPS_LARGE_SIZES = [100685]
@@ -347,7 +348,7 @@ class TestEntranceCli:
             assert os.path.exists('helloworld.eps')
             self._size_check(self._EPS_SIZES, os.path.getsize('helloworld.eps'))
 
-        if plantuml_server_version >= (1, 2023):
+        if plantuml_server_version >= (1, 2023) or _has_cairosvg():
             with runner.isolated_filesystem():
                 result = runner.invoke(cli, ['-t', 'pdf', os.path.abspath(uml_helloworld)])
 
