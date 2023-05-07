@@ -15,6 +15,17 @@ You can also install with the newest version through GitHub:
 
     pip install -U git+https://github.com/hansbug/plantumlcli.git@main
 
+.. note::
+    If you need to export diagrams as PDF format, please install it using
+
+    .. code:: shell
+
+        pip install plantumlcli[pdf]
+
+    And make sure that your local Cairo environment is properly configured.
+    See `CairoSVG's Documentation <https://cairosvg.org/documentation/>`_ for more details.
+
+
 You can check your installation by the following python \
 script:
 
