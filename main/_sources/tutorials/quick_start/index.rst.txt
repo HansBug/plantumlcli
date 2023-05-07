@@ -37,7 +37,7 @@ Export to ASCII Arts
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Some very simple UML diagrams can be viewed directly in the command line using ASCII art.
-For example, the following code for ```helloworld.puml``:
+For example, the following code for ``helloworld.puml``:
 
 .. literalinclude:: helloworld.puml
     :language: text
