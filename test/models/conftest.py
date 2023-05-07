@@ -13,3 +13,12 @@ def uml_helloworld():
 @pytest.fixture()
 def uml_helloworld_code(uml_helloworld):
     return Path(uml_helloworld).read_text()
+
+
+def _has_cairosvg():
+    try:
+        import cairosvg
+    except (ImportError, ModuleNotFoundError):
+        return False
+    else:
+        return True

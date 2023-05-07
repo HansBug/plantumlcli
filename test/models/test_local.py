@@ -2,6 +2,7 @@ import os
 import shutil
 from tempfile import NamedTemporaryFile
 from typing import List
+from unittest import skipUnless
 from unittest.mock import patch
 
 import pytest
@@ -9,7 +10,8 @@ import pytest
 from plantumlcli import LocalPlantuml
 from plantumlcli.models.local import LocalPlantumlExecuteError, find_java_from_env, find_java, find_plantuml_from_env, \
     find_plantuml
-from test.testings import get_testfile
+from .conftest import _has_cairosvg
+from ..testings import get_testfile
 
 
 @pytest.fixture(scope='session')
@@ -84,6 +86,7 @@ class TestModelsLocal:
     _PNG_SIZES = [3020, 2211]
     _SVG_SIZES = [2771, 2003]
     _EPS_SIZES = [11926, 7938]
+    _PDF_SIZES = [1811] if not _has_cairosvg() else [6326]
 
     @classmethod
     def _size_check(cls, expected_sizes: List[int], size: int):
@@ -120,6 +123,12 @@ class TestModelsLocal:
         assert isinstance(_data, bytes)
         self._size_check(self._EPS_SIZES, len(_data))
 
+    @skipUnless(_has_cairosvg(), 'Cairosvg required.')
+    def test_dump_binary_pdf(self, uml_helloworld_code, plantuml):
+        _data = plantuml.dump_binary('pdf', uml_helloworld_code)
+        assert isinstance(_data, bytes)
+        self._size_check(self._PDF_SIZES, len(_data))
+
     def test_dump_file_txt(self, uml_helloworld_code, plantuml):
         with NamedTemporaryFile() as file:
             plantuml.dump(file.name, 'txt', uml_helloworld_code)
@@ -143,6 +152,13 @@ class TestModelsLocal:
             plantuml.dump(file.name, 'eps', uml_helloworld_code)
             assert os.path.exists(file.name)
             self._size_check(self._EPS_SIZES, os.path.getsize(file.name))
+
+    @skipUnless(_has_cairosvg(), 'Cairosvg required.')
+    def test_dump_file_pdf(self, uml_helloworld_code, plantuml):
+        with NamedTemporaryFile() as file:
+            plantuml.dump(file.name, 'pdf', uml_helloworld_code)
+            assert os.path.exists(file.name)
+            self._size_check(self._PDF_SIZES, os.path.getsize(file.name))
 
 
 @pytest.mark.unittest
