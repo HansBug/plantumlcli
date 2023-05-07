@@ -12,6 +12,7 @@ compatible with both local jar version and server version.
     :caption: Tutorials
 
     tutorials/installation/index
+    tutorials/quick_start/index
 
 .. toctree::
     :maxdepth: 2
