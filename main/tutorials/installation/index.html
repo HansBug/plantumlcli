@@ -167,15 +167,12 @@
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>git+https://github.com/hansbug/plantumlcli.git@main
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you need to export diagrams as PDF format, please install it using</p>
+<p>If you need to export diagrams as PDF format, please make sure that your local Cairo environment
+is properly configured (see <a class="reference external" href="https://cairosvg.org/documentation/">CairoSVG’s Documentation</a> for more details),
+and install <code class="docutils literal notranslate"><span class="pre">plantumlcli[pdf]</span></code> like this</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>plantumlcli<span class="o">[</span>pdf<span class="o">]</span>
 </pre></div>
 </div>
-<p>And make sure that your local Cairo environment is properly configured.
-See <a class="reference external" href="https://cairosvg.org/documentation/">CairoSVG’s Documentation</a> for more details.</p>
-</aside>
 <p>You can check your installation by the following python script:</p>
 <div class="highlight-python notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
