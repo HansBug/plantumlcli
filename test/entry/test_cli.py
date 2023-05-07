@@ -94,7 +94,7 @@ class TestEntranceCli:
 
     def test_homepage_url(self, uml_helloworld, uml_common, uml_chinese, uml_large):
         runner = CliRunner()
-        result = runner.invoke(cli, args=['--homepage-url', uml_helloworld], env={'PLANTUML_HOST':''})
+        result = runner.invoke(cli, args=['--homepage-url', uml_helloworld], env={'PLANTUML_HOST': ''})
 
         assert result.exit_code == 0
         _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
@@ -102,7 +102,7 @@ class TestEntranceCli:
         assert _lines[0] == 'http://www.plantuml.com/plantuml/uml/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80'
 
         result = runner.invoke(cli, args=['--homepage-url', uml_helloworld, uml_common,
-                                          uml_chinese, uml_large], env={'PLANTUML_HOST':''})
+                                          uml_chinese, uml_large], env={'PLANTUML_HOST': ''})
 
         assert result.exit_code == 0
         _lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
@@ -319,6 +319,7 @@ class TestEntranceCli:
     _PNG_SIZES = [3020, 2300]
     _SVG_SIZES = [2742, 2003]
     _EPS_SIZES = [11048, 7938]
+    _PDF_SIZES = [1811]
     _EPS_COMMON_SIZES = [28748]
     _EPS_CHINESE_SIZES = [93907, 74166]
     _EPS_LARGE_SIZES = [100685]
@@ -345,6 +346,13 @@ class TestEntranceCli:
             assert result.exit_code == 0
             assert os.path.exists('helloworld.eps')
             self._size_check(self._EPS_SIZES, os.path.getsize('helloworld.eps'))
+
+        with runner.isolated_filesystem():
+            result = runner.invoke(cli, ['-t', 'pdf', os.path.abspath(uml_helloworld)])
+
+            assert result.exit_code == 0
+            assert os.path.exists('helloworld.pdf')
+            self._size_check(self._PDF_SIZES, os.path.getsize('helloworld.pdf'))
 
         with runner.isolated_filesystem():
             result = runner.invoke(cli, ['-t', 'eps', '-o', 'new_file.eps', os.path.abspath(uml_helloworld)])

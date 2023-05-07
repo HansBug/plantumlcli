@@ -89,6 +89,7 @@ class TestModelsRemote:
     _PNG_SIZES = [3020, 2300]
     _SVG_SIZES = [2742, 2003]
     _EPS_SIZES = [11048, 7938]
+    _PDF_SIZES = [1811]
 
     @classmethod
     def _size_check(cls, expected_sizes: List[int], size: int):
@@ -125,6 +126,15 @@ class TestModelsRemote:
         assert isinstance(_data, bytes)
         self._size_check(self._EPS_SIZES, len(_data))
 
+    def test_dump_binary_pdf(self, plantuml, uml_helloworld, uml_helloworld_code, is_official):
+        if is_official:
+            with pytest.raises(ValueError):
+                plantuml.dump_binary('pdf', uml_helloworld_code)
+        else:
+            _data = plantuml.dump_binary('pdf', uml_helloworld_code)
+            assert isinstance(_data, bytes)
+            self._size_check(self._PDF_SIZES, len(_data))
+
     def test_dump_file_txt(self, plantuml, uml_helloworld, uml_helloworld_code):
         with NamedTemporaryFile() as file:
             plantuml.dump(file.name, 'txt', uml_helloworld_code)
@@ -148,6 +158,16 @@ class TestModelsRemote:
             plantuml.dump(file.name, 'eps', uml_helloworld_code)
             assert os.path.exists(file.name)
             self._size_check(self._EPS_SIZES, os.path.getsize(file.name))
+
+    def test_dump_file_pdf(self, plantuml, uml_helloworld, uml_helloworld_code, is_official):
+        if is_official:
+            with pytest.raises(ValueError), NamedTemporaryFile() as file:
+                plantuml.dump(file.name, 'pdf', uml_helloworld_code)
+        else:
+            with NamedTemporaryFile() as file:
+                plantuml.dump(file.name, 'pdf', uml_helloworld_code)
+                assert os.path.exists(file.name)
+                self._size_check(self._PDF_SIZES, os.path.getsize(file.name))
 
 
 @pytest.mark.unittest

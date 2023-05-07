@@ -106,6 +106,10 @@ class RemotePlantuml(Plantuml):
             if (not version) or ("plantuml" not in version.lower()) or ("version" not in version.lower()):
                 raise ValueError(f"Invalid version information from homepage - {version!r}.")
 
+    def _check_type_supported(self, type_: PlantumlResourceType):
+        if self._is_official() and type_ == PlantumlResourceType.PDF:
+            raise ValueError(f'Resource type {type_!r} not supported for plantuml official site - {self.__host!r}.')
+
     def _get_version(self) -> str:
         if not self._is_official():
             r = self.__get_homepage()
