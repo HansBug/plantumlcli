@@ -9,8 +9,8 @@ from ..utils import load_text_file, linear_process
 
 
 def _additional_info_for_remote(plantuml: RemotePlantuml, duration: float):
-    click.echo('Remote host : {host}'.format(host=plantuml.host))
-    click.echo('Connection time : {time}s'.format(time='%.3f' % (duration,)))
+    click.echo(f'Remote host : {plantuml.host}')
+    click.echo(f'Connection time : {"%.3f" % (duration,)}s')
 
 
 def _check_remote_plantuml(success: bool, plantuml: Union[RemotePlantuml, Exception]) -> bool:

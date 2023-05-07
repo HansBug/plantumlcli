@@ -54,7 +54,7 @@ class TestUtilsConcurrent:
     def test_linear_process_error_skip(self):
         def _process(x):
             if x == 5:
-                raise ValueError('value error for this awesome_test, value is {v}'.format(v=x))
+                raise ValueError(f'value error for this awesome_test, value is {x}')
             else:
                 return x * x
 
@@ -77,7 +77,7 @@ class TestUtilsConcurrent:
     def test_linear_process_error_not_skip(self):
         def _process(x):
             if x in [3, 7]:
-                raise ValueError('value error for this awesome_test, value is {v}'.format(v=x))
+                raise ValueError(f'value error for this awesome_test, value is {x}')
             else:
                 return x * x
 
@@ -122,7 +122,7 @@ class TestUtilsConcurrent:
 
         def _post_process(i, x, r):
             if x == 3:
-                raise ValueError('value error for this awesome_test, value is {v}'.format(v=x))
+                raise ValueError(f'value error for this awesome_test, value is {x}')
             _list.append((i, x, r))
 
         with pytest.raises(ValueError) as e:

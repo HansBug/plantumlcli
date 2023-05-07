@@ -28,13 +28,10 @@ jobs:
           sudo apt-get install -y tree make wget curl cloc graphviz
           dot -V
           python -m pip install --upgrade pip
-          pip install --upgrade flake8 setuptools wheel twine
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f requirements-test.txt ]; then pip install -r requirements-test.txt; fi
+          pip install --upgrade setuptools wheel twine
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+          pip install -r requirements-lint.txt
       - name: Basic lint with flake8
         run: |
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 ./plantumlcli --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Lint with flake8
-        run: |
-          flake8 ./plantumlcli
+          make flake

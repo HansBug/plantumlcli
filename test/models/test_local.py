@@ -73,10 +73,8 @@ class TestModelsLocal:
         assert plantuml.plantuml == plantuml_jar_file
 
     def test_repr(self, plantuml_jar_file, plantuml):
-        assert repr(plantuml) == '<LocalPlantuml java: {java}, plantuml: {plantuml}>'.format(
-            java=repr(shutil.which('java')),
-            plantuml=repr(plantuml_jar_file),
-        )
+        assert repr(plantuml) == \
+               f'<LocalPlantuml java: {shutil.which("java")!r}, plantuml: {plantuml_jar_file!r}>'
 
     def test_check_and_test(self, plantuml):
         plantuml.check()

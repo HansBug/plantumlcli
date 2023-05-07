@@ -2,8 +2,6 @@ name: Repository Sync
 
 on:
   push:
-  schedule:
-    - cron: '0 1 * * *'
 
 jobs:
   sync:

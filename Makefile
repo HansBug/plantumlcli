@@ -14,8 +14,8 @@ RANGE_DIR      ?= .
 RANGE_TEST_DIR := ${TEST_DIR}/${RANGE_DIR}
 RANGE_SRC_DIR  := ${SRC_DIR}/${RANGE_DIR}
 
-CI_DEFAULT_RERUN          := 5
-LOCAL_DEFAULT_RERUN       := 3
+CI_DEFAULT_RERUN          := 3
+LOCAL_DEFAULT_RERUN       := 0
 DEFAULT_RERUN             ?= $(if ${CI},${CI_DEFAULT_RERUN},${LOCAL_DEFAULT_RERUN})
 ACTUAL_RERUN              := $(if ${RERUN},${RERUN},${DEFAULT_RERUN})
 
@@ -39,7 +39,6 @@ unittest:
 		$(shell for type in ${COV_TYPES}; do echo "--cov-report=$$type"; done) \
 		--cov="${RANGE_SRC_DIR}" \
 		$(if ${MIN_COVERAGE},--cov-fail-under=${MIN_COVERAGE},) \
-		--durations=10 \
 		$(if ${CI}${ACTUAL_RERUN},--reruns ${ACTUAL_RERUN} --reruns-delay ${ACTUAL_RERUN_DELAY},) \
 		$(if ${ACTUAL_TIMEOUT},--timeout=${ACTUAL_TIMEOUT},)
 
@@ -47,3 +46,9 @@ docs:
 	$(MAKE) -C "${DOC_DIR}" build
 pdocs:
 	$(MAKE) -C "${DOC_DIR}" prod
+
+flake:
+	flake8 ./plantumlcli --count --select=E9,F63,F7,F82 --show-source --statistics
+	flake8 ./plantumlcli --count --exit-zero \
+		--max-complexity=10 --max-line-length=127 --statistics \
+		--per-file-ignores="__init__.py:F401"

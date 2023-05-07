@@ -28,11 +28,7 @@ class CommandLineExecuteError(Exception):
         return self.__stderr
 
     def __repr__(self):
-        return '<{cls} exitcode: {code}, command_line: {cmd}>'.format(
-            cls=self.__class__.__name__,
-            cmd=repr(self.__command_line),
-            code=repr(self.__exitcode),
-        )
+        return f'<{self.__class__.__name__} exitcode: {self.__exitcode!r}, command_line: {self.__command_line!r}>'
 
     @classmethod
     def try_raise(cls, command_line: Tuple[str], exitcode: int,

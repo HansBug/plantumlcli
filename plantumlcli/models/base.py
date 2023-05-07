@@ -29,16 +29,14 @@ class PlantumlResourceType(IntEnum):
             if data in cls.__members__.values():
                 return cls.__members__[dict(zip(cls.__members__.values(), cls.__members__.keys()))[data]]
             else:
-                raise ValueError('Value {value} not found for enum {cls}.'.format(value=repr(data), cls=cls.__name__))
+                raise ValueError(f'Value {data!r} not found for enum {cls.__name__}.')
         elif isinstance(data, str):
             if data.upper() in cls.__members__.keys():
                 return cls.__members__[data.upper()]
             else:
-                raise KeyError('Key {key} not found for enum {cls}.'.format(key=repr(data), cls=cls.__name__))
+                raise KeyError(f'Key {data!r} not found for enum {cls.__name__}.')
         else:
-            raise TypeError('Data should be an int, str or {cls}, but {actual} found.'.format(
-                cls=cls.__name__, actual=type(data).__name__,
-            ))
+            raise TypeError(f'Data should be an int, str or {cls.__name__}, but {type(data).__name__} found.')
 
 
 class Plantuml(metaclass=ABCMeta):
@@ -123,11 +121,8 @@ class Plantuml(metaclass=ABCMeta):
         return {}
 
     def __repr__(self):
-        return '<{cls} {properties}>'.format(
-            cls=self.__class__.__name__,
-            properties=', '.join(['{key}: {value}'.format(key=key, value=repr(value))
-                                  for key, value in sorted(self._properties().items())]),
-        )
+        prop_str = ', '.join([f'{key}: {value!r}' for key, value in sorted(self._properties().items())])
+        return f'<{self.__class__.__name__} {prop_str}>'
 
 
 _Tp = TypeVar('_Tp', bound=Plantuml)
