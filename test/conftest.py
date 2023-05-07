@@ -1,4 +1,5 @@
 import os
+import re
 
 import pytest
 from huggingface_hub import hf_hub_download
@@ -21,3 +22,13 @@ def plantuml_jar_file(plantuml_jar_version):
 @pytest.fixture(scope='session')
 def plantuml_host():
     return os.environ.get('PLANTUML_HOST')
+
+
+@pytest.fixture(scope='session')
+def plantuml_server_version():
+    raw = os.environ.get('PLANTUML_SERVER_VERSION')
+    if raw:
+        (major, year, v), = re.findall(r'v(?P<major>\d+).(?P<year>\d+).(?P<v>\d+)', raw, re.IGNORECASE)
+        return int(major), int(year), int(v.lstrip('0') or '0')
+    else:
+        return None

@@ -1,8 +1,9 @@
 import base64
 import os
+import re
 import string
 import zlib
-from typing import Optional, Mapping, Any, Union
+from typing import Optional, Mapping, Any, Union, Tuple
 
 import requests
 from pyquery import PyQuery
@@ -107,8 +108,13 @@ class RemotePlantuml(Plantuml):
                 raise ValueError(f"Invalid version information from homepage - {version!r}.")
 
     def _check_type_supported(self, type_: PlantumlResourceType):
-        if self._is_official() and type_ == PlantumlResourceType.PDF:
-            raise ValueError(f'Resource type {type_!r} not supported for plantuml official site - {self.__host!r}.')
+        if type_ == PlantumlResourceType.PDF:
+            if self._is_official():
+                raise ValueError(f'Resource type {type_!r} not supported for plantuml official site - {self.__host!r}.')
+            else:
+                if self._get_server_version() < (1, 2023):
+                    raise ValueError(f'Resource type {type_!r} not supported for '
+                                     f'plantuml server site lower than 1.2023 - {self._get_server_version()!r}.')
 
     def _get_version(self) -> str:
         if not self._is_official():
@@ -116,6 +122,12 @@ class RemotePlantuml(Plantuml):
             return PyQuery(r.content.decode()).find('#footer').text().strip()
         else:
             return 'Official Site'
+
+    def _get_server_version(self) -> Tuple[int, int, int]:
+        (major, year, v), = re.findall(r'version\s*(?P<major>\d)(?P<year>\d{4})(?P<v>\d{2})',
+                                       self._get_version(), re.IGNORECASE)
+
+        return int(major), int(year), int(v.lstrip('0') or '0')
 
     def __get_uml_path(self, type_: str, code: str):
         return f"{type_}/{self.__compress(code)}"

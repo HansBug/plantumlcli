@@ -126,8 +126,8 @@ class TestModelsRemote:
         assert isinstance(_data, bytes)
         self._size_check(self._EPS_SIZES, len(_data))
 
-    def test_dump_binary_pdf(self, plantuml, uml_helloworld, uml_helloworld_code, is_official):
-        if is_official:
+    def test_dump_binary_pdf(self, plantuml, uml_helloworld, uml_helloworld_code, is_official, plantuml_server_version):
+        if is_official or plantuml_server_version < (1, 2023):
             with pytest.raises(ValueError):
                 plantuml.dump_binary('pdf', uml_helloworld_code)
         else:
@@ -159,8 +159,8 @@ class TestModelsRemote:
             assert os.path.exists(file.name)
             self._size_check(self._EPS_SIZES, os.path.getsize(file.name))
 
-    def test_dump_file_pdf(self, plantuml, uml_helloworld, uml_helloworld_code, is_official):
-        if is_official:
+    def test_dump_file_pdf(self, plantuml, uml_helloworld, uml_helloworld_code, is_official, plantuml_server_version):
+        if is_official or plantuml_server_version < (1, 2023):
             with pytest.raises(ValueError), NamedTemporaryFile() as file:
                 plantuml.dump(file.name, 'pdf', uml_helloworld_code)
         else:

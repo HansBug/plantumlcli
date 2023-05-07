@@ -330,7 +330,7 @@ class TestEntranceCli:
         assert any(l <= size <= r for l, r in ranges), \
             f'Size in range {ranges!r} expected, but {size!r} found.'
 
-    def test_file_dump(self, uml_helloworld, uml_common, uml_chinese, uml_large):
+    def test_file_dump(self, uml_helloworld, uml_common, uml_chinese, uml_large, plantuml_server_version):
         runner = CliRunner()
 
         with runner.isolated_filesystem():
@@ -347,12 +347,13 @@ class TestEntranceCli:
             assert os.path.exists('helloworld.eps')
             self._size_check(self._EPS_SIZES, os.path.getsize('helloworld.eps'))
 
-        with runner.isolated_filesystem():
-            result = runner.invoke(cli, ['-t', 'pdf', os.path.abspath(uml_helloworld)])
+        if plantuml_server_version >= (1, 2023):
+            with runner.isolated_filesystem():
+                result = runner.invoke(cli, ['-t', 'pdf', os.path.abspath(uml_helloworld)])
 
-            assert result.exit_code == 0
-            assert os.path.exists('helloworld.pdf')
-            self._size_check(self._PDF_SIZES, os.path.getsize('helloworld.pdf'))
+                assert result.exit_code == 0
+                assert os.path.exists('helloworld.pdf')
+                self._size_check(self._PDF_SIZES, os.path.getsize('helloworld.pdf'))
 
         with runner.isolated_filesystem():
             result = runner.invoke(cli, ['-t', 'eps', '-o', 'new_file.eps', os.path.abspath(uml_helloworld)])

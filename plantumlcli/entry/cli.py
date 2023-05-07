@@ -83,9 +83,10 @@ CONTEXT_SETTINGS = dict(
 @click.option('-t', '--type', 'resource_type', default=PlantumlResourceType.PNG.name,
               type=click.Choice(list(PlantumlResourceType.__members__.keys()), case_sensitive=False),
               help='Type of plantuml resource. '
-                   'Please note that the PDF format is only supported by the plantuml-server and '
-                   'is not supported on the official website. Additionally, when using the local JAR '
-                   'for PDF export, you need to install the extra dependencies. For more information, '
+                   'Please note that the PDF format is only supported by the '
+                   'plantuml-server 1.2023 or higher version and is not supported on the official website. '
+                   'Additionally, when using the local JAR for PDF export, '
+                   'you need to install the extra dependencies. For more information, '
                    'please refer to: https://plantuml.com/en/pdf',
               show_default=True)
 @click.option('-T', '--text', is_flag=True, help='Display text uml graph by stdout (ignore -t).')
