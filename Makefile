@@ -9,6 +9,7 @@ PROJ_DIR := $(shell readlink -f ${CURDIR})
 DOC_DIR  := ${PROJ_DIR}/docs
 TEST_DIR := ${PROJ_DIR}/test
 SRC_DIR  := ${PROJ_DIR}/plantumlcli
+DIST_DIR := ${PROJ_DIR}/dist
 
 RANGE_DIR      ?= .
 RANGE_TEST_DIR := ${TEST_DIR}/${RANGE_DIR}
@@ -52,3 +53,6 @@ flake:
 	flake8 ./plantumlcli --count --exit-zero \
 		--max-complexity=10 --max-line-length=127 --statistics \
 		--per-file-ignores="__init__.py:F401"
+
+package:
+	python -m build --sdist --wheel --outdir ${DIST_DIR}

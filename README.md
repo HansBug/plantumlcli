@@ -37,7 +37,13 @@ git clone https://github.com/HansBug/plantumlcli
 cd plantumlcli && pip install .
 ```
 
-Python 3.6+ is required, pypy is also tested to be okay.
+Python 3.7+ is required, pypy is also tested to be okay.
+
+If you need to export the diagrams to PDF format, just install like this
+
+```bash
+pip install plantumlcli[pdf]
+```
 
 ## Using with cli
 
@@ -63,7 +69,9 @@ plantumlcli -cL  # check local environment only
 plantumlcli -cR  # check remote environment only
 ```
 
-In default, no local plantuml jar can be used, the remote host is set to the official one (http://www.plantuml.com/plantuml). But don't worry, you can specify your plantuml jar file or remote host by environment variables or command lines.
+In default, no local plantuml jar can be used, the remote host is set to the official
+one (http://www.plantuml.com/plantuml). But don't worry, you can specify your plantuml jar file or remote host by
+environment variables or command lines.
 
 ```bash
 plantumlcli -c                                             # local not okay, remote okay
@@ -88,7 +96,8 @@ PLANTUML_HOST=http://plantuml.example.com plantuml source.puml     # use your pl
 PLANTUML_HOST=http://plantuml.example.com plantuml -R source.puml  # force use your plantuml host to build png
 ```
 
-You can also get the URL address of remote plantuml (in these cases, remote plantuml will be used regardless of `-L` and `-R` commands)
+You can also get the URL address of remote plantuml (in these cases, remote plantuml will be used regardless of `-L`
+and `-R` commands)
 
 ```bash
 plantumlcli -u helloworld.puml              # get png URL of helloworld.puml
@@ -113,16 +122,16 @@ if __name__ == "__main__":
     code = Path('source.puml').read_text()
 
     local = LocalPlantuml.autoload()
-    print(local.dump_txt(code))                           # print text graph of code
+    print(local.dump_txt(code))  # print text graph of code
     local.dump('/my/path/source_local.png', 'png', code)  # save png to /my/path/source_local.png
     local.dump('/my/path/source_local.eps', 'eps', code)  # save eps to /my/path/source_local.eps
 
     remote = RemotePlantuml.autoload()
-    print(remote.dump_txt(code))                            # print text graph of code
+    print(remote.dump_txt(code))  # print text graph of code
     remote.dump('/my/path/source_remote.png', 'png', code)  # save png to /my/path/source_remote.png
     remote.dump('/my/path/source_remote.eps', 'eps', code)  # save eps to /my/path/source_remote.eps
-    print(remote.get_url('png', code))                      # get png url from remote host
-    print(remote.get_homepage_url(code))                    # get online editor's url from remote host
+    print(remote.get_url('png', code))  # get png url from remote host
+    print(remote.get_homepage_url(code))  # get online editor's url from remote host
 
 ```
 
@@ -130,21 +139,26 @@ if __name__ == "__main__":
 
 Thank you for considering contributing to plantumlcli!
 
-We appreciate all contributions to improve plantumlcli, both logic and system designs. Please refer to CONTRIBUTING.md for more guides.
+We appreciate all contributions to improve plantumlcli, both logic and system designs. Please refer to CONTRIBUTING.md
+for more guides.
 
-And users can join our [slack communication channel](https://join.slack.com/t/hansbug/shared_invite/zt-z3rtyooz-Rf6QZ9eNy6t5vvUGnicfdw), or contact the core developer [HansBug](https://github.com/HansBug) for more detailed discussion.
+And users can join
+our [slack communication channel](https://join.slack.com/t/hansbug/shared_invite/zt-z3rtyooz-Rf6QZ9eNy6t5vvUGnicfdw), or
+contact the core developer [HansBug](https://github.com/HansBug) for more detailed discussion.
 
 ## Links
 
 Github: [https://github.com/HansBug/plantumlcli](https://github.com/HansBug/plantumlcli)
 
-Documentation(just readme yet, will be written soon): [https://github.com/HansBug/plantumlcli/blob/main/README.md](https://github.com/HansBug/plantumlcli/blob/main/README.md)
+Documentation(just readme yet, will be written
+soon): [https://github.com/HansBug/plantumlcli/blob/main/README.md](https://github.com/HansBug/plantumlcli/blob/main/README.md)
 
 Issue Tracker: [https://github.com/HansBug/plantumlcli/issues](https://github.com/HansBug/plantumlcli/issues)
 
 Pypi: [https://pypi.org/project/plantumlcli/](https://pypi.org/project/plantumlcli/)
 
-Test pypi(pre-released versions can be found here): [https://test.pypi.org/project/plantumlcli/](https://test.pypi.org/project/plantumlcli/)
+Test pypi(pre-released versions can be found
+here): [https://test.pypi.org/project/plantumlcli/](https://test.pypi.org/project/plantumlcli/)
 
 ## Change log
 
@@ -159,7 +173,8 @@ Released 2021-10-8
 
 Released 2020-11-30
 
-* Fix a bug on windows platform, issue: [https://github.com/HansBug/plantumlcli/issues/1](https://github.com/HansBug/plantumlcli/issues/1)
+* Fix a bug on windows platform,
+  issue: [https://github.com/HansBug/plantumlcli/issues/1](https://github.com/HansBug/plantumlcli/issues/1)
 
 ### Version 0.0.1
 
