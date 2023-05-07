@@ -72,7 +72,8 @@ CONTEXT_SETTINGS = dict(
 @click.option('-p', '--plantuml', envvar=PLANTUML_JAR_ENV, type=str, default=None,
               help=f'Path of plantuml jar file (will load from ${{{PLANTUML_JAR_ENV}}} when not given).')
 @click.option('-r', '--remote-host', envvar=PLANTUML_HOST_ENV, type=str, default=OFFICIAL_PLANTUML_HOST,
-              help=f'Remote host of the online plantuml editor (will load from ${{{PLANTUML_HOST_ENV}}} when not given).',
+              help=f'Remote host of the online plantuml editor '
+                   f'(will load from ${{{PLANTUML_HOST_ENV}}} when not given).',
               show_default=True)
 @click.option('-L', '--use-local', is_flag=True, help='Use local plantuml only.')
 @click.option('-R', '--use-remote', is_flag=True, help='Use remote plantuml only.')
@@ -80,7 +81,7 @@ CONTEXT_SETTINGS = dict(
 @click.option('-u', '--url', is_flag=True, help='Print url of remote plantuml resource (ignore -L and -R).')
 @click.option('--homepage-url', is_flag=True, help='Print url of remote plantuml editor (ignore -L, -R and -u).')
 @click.option('-t', '--type', 'resource_type', default=PlantumlResourceType.PNG.name,
-              type=click.Choice(PlantumlResourceType.__members__.keys(), case_sensitive=False),
+              type=click.Choice(list(PlantumlResourceType.__members__.keys()), case_sensitive=False),
               help='Type of plantuml resource.', show_default=True)
 @click.option('-T', '--text', is_flag=True, help='Display text uml graph by stdout (ignore -t).')
 @click.option('-o', '--output', type=str, multiple=True,

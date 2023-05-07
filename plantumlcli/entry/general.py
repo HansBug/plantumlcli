@@ -57,7 +57,7 @@ def print_check_info(check_type: PlantumlCheckType,
         pass
 
 
-def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):
+def print_text_graph(plantuml: Plantuml, sources: Tuple[str], concurrency: int):  # noqa
     """
     Print text graph of source codes
     :param plantuml: plantuml object

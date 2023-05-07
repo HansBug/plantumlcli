@@ -12,10 +12,8 @@ def _default_final_error_process(errors: List[Tuple[int, _Ti, Exception]]):
     raise err
 
 
-def linear_process(items: Iterable[_Ti],
-                   process: Callable[[int, _Ti], _Tr],
-                   post_process: Callable[[int, _Ti, _Tr], None],
-                   concurrency: int = None,
+def linear_process(items: Iterable[_Ti], process: Callable[[int, _Ti], _Tr],  # noqa
+                   post_process: Callable[[int, _Ti, _Tr], None], concurrency: int = None,
                    skip_once_error: bool = True,
                    final_error_process: Optional[Callable[[List[Tuple[int, _Ti, Exception]]], None]] = None):
     concurrency = concurrency or cpu_count()

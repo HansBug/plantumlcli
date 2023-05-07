@@ -46,3 +46,9 @@ docs:
 	$(MAKE) -C "${DOC_DIR}" build
 pdocs:
 	$(MAKE) -C "${DOC_DIR}" prod
+
+flake:
+	flake8 ./plantumlcli --count --select=E9,F63,F7,F82 --show-source --statistics
+	flake8 ./plantumlcli --count --exit-zero \
+		--max-complexity=10 --max-line-length=127 --statistics \
+		--per-file-ignores="__init__.py:F401"
