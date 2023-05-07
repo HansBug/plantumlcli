@@ -1,4 +1,4 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 from enum import IntEnum, unique
 from typing import TypeVar, Type, Optional, Tuple, Union, Any, Mapping
 
@@ -20,6 +20,7 @@ class PlantumlResourceType(IntEnum):
     PNG = 2
     SVG = 3
     EPS = 4
+    PDF = 5
 
     @classmethod
     def load(cls, data: Union[int, str, 'PlantumlResourceType']) -> 'PlantumlResourceType':
@@ -54,9 +55,8 @@ class Plantuml(metaclass=ABCMeta):
         raise NotImplementedError  # pragma: no cover
 
     def _check_version(self, version: str):
-        pass
+        pass  # pragma: no cover
 
-    @abstractmethod
     def _get_version(self) -> str:
         raise NotImplementedError  # pragma: no cover
 
@@ -79,6 +79,10 @@ class Plantuml(metaclass=ABCMeta):
         """
         return self._check()
 
+    def _check_type_supported(self, type_: PlantumlResourceType):
+        _ = type_
+        pass
+
     @check_func(keep_return=False)
     def test(self) -> bool:
         """
@@ -88,9 +92,12 @@ class Plantuml(metaclass=ABCMeta):
         self._check()
         return True
 
-    @abstractmethod
     def _generate_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
         raise NotImplementedError  # pragma: no cover
+
+    def _get_uml_data(self, type_: PlantumlResourceType, code: str) -> bytes:
+        self._check_type_supported(type_)
+        return self._generate_uml_data(type_, code)
 
     def dump(self, path: str, type_: Union[int, str, PlantumlResourceType], code: str):
         """
@@ -99,7 +106,7 @@ class Plantuml(metaclass=ABCMeta):
         :param type_: resource type
         :param code: source code
         """
-        save_binary_file(path, self._generate_uml_data(PlantumlResourceType.load(type_), code))
+        save_binary_file(path, self._get_uml_data(PlantumlResourceType.load(type_), code))
 
     def dump_binary(self, type_: Union[int, str, PlantumlResourceType], code: str) -> bytes:
         """
@@ -107,7 +114,7 @@ class Plantuml(metaclass=ABCMeta):
         :param type_: resource type
         :param code: source code
         """
-        return self._generate_uml_data(PlantumlResourceType.load(type_), code)
+        return self._get_uml_data(PlantumlResourceType.load(type_), code)
 
     def dump_txt(self, code: str) -> str:
         """
@@ -115,10 +122,10 @@ class Plantuml(metaclass=ABCMeta):
         :param code: source code
         :return: txt uml data
         """
-        return auto_decode(self._generate_uml_data(PlantumlResourceType.TXT, code))
+        return auto_decode(self._get_uml_data(PlantumlResourceType.TXT, code))
 
     def _properties(self) -> Mapping[str, Any]:
-        return {}
+        return {}  # pragma: no cover
 
     def __repr__(self):
         prop_str = ', '.join([f'{key}: {value!r}' for key, value in sorted(self._properties().items())])

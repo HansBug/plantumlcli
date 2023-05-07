@@ -81,6 +81,7 @@ jobs:
         env:
           PLANTUML_JAR_VERSION: ${{ matrix.plantuml-version }}
           PLANTUML_HOST: http://localhost:18080
+          PLANTUML_SERVER_VERSION: ${{ matrix.plantuml-server-version }}
           TIMEOUT: '30'
         run: |
           make unittest WORKERS=${WORKERS}

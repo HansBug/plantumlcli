@@ -34,7 +34,7 @@ def _check_local(java: str, plantuml: str):
     if not os.path.isfile(java):
         raise IsADirectoryError(f'Java executable {java!r} is not a file.')
     if not os.access(java, os.X_OK):
-        raise PermissionError(f'Java executable {java!r} not executable.')
+        raise PermissionError(f'Java executable {java!r} not executable.')  # pragma: no cover
 
     if not plantuml:
         raise ValueError('Plantuml jar file not given.')
@@ -43,7 +43,7 @@ def _check_local(java: str, plantuml: str):
     if not os.path.isfile(plantuml):
         raise IsADirectoryError(f'Plantuml jar file {plantuml!r} is not a file.')
     if not os.access(plantuml, os.R_OK):
-        raise PermissionError(f'Plantuml jar file {plantuml!r} not readable.')
+        raise PermissionError(f'Plantuml jar file {plantuml!r} not readable.')  # pragma: no cover
 
 
 class LocalPlantumlExecuteError(CommandLineExecuteError):
@@ -120,4 +120,5 @@ class LocalPlantuml(Plantuml):
                     output_filename = os.path.join(output_path_name, _file_list[0])
                     return load_binary_file(output_filename)
                 else:
-                    raise FileNotFoundError(f'No expected file found in {output_path_name!r}.')
+                    # When you see this error, it means bug, please open an issue for help us fix this
+                    raise FileNotFoundError(f'No expected file found in {output_path_name!r}.')  # pragma: no cover
