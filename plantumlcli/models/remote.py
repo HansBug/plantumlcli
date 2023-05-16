@@ -121,12 +121,13 @@ class RemotePlantuml(Plantuml):
     def _get_version(self) -> str:
         if not self._is_official():
             r = self.__get_homepage()
-            return PyQuery(r.content.decode()).find('#footer').text().strip()
+            page = PyQuery(r.content.decode())
+            return (page.find('#footer') or page.find('.footer')).text().strip()
         else:
             return 'Official Site'
 
     def _get_server_version(self) -> Tuple[int, int, int]:
-        (major, year, v), = re.findall(r'version\s*(?P<major>\d)(?P<year>\d{4})(?P<v>\d{2})',
+        (major, year, v), = re.findall(r'version\s*(?P<major>\d)[.\-]?(?P<year>\d{4})[.\-]?(?P<v>\d{1,2})',
                                        self._get_version(), re.IGNORECASE)
 
         return int(major), int(year), int(v.lstrip('0') or '0')
