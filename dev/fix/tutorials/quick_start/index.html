@@ -1,0 +1,480 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Quick Start &mdash; plantumlcli 0.1.2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Installation" href="../installation/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> plantumlcli
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#check-environment">Check Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#export-diagrams-from-code">Export Diagrams From Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#export-to-ascii-arts">Export to ASCII Arts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-to-png-image">Export to PNG Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-to-svg-image">Export to SVG Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-to-eps-image">Export to EPS Image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-to-pdf-image">Export to PDF Image</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#more-details">More Details</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">plantumlcli</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Quick Start</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/tutorials/quick_start/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+    
+    
+  <section id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<section id="check-environment">
+<h2>Check Environment<a class="headerlink" href="#check-environment" title="Permalink to this headline">¶</a></h2>
+<p>We can perform a environment check using the following command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span>plantumlcli<span class="w"> </span>-c
+</pre></div></td></tr></table></div>
+</div>
+<p>In <code class="docutils literal notranslate"><span class="pre">plantumlcli</span></code>, the available environments can be categorized into local environments and
+remote environments, as follows:</p>
+<ul class="simple">
+<li><p><strong>Local Environments</strong>: Environments based on Java (both Oracle JDK and OpenJDK are supported) and the local <code class="docutils literal notranslate"><span class="pre">plantuml.jar</span></code> package. UML diagram generation is achieved by invoking the <code class="docutils literal notranslate"><span class="pre">java</span> <span class="pre">-jar</span> <span class="pre">plantuml.jar</span></code> command.</p></li>
+<li><p><strong>Remote Environments</strong>: Environments based on the <a class="reference external" href="https://github.com/plantuml/plantuml-server">plantuml-server</a> and the <a class="reference external" href="https://www.plantuml.com/plantuml/">official PlantUML website</a>. UML images are obtained by accessing their APIs, and the images are generated remotely and loaded into the local environment.</p></li>
+</ul>
+<p>In the current environment, we are only connected to a docker-based plantuml-server. The inspection results are as follows:</p>
+<div class="highlight-text notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span>Local plantuml not detected or has problem.
+Error : ValueError(&#39;Plantuml jar file not given.&#39;)
+Remote plantuml detected.
+PlantUML Server Version 1202306
+Remote host : http://localhost:18080
+Connection time : 0.019s
+</pre></div></td></tr></table></div>
+</div>
+</section>
+<section id="export-diagrams-from-code">
+<h2>Export Diagrams From Code<a class="headerlink" href="#export-diagrams-from-code" title="Permalink to this headline">¶</a></h2>
+<p>Here is one example plantuml code in file <code class="docutils literal notranslate"><span class="pre">common.puml</span></code>.</p>
+<div class="highlight-text notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span>@startuml
+hide empty description
+
+state &quot;Idle&quot; as idle
+state &quot;Ringing&quot; as ringing
+state &quot;Dialing&quot; as dialing
+state &quot;Calling&quot; as calling
+
+[*] -&gt; idle : power on
+idle -&gt; [*] : power off
+
+idle -&gt; ringing : incoming call
+ringing -&gt; calling : pick up
+
+idle -&gt; dialing : outgoing call
+dialing -&gt; calling : be answered
+dialing -&gt; idle : nobody
+
+calling -down-&gt; idle : hang up
+@enduml
+</pre></div></td></tr></table></div>
+</div>
+<section id="export-to-ascii-arts">
+<h3>Export to ASCII Arts<a class="headerlink" href="#export-to-ascii-arts" title="Permalink to this headline">¶</a></h3>
+<p>Some very simple UML diagrams can be viewed directly in the command line using ASCII art.
+For example, the following code for <code class="docutils literal notranslate"><span class="pre">helloworld.puml</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span>@startuml
+Bob -&gt; Alice : hello
+@enduml
+</pre></div></td></tr></table></div>
+</div>
+<p>Enter the following command:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span>plantumlcli<span class="w"> </span>-T<span class="w"> </span>helloworld.puml
+</pre></div></td></tr></table></div>
+</div>
+<p>You will see:</p>
+<div class="highlight-text notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span>
+<span class="normal">9</span></pre></div></td><td class="code"><div><pre><span></span>helloworld.puml: 
+     ┌───┐          ┌─────┐
+     │Bob│          │Alice│
+     └─┬─┘          └──┬──┘
+       │    hello      │   
+       │──────────────&gt;│   
+     ┌─┴─┐          ┌──┴──┐
+     │Bob│          │Alice│
+     └───┘          └─────┘
+</pre></div></td></tr></table></div>
+</div>
+</section>
+<section id="export-to-png-image">
+<h3>Export to PNG Image<a class="headerlink" href="#export-to-png-image" title="Permalink to this headline">¶</a></h3>
+<p>Convert the code to PNG image with the following command</p>
+<div class="highlight-shell notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span>plantumlcli<span class="w"> </span>-t<span class="w"> </span>png<span class="w"> </span>-o<span class="w"> </span>common.dat.png<span class="w"> </span>common.puml
+</pre></div></td></tr></table></div>
+</div>
+<p>And this is the <a class="reference download internal" download="" href="../../_downloads/50bd35e02b929d252e7a6519e27a4902/common.dat.png"><code class="xref download docutils literal notranslate"><span class="pre">common.dat.png</span></code></a>:</p>
+<img alt="../../_images/common.dat.png" class="align-center" src="../../_images/common.dat.png" />
+</section>
+<section id="export-to-svg-image">
+<h3>Export to SVG Image<a class="headerlink" href="#export-to-svg-image" title="Permalink to this headline">¶</a></h3>
+<p>Convert the code to SVG image with the following command</p>
+<div class="highlight-shell notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span>plantumlcli<span class="w"> </span>-t<span class="w"> </span>svg<span class="w"> </span>-o<span class="w"> </span>common.dat.svg<span class="w"> </span>common.puml
+</pre></div></td></tr></table></div>
+</div>
+<p>And this is the <a class="reference download internal" download="" href="../../_downloads/9cecf2e74949e3513058e57639cdb711/common.dat.svg"><code class="xref download docutils literal notranslate"><span class="pre">common.dat.svg</span></code></a>:</p>
+<img alt="../../_images/common.dat.svg" class="align-center" src="../../_images/common.dat.svg" /></section>
+<section id="export-to-eps-image">
+<h3>Export to EPS Image<a class="headerlink" href="#export-to-eps-image" title="Permalink to this headline">¶</a></h3>
+<p>Convert the code to EPS image with the following command</p>
+<div class="highlight-shell notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span>plantumlcli<span class="w"> </span>-t<span class="w"> </span>eps<span class="w"> </span>-o<span class="w"> </span>common.dat.eps<span class="w"> </span>common.puml
+</pre></div></td></tr></table></div>
+</div>
+<p>And this is the <a class="reference download internal" download="" href="../../_downloads/0deafade0df3ee7ee03bf73ffb8ddbc0/common.dat.eps"><code class="xref download docutils literal notranslate"><span class="pre">common.dat.eps</span></code></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The EPS format has been deprecated and is no longer widely supported in many applications,
+so it is not recommended to continue using it. If you need to use vector graphics in LaTeX,
+it is recommended to use the PDF format. If you need to import vector graphics into Microsoft Office software,
+it is recommended to use the SVG format.</p>
+</aside>
+</section>
+<section id="export-to-pdf-image">
+<h3>Export to PDF Image<a class="headerlink" href="#export-to-pdf-image" title="Permalink to this headline">¶</a></h3>
+<p>Convert the code to PDF image with the following command</p>
+<div class="highlight-shell notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span>plantumlcli<span class="w"> </span>-t<span class="w"> </span>pdf<span class="w"> </span>-o<span class="w"> </span>common.dat.pdf<span class="w"> </span>common.puml
+</pre></div></td></tr></table></div>
+</div>
+<p>And this is the <a class="reference download internal" download="" href="../../_downloads/5ee9e14f621d3b2d840c3cf872b56a30/common.dat.pdf"><code class="xref download docutils literal notranslate"><span class="pre">common.dat.pdf</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you need to convert it to PDF format, you will need to install <code class="docutils literal notranslate"><span class="pre">plantumlcli[pdf]</span></code> like this:</p>
+<blockquote>
+<div><div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>plantumlcli<span class="o">[</span>pdf<span class="o">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+</aside>
+</section>
+</section>
+<section id="more-details">
+<h2>More Details<a class="headerlink" href="#more-details" title="Permalink to this headline">¶</a></h2>
+<p>You can see the help information with</p>
+<div class="highlight-shell notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span>plantumlcli<span class="w"> </span>--help
+</pre></div></td></tr></table></div>
+</div>
+<p>And this is the help information for <code class="docutils literal notranslate"><span class="pre">plantumlcli</span></code></p>
+<div class="highlight-text notranslate"><div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span></pre></div></td><td class="code"><div><pre><span></span>Usage: plantumlcli [OPTIONS] [SOURCES]...
+
+Options:
+  -v, --version                   Show package&#39;s version information.
+  -j, --java TEXT                 Path of java executable file (will load from
+                                  environment when not given).  [default:
+                                  (java from ${PATH})]
+  -p, --plantuml TEXT             Path of plantuml jar file (will load from
+                                  ${PLANTUML_JAR} when not given).
+  -r, --remote-host TEXT          Remote host of the online plantuml editor
+                                  (will load from ${PLANTUML_HOST} when not
+                                  given).  [default:
+                                  http://www.plantuml.com/plantuml]
+  -L, --use-local                 Use local plantuml only.
+  -R, --use-remote                Use remote plantuml only.
+  -c, --check                     Check usable plantuml.
+  -u, --url                       Print url of remote plantuml resource
+                                  (ignore -L and -R).
+  --homepage-url                  Print url of remote plantuml editor (ignore
+                                  -L, -R and -u).
+  -t, --type [TXT|PNG|SVG|EPS|PDF]
+                                  Type of plantuml resource. (Attention that
+                                  the PDF format is only natively supported by
+                                  few versions of plantuml-server. Please
+                                  install &#39;plantumlcli[pdf]&#39; and Cairo
+                                  environment to make sure the export to PDF
+                                  can be processed.)  [default: PNG]
+  -T, --text                      Display text uml graph by stdout (ignore
+                                  -t).
+  -o, --output TEXT               Paths of output files (relative path
+                                  supported, based on output dir in -O).
+  -O, --output-dir DIRECTORY      Base path for outputting files.  [default:
+                                  (current path)]
+  -n, --concurrency INTEGER       Concurrency when running plantuml.
+                                  [default: 2]
+  -h, --help                      Show this message and exit.
+</pre></div></td></tr></table></div>
+</div>
+</section>
+</section>
+
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../installation/index.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2023, HansBug
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+    <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book"> Other Versions</span>
+    v: dev/fix
+    <span class="fa fa-caret-down"></span>
+  </span>
+        <div class="rst-other-versions">
+                <dl>
+                    <dt>Tags</dt>
+                        <dd><a href="../../../../v0.0.4/index.html">v0.0.4</a></dd>
+                        <dd><a href="../../../../v0.1.0/index.html">v0.1.0</a></dd>
+                        <dd><a href="../../../../v0.1.1/index.html">v0.1.1</a></dd>
+                        <dd><a href="../../../../v0.1.2/tutorials/quick_start/index.html">v0.1.2</a></dd>
+                </dl>
+                <dl>
+                    <dt>Branches</dt>
+                        <dd><a href="index.html">dev/fix</a></dd>
+                        <dd><a href="../../../../main/tutorials/quick_start/index.html">main</a></dd>
+                </dl>
+        </div>
+    </div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
