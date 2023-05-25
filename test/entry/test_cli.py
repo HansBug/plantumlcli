@@ -241,7 +241,7 @@ class TestEntranceCli:
 
         assert result.exit_code != 0
 
-    def test_text_graph(self, uml_helloworld, uml_common, uml_chinese, uml_large):
+    def test_text_graph(self, uml_helloworld, uml_common, uml_chinese, uml_large, skip_for_server_v1202307):
         runner = CliRunner()
         result = runner.invoke(cli, args=['-T', uml_helloworld, uml_common,
                                           uml_chinese, uml_large])
@@ -252,7 +252,7 @@ class TestEntranceCli:
         assert '认证中心' in result.stdout
         assert 'Handle claim' in result.stdout
 
-    def test_text_graph_error(self, plantuml_jar_file, plantuml_host,
+    def test_text_graph_error(self, skip_for_server_v1202307, plantuml_jar_file, plantuml_host,
                               uml_helloworld, uml_common, uml_invalid, uml_chinese, uml_large):
         runner = CliRunner()
         result = runner.invoke(cli, args=['-T', uml_helloworld, uml_common, uml_invalid,
@@ -331,7 +331,8 @@ class TestEntranceCli:
         assert any(l <= size <= r for l, r in ranges), \
             f'Size in range {ranges!r} expected, but {size!r} found.'
 
-    def test_file_dump(self, uml_helloworld, uml_common, uml_chinese, uml_large, plantuml_server_version):
+    def test_file_dump(self, uml_helloworld, uml_common, uml_chinese, uml_large,
+                       plantuml_server_version, skip_for_server_v1202307):
         runner = CliRunner()
 
         with runner.isolated_filesystem():
