@@ -20,7 +20,7 @@ jobs:
 
     services:
       plantuml:
-        image: plantuml/plantuml-server
+        image: plantuml/plantuml-server:jetty-v1.2023.6
         ports:
           - 18080:8080
 
