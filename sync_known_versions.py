@@ -244,3 +244,4 @@ if __name__ == '__main__':
 
     with open(dst_file, 'w') as f:
         print(f'KNOWN_VERSIONS = {pformat(known_versions)}', file=f)
+
