@@ -233,24 +233,24 @@ if __name__ == '__main__':
 
     cnt = 0
     max_count = args.count
-    for version in tqdm(sourceforge_versions[::-1]):
-        if cnt >= max_count:
-            break
-        if version in known_versions:
-            continue
-        url = f'https://sourceforge.net/projects/plantuml/files/{version}/plantuml.{version}.jar/download'
-        _info = _get_version_info(version, url, session=session)
-        if not _info:
-            continue
-        known_versions[version] = _info
-        cnt += 1
-
     for version in tqdm(github_versions[::-1]):
         if cnt >= max_count:
             break
         if version in known_versions:
             continue
         url = f'https://github.com/plantuml/plantuml/releases/download/v{version}/plantuml-{version}.jar'
+        _info = _get_version_info(version, url, session=session)
+        if not _info:
+            continue
+        known_versions[version] = _info
+        cnt += 1
+
+    for version in tqdm(sourceforge_versions[::-1]):
+        if cnt >= max_count:
+            break
+        if version in known_versions:
+            continue
+        url = f'https://sourceforge.net/projects/plantuml/files/{version}/plantuml.{version}.jar/download'
         _info = _get_version_info(version, url, session=session)
         if not _info:
             continue
