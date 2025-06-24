@@ -69,6 +69,8 @@ def get_requests_session(max_retries: int = 5, timeout: int = DEFAULT_TIMEOUT, v
     :type headers: Optional[Dict[str, str]]
     :param session: An existing requests.Session instance to use.
     :type session: Optional[requests.Session]
+    :param use_random_ua: Use random-generate User-Agent in session creation.
+    :type use_random_ua: bool
     :return: A configured requests.Session object.
     :rtype: requests.Session
     """
