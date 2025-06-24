@@ -57,6 +57,11 @@ class TestUtilsSession:
         session = get_requests_session()
         assert isinstance(session, requests.Session)
         assert 'User-Agent' in session.headers
+        assert session.headers['User-Agent'] != 'MockUserAgent'
+
+        session = get_requests_session(use_random_ua=True)
+        assert isinstance(session, requests.Session)
+        assert 'User-Agent' in session.headers
         assert session.headers['User-Agent'] == 'MockUserAgent'
 
         custom_headers = {'Custom-Header': 'Value'}

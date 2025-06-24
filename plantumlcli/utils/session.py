@@ -53,7 +53,8 @@ class TimeoutHTTPAdapter(HTTPAdapter):
 
 
 def get_requests_session(max_retries: int = 5, timeout: int = DEFAULT_TIMEOUT, verify: bool = True,
-                         headers: Optional[Dict[str, str]] = None, session: Optional[requests.Session] = None) \
+                         headers: Optional[Dict[str, str]] = None, session: Optional[requests.Session] = None,
+                         use_random_ua: bool = False) \
         -> requests.Session:
     """
     Creates a requests session with retry logic, timeout settings, and random user-agent headers.
@@ -80,10 +81,9 @@ def get_requests_session(max_retries: int = 5, timeout: int = DEFAULT_TIMEOUT, v
     adapter = TimeoutHTTPAdapter(max_retries=retries, timeout=timeout, pool_connections=32, pool_maxsize=32)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
-    session.headers.update({
-        # "User-Agent": get_random_ua(),
-        **dict(headers or {}),
-    })
+    if use_random_ua:
+        session.headers.update({"User-Agent": get_random_ua()})
+    session.headers.update(dict(headers or {}))
     if not verify:
         session.verify = False
 
