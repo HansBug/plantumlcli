@@ -2,7 +2,8 @@ import os
 import re
 
 import pytest
-from huggingface_hub import hf_hub_download
+
+from plantumlcli.download import get_plantuml_jar_file
 
 
 @pytest.fixture(scope='session')
@@ -12,11 +13,7 @@ def plantuml_jar_version():
 
 @pytest.fixture(scope='session')
 def plantuml_jar_file(plantuml_jar_version):
-    return hf_hub_download(
-        'HansBug/opensource_mirror',
-        f'plantuml/{plantuml_jar_version}/plantuml.{plantuml_jar_version}.jar',
-        repo_type='dataset',
-    )
+    return get_plantuml_jar_file(version=plantuml_jar_version)
 
 
 @pytest.fixture(scope='session')
