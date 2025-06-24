@@ -7,6 +7,7 @@ from typing import Dict
 
 import requests
 from hbutils.system import TemporaryDirectory
+from natsort import natsorted
 from tqdm import tqdm
 
 from plantumlcli.utils import get_requests_session
@@ -217,6 +218,7 @@ def _get_version_info(version: str, url: str, session=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Update known version information')
     parser.add_argument('-o', '--output_file', required=True, help='Output files of known versions')
+    parser.add_argument('-n', '--count', default=20, help='Run count of this time')
 
     args = parser.parse_args()
     session = get_requests_session()
@@ -229,7 +231,11 @@ if __name__ == '__main__':
     else:
         known_versions: Dict[str, dict] = {}
 
+    cnt = 0
+    max_count = args.count
     for version in tqdm(sourceforge_versions[::-1]):
+        if cnt >= max_count:
+            break
         if version in known_versions:
             continue
         url = f'https://sourceforge.net/projects/plantuml/files/{version}/plantuml.{version}.jar/download'
@@ -237,8 +243,11 @@ if __name__ == '__main__':
         if not _info:
             continue
         known_versions[version] = _info
+        cnt += 1
 
     for version in tqdm(github_versions[::-1]):
+        if cnt >= max_count:
+            break
         if version in known_versions:
             continue
         url = f'https://github.com/plantuml/plantuml/releases/download/v{version}/plantuml-{version}.jar'
@@ -246,6 +255,8 @@ if __name__ == '__main__':
         if not _info:
             continue
         known_versions[version] = _info
+        cnt += 1
 
+    known_versions = dict(natsorted(known_versions.items()))
     with open(dst_file, 'w') as f:
-        print(f'KNOWN_VERSIONS = {pformat(known_versions)}', file=f)
+        print(f'KNOWN_VERSIONS = {pformat(known_versions, sort_dicts=False)}', file=f)
