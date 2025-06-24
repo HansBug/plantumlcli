@@ -20,6 +20,7 @@ jobs:
         java-version:
           - '8'
         plantuml-server-version:
+          - 'jetty-v1.2025.3'
           - 'jetty-v1.2023.8'  # this is a very important version, the ui is changed!!!
           - 'jetty-v1.2023.7'  # this is a very important version, the ui is changed!!!
           - 'jetty-v1.2023.6'
