@@ -258,5 +258,6 @@ if __name__ == '__main__':
         cnt += 1
 
     known_versions = dict(natsorted(known_versions.items()))
+    known_versions = {key: dict(natsorted(value.items())) for key, value in known_versions.items()}
     with open(dst_file, 'w') as f:
         print(f'KNOWN_VERSIONS = {pformat(known_versions, sort_dicts=False)}', file=f)
