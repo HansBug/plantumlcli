@@ -1,9 +1,9 @@
-where~=1.0
 click>=7.0
-colorama~=0.4
+colorama>=0.4
 requests>=2.12
-urlobject~=2.4
-pyquery~=1.4
-prettytable~=1.0
-chardet~=3.0
+urlobject>=2.4
+pyquery>=1.4
+prettytable>=1.0
+chardet>=3.0
 hbutils>=0.9.0
+random_user_agent

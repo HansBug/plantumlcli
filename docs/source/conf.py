@@ -18,11 +18,11 @@
 # -- Project information -----------------------------------------------------
 
 import os
+import shutil
 import sys
 from datetime import datetime
 from subprocess import Popen
 
-import where
 from packaging import version as version_
 
 # Get current location
@@ -48,19 +48,19 @@ if not os.environ.get("NO_CONTENTS_BUILD"):
         PATH=':'.join([_SHIMS_PATH, os.environ.get('PATH', '')]),
     ))
 
-    pip_cmd = (where.first('pip'), 'install', '-r', os.path.join(_PROJ_PATH, 'requirements.txt'))
+    pip_cmd = (shutil.which('pip'), 'install', '-r', os.path.join(_PROJ_PATH, 'requirements.txt'))
     print("Install pip requirements {cmd}...".format(cmd=repr(pip_cmd)))
     pip = Popen(pip_cmd, stdout=sys.stdout, stderr=sys.stderr, env=_env, cwd=_DOC_PATH)
     if pip.wait() != 0:
         raise ChildProcessError("Pip install failed with %d." % (pip.returncode,))
 
-    pip_docs_cmd = (where.first('pip'), 'install', '-r', os.path.join(_PROJ_PATH, 'requirements-doc.txt'))
+    pip_docs_cmd = (shutil.which('pip'), 'install', '-r', os.path.join(_PROJ_PATH, 'requirements-doc.txt'))
     print("Install pip docs requirements {cmd}...".format(cmd=repr(pip_docs_cmd)))
     pip_docs = Popen(pip_docs_cmd, stdout=sys.stdout, stderr=sys.stderr, env=_env, cwd=_DOC_PATH)
     if pip_docs.wait() != 0:
         raise ChildProcessError("Pip docs install failed with %d." % (pip.returncode,))
 
-    all_cmd = (where.first('make'), '-f', "all.mk", "build")
+    all_cmd = (shutil.which('make'), '-f', "all.mk", "build")
     print("Building all {cmd} at {cp}...".format(cmd=repr(all_cmd), cp=repr(_DOC_PATH)))
     all_ = Popen(all_cmd, stdout=sys.stdout, stderr=sys.stderr, env=_env, cwd=_DOC_PATH)
     if all_.wait() != 0:
