@@ -81,7 +81,7 @@ def get_requests_session(max_retries: int = 5, timeout: int = DEFAULT_TIMEOUT, v
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     session.headers.update({
-        "User-Agent": get_random_ua(),
+        # "User-Agent": get_random_ua(),
         **dict(headers or {}),
     })
     if not verify:
