@@ -5,11 +5,11 @@ import string
 import zlib
 from typing import Optional, Mapping, Any, Union, Tuple
 
-import requests
 from pyquery import PyQuery
 from urlobject import URLObject
 
 from .base import Plantuml, PlantumlResourceType, _has_cairosvg
+from ..utils import get_requests_session
 
 PLANTUML_HOST_ENV = 'PLANTUML_HOST'
 OFFICIAL_PLANTUML_HOST = 'http://www.plantuml.com/plantuml'
@@ -56,7 +56,7 @@ class RemotePlantuml(Plantuml):
         _check_remote(self.__host)
         self.__host = _host_process(self.__host)
 
-        self.__session = requests.session()
+        self.__session = get_requests_session()
         self.__request_params = kwargs
 
     @classmethod

@@ -47,7 +47,7 @@ jobs:
           git branch -av
           git remote -v
           git tag
-          plantumlcli -c
+          python -m plantumlcli -c
           make pdocs
           mv ./docs/build/html ./public
       - name: Deploy to Github Page
