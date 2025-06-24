@@ -229,7 +229,7 @@ if __name__ == '__main__':
     else:
         known_versions: Dict[str, dict] = {}
 
-    for version in tqdm(sourceforge_versions[::-1][:30]):
+    for version in tqdm(sourceforge_versions[::-1]):
         if version in known_versions:
             continue
         url = f'https://sourceforge.net/projects/plantuml/files/{version}/plantuml.{version}.jar/download'
@@ -238,7 +238,7 @@ if __name__ == '__main__':
             continue
         known_versions[version] = _info
 
-    for version in tqdm(github_versions[::-1][:30]):
+    for version in tqdm(github_versions[::-1]):
         if version in known_versions:
             continue
         url = f'https://github.com/plantuml/plantuml/releases/download/v{version}/plantuml-{version}.jar'
