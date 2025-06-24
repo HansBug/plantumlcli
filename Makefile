@@ -11,6 +11,8 @@ TEST_DIR := ${PROJ_DIR}/test
 SRC_DIR  := ${PROJ_DIR}/plantumlcli
 DIST_DIR := ${PROJ_DIR}/dist
 
+KNOWN_VERSION_FILE ?= ${SRC_DIR}/download/exist_versions.py
+
 RANGE_DIR      ?= .
 RANGE_TEST_DIR := ${TEST_DIR}/${RANGE_DIR}
 RANGE_SRC_DIR  := ${SRC_DIR}/${RANGE_DIR}
@@ -56,3 +58,7 @@ flake:
 
 package:
 	python -m build --sdist --wheel --outdir ${DIST_DIR}
+
+versions:
+	python sync_known_versions.py -o ${KNOWN_VERSION_FILE}
+	ruff format ${KNOWN_VERSION_FILE}

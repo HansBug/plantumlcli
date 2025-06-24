@@ -1,3 +1,4 @@
+import argparse
 import hashlib
 import os
 import pathlib
@@ -202,7 +203,7 @@ def _get_version_info(version: str, url: str, session=None):
                 if not data:
                     break
                 sha256_hash.update(data)
-        sha256_result = sha256_hash
+        sha256_result = sha256_hash.hexdigest()
 
     return {
         'version': version,
@@ -214,9 +215,13 @@ def _get_version_info(version: str, url: str, session=None):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Update known version information')
+    parser.add_argument('-o', '--output_file', required=True, help='Output files of known versions')
+
+    args = parser.parse_args()
     session = get_requests_session()
 
-    dst_file = os.path.join('plantumlcli', 'download', 'exist_versions.py')
+    dst_file = args.output_file
     os.makedirs(os.path.dirname(dst_file), exist_ok=True)
     if os.path.exists(dst_file):
         exec(pathlib.Path(dst_file).read_text())
@@ -224,7 +229,7 @@ if __name__ == '__main__':
     else:
         known_versions: Dict[str, dict] = {}
 
-    for version in tqdm(sourceforge_versions[::-1]):
+    for version in tqdm(sourceforge_versions[::-1][:30]):
         if version in known_versions:
             continue
         url = f'https://sourceforge.net/projects/plantuml/files/{version}/plantuml.{version}.jar/download'
@@ -233,7 +238,7 @@ if __name__ == '__main__':
             continue
         known_versions[version] = _info
 
-    for version in tqdm(github_versions[::-1]):
+    for version in tqdm(github_versions[::-1][:30]):
         if version in known_versions:
             continue
         url = f'https://github.com/plantuml/plantuml/releases/download/v{version}/plantuml-{version}.jar'
