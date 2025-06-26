@@ -21,9 +21,9 @@ jobs:
           - '8'
         plantuml-server-version:
           - 'jetty-v1.2025.3'
-#          - 'jetty-v1.2023.8'  # this is a very important version, the ui is changed!!!
+          #          - 'jetty-v1.2023.8'  # this is a very important version, the ui is changed!!!
           - 'jetty-v1.2023.7'  # this is a very important version, the ui is changed!!!
-#          - 'jetty-v1.2023.6'
+          #          - 'jetty-v1.2023.6'
           - 'jetty-v1.2021.14'
           - 'jetty-v1.2019.11'
         plantuml-version:
@@ -39,12 +39,20 @@ jobs:
           - 18080:8080
 
     steps:
+      - name: Get system version for Linux
+        if: ${{ contains(matrix.os, 'ubuntu') }}
+        shell: bash
+        run: |
+          echo "OS_NAME=Linux" >> $GITHUB_ENV
+          echo "IS_WIN=" >> $GITHUB_ENV
+          echo "IS_MAC=" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 20
       - name: Set up system dependences on linux
-        if: ${{ runner.os == 'Linux' }}
+        if: ${{ env.OS_NAME == 'Linux' }}
+        shell: bash
         run: |
           sudo apt-get update -y
           sudo apt-get install -y tree make wget curl cloc graphviz
@@ -104,7 +112,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-#          - 'ubuntu-22.04'
+          #          - 'ubuntu-22.04'
           - 'windows-2022'
           - 'macos-13'
         python-version:
@@ -121,12 +129,34 @@ jobs:
 
 
     steps:
+      - name: Get system version for Linux
+        if: ${{ contains(matrix.os, 'ubuntu') }}
+        shell: bash
+        run: |
+          echo "OS_NAME=Linux" >> $GITHUB_ENV
+          echo "IS_WIN=" >> $GITHUB_ENV
+          echo "IS_MAC=" >> $GITHUB_ENV
+      - name: Get system version for Windows
+        if: ${{ contains(matrix.os, 'windows') }}
+        shell: bash
+        run: |
+          echo "OS_NAME=Windows" >> $GITHUB_ENV
+          echo "IS_WIN=1" >> $GITHUB_ENV
+          echo "IS_MAC=" >> $GITHUB_ENV
+      - name: Get system version for MacOS
+        if: ${{ contains(matrix.os, 'macos') }}
+        shell: bash
+        run: |
+          echo "OS_NAME=MacOS" >> $GITHUB_ENV
+          echo "IS_WIN=" >> $GITHUB_ENV
+          echo "IS_MAC=1" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 20
       - name: Set up system dependences on linux
-        if: ${{ runner.os == 'Linux' }}
+        if: ${{ env.OS_NAME == 'Linux' }}
+        shell: bash
         run: |
           sudo apt-get update -y
           sudo apt-get install -y tree cloc wget curl make zip graphviz
@@ -138,6 +168,7 @@ jobs:
           choco install tree cloc wget curl make zip graphviz
       - name: Set up system dependences on MacOS
         if: ${{ env.OS_NAME == 'MacOS' }}
+        shell: bash
         run: |
           brew install tree cloc wget curl make zip graphviz
       - name: Set up python ${{ matrix.python-version }}
@@ -168,7 +199,6 @@ jobs:
       - name: Run unittest
         env:
           PLANTUML_JAR_VERSION: ${{ matrix.plantuml-version }}
-          PLANTUML_HOST: http://localhost:18080
           TIMEOUT: '30'
         run: |
           make unittest WORKERS=${WORKERS}
