@@ -96,7 +96,7 @@ jobs:
         run: |
           make unittest WORKERS=${WORKERS}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml
@@ -181,12 +181,14 @@ jobs:
           java-version: ${{ matrix.java-version }}
           distribution: temurin
       - name: Install dependencies
+        shell: bash
         run: |
           pip install --upgrade pip
           pip install --upgrade flake8 setuptools wheel twine
           pip install -r requirements.txt
           pip install -r requirements-test.txt
       - name: Test the basic environment
+        shell: bash
         run: |
           python -V
           pip --version  
@@ -197,13 +199,14 @@ jobs:
           cloc plantuml
           cloc test
       - name: Run unittest
+        shell: bash
         env:
           PLANTUML_JAR_VERSION: ${{ matrix.plantuml-version }}
           TIMEOUT: '30'
         run: |
           make unittest WORKERS=${WORKERS}
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml
