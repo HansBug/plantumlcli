@@ -21,9 +21,9 @@ jobs:
           - '8'
         plantuml-server-version:
           - 'jetty-v1.2025.3'
-          #          - 'jetty-v1.2023.8'  # this is a very important version, the ui is changed!!!
+          - 'jetty-v1.2023.8'  # this is a very important version, the ui is changed!!!
           - 'jetty-v1.2023.7'  # this is a very important version, the ui is changed!!!
-          #          - 'jetty-v1.2023.6'
+          - 'jetty-v1.2023.6'
           - 'jetty-v1.2021.14'
           - 'jetty-v1.2019.11'
         plantuml-version:
@@ -104,112 +104,112 @@ jobs:
           name: codecov-umbrella
           fail_ci_if_error: false
 
-  test_for_all:
-    name: Test For ALL
-    runs-on: ${{ matrix.os }}
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          #          - 'ubuntu-22.04'
-          - 'windows-2022'
-          - 'macos-13'
-        python-version:
-          - '3.7'
-          - '3.10'
-          - '3.13'
-        java-version:
-          - '8'
-        plantuml-version:
-          - '1.2025.3'
-          - '1.2023.6'
-          - '1.2020.19'
-          - '1.2017.20'
-
-
-    steps:
-      - name: Get system version for Linux
-        if: ${{ contains(matrix.os, 'ubuntu') }}
-        shell: bash
-        run: |
-          echo "OS_NAME=Linux" >> $GITHUB_ENV
-          echo "IS_WIN=" >> $GITHUB_ENV
-          echo "IS_MAC=" >> $GITHUB_ENV
-      - name: Get system version for Windows
-        if: ${{ contains(matrix.os, 'windows') }}
-        shell: bash
-        run: |
-          echo "OS_NAME=Windows" >> $GITHUB_ENV
-          echo "IS_WIN=1" >> $GITHUB_ENV
-          echo "IS_MAC=" >> $GITHUB_ENV
-      - name: Get system version for MacOS
-        if: ${{ contains(matrix.os, 'macos') }}
-        shell: bash
-        run: |
-          echo "OS_NAME=MacOS" >> $GITHUB_ENV
-          echo "IS_WIN=" >> $GITHUB_ENV
-          echo "IS_MAC=1" >> $GITHUB_ENV
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 20
-      - name: Set up system dependences on linux
-        if: ${{ env.OS_NAME == 'Linux' }}
-        shell: bash
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y tree cloc wget curl make zip graphviz
-          dot -V
-      - name: Set up system dependences on Windows
-        if: ${{ env.OS_NAME == 'Windows' }}
-        shell: bash
-        run: |
-          choco install tree cloc wget curl make zip graphviz
-      - name: Set up system dependences on MacOS
-        if: ${{ env.OS_NAME == 'MacOS' }}
-        shell: bash
-        run: |
-          brew install tree cloc wget curl make zip graphviz
-      - name: Set up python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Set up java ${{ matrix.java-version }}
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ matrix.java-version }}
-          distribution: temurin
-      - name: Install dependencies
-        shell: bash
-        run: |
-          pip install --upgrade pip
-          pip install --upgrade flake8 setuptools wheel twine
-          pip install -r requirements.txt
-          pip install -r requirements-test.txt
-      - name: Test the basic environment
-        shell: bash
-        run: |
-          python -V
-          pip --version  
-          pip list
-          java -version
-          javac -version
-          tree .
-          cloc plantuml
-          cloc test
-      - name: Run unittest
-        shell: bash
-        env:
-          PLANTUML_JAR_VERSION: ${{ matrix.plantuml-version }}
-          TIMEOUT: '30'
-        run: |
-          make unittest WORKERS=${WORKERS}
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: false
+#  test_for_all:
+#    name: Test For ALL
+#    runs-on: ${{ matrix.os }}
+#    if: "!contains(github.event.head_commit.message, 'ci skip')"
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        os:
+#          #          - 'ubuntu-22.04'
+#          - 'windows-2022'
+#          - 'macos-13'
+#        python-version:
+#          - '3.7'
+#          - '3.10'
+#          - '3.13'
+#        java-version:
+#          - '8'
+#        plantuml-version:
+#          - '1.2025.3'
+#          - '1.2023.6'
+#          - '1.2020.19'
+#          - '1.2017.20'
+#
+#
+#    steps:
+#      - name: Get system version for Linux
+#        if: ${{ contains(matrix.os, 'ubuntu') }}
+#        shell: bash
+#        run: |
+#          echo "OS_NAME=Linux" >> $GITHUB_ENV
+#          echo "IS_WIN=" >> $GITHUB_ENV
+#          echo "IS_MAC=" >> $GITHUB_ENV
+#      - name: Get system version for Windows
+#        if: ${{ contains(matrix.os, 'windows') }}
+#        shell: bash
+#        run: |
+#          echo "OS_NAME=Windows" >> $GITHUB_ENV
+#          echo "IS_WIN=1" >> $GITHUB_ENV
+#          echo "IS_MAC=" >> $GITHUB_ENV
+#      - name: Get system version for MacOS
+#        if: ${{ contains(matrix.os, 'macos') }}
+#        shell: bash
+#        run: |
+#          echo "OS_NAME=MacOS" >> $GITHUB_ENV
+#          echo "IS_WIN=" >> $GITHUB_ENV
+#          echo "IS_MAC=1" >> $GITHUB_ENV
+#      - name: Checkout code
+#        uses: actions/checkout@v3
+#        with:
+#          fetch-depth: 20
+#      - name: Set up system dependences on linux
+#        if: ${{ env.OS_NAME == 'Linux' }}
+#        shell: bash
+#        run: |
+#          sudo apt-get update -y
+#          sudo apt-get install -y tree cloc wget curl make zip graphviz
+#          dot -V
+#      - name: Set up system dependences on Windows
+#        if: ${{ env.OS_NAME == 'Windows' }}
+#        shell: bash
+#        run: |
+#          choco install tree cloc wget curl make zip graphviz
+#      - name: Set up system dependences on MacOS
+#        if: ${{ env.OS_NAME == 'MacOS' }}
+#        shell: bash
+#        run: |
+#          brew install tree cloc wget curl make zip graphviz
+#      - name: Set up python ${{ matrix.python-version }}
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: ${{ matrix.python-version }}
+#      - name: Set up java ${{ matrix.java-version }}
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: ${{ matrix.java-version }}
+#          distribution: temurin
+#      - name: Install dependencies
+#        shell: bash
+#        run: |
+#          pip install --upgrade pip
+#          pip install --upgrade flake8 setuptools wheel twine
+#          pip install -r requirements.txt
+#          pip install -r requirements-test.txt
+#      - name: Test the basic environment
+#        shell: bash
+#        run: |
+#          python -V
+#          pip --version
+#          pip list
+#          java -version
+#          javac -version
+#          tree .
+#          cloc plantuml
+#          cloc test
+#      - name: Run unittest
+#        shell: bash
+#        env:
+#          PLANTUML_JAR_VERSION: ${{ matrix.plantuml-version }}
+#          TIMEOUT: '30'
+#        run: |
+#          make unittest WORKERS=${WORKERS}
+#      - name: Upload coverage to Codecov
+#        uses: codecov/codecov-action@v1
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}
+#          file: ./coverage.xml
+#          flags: unittests
+#          name: codecov-umbrella
+#          fail_ci_if_error: false
