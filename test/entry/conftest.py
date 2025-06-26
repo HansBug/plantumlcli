@@ -31,7 +31,7 @@ def uml_large():
 def _has_cairosvg():
     try:
         import cairosvg
-    except (ImportError, ModuleNotFoundError):
+    except (ImportError, ModuleNotFoundError, OSError):
         return False
     else:
         return True

@@ -18,7 +18,7 @@ def uml_helloworld_code(uml_helloworld):
 def _has_cairosvg():
     try:
         import cairosvg
-    except (ImportError, ModuleNotFoundError):
+    except (ImportError, ModuleNotFoundError, OSError):
         return False
     else:
         return True

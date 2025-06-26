@@ -16,7 +16,12 @@ from .conftest import _has_cairosvg
 class TestModelsRemote:
     @pytest.fixture()
     def host(self, is_official, plantuml_host):
-        return OFFICIAL_PLANTUML_HOST if is_official else plantuml_host
+        host_addr = OFFICIAL_PLANTUML_HOST if is_official else plantuml_host
+        if not host_addr:
+            pytest.skip('No plantuml host assigned')
+            return None
+        else:
+            return host_addr
 
     @pytest.fixture()
     def plantuml(self, host):
