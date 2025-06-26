@@ -5,7 +5,7 @@ on:
 
 jobs:
   test_for_linux:
-    name: Code test
+    name: Test For Linux
     runs-on: ${{ matrix.os }}
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     strategy:
@@ -21,9 +21,9 @@ jobs:
           - '8'
         plantuml-server-version:
           - 'jetty-v1.2025.3'
-          - 'jetty-v1.2023.8'  # this is a very important version, the ui is changed!!!
+#          - 'jetty-v1.2023.8'  # this is a very important version, the ui is changed!!!
           - 'jetty-v1.2023.7'  # this is a very important version, the ui is changed!!!
-          - 'jetty-v1.2023.6'
+#          - 'jetty-v1.2023.6'
           - 'jetty-v1.2021.14'
           - 'jetty-v1.2019.11'
         plantuml-version:
@@ -49,6 +49,109 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y tree make wget curl cloc graphviz
           dot -V
+      - name: Set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Set up java ${{ matrix.java-version }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: temurin
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --upgrade flake8 setuptools wheel twine
+          pip install -r requirements.txt
+          pip install -r requirements-test.txt
+      - name: Test the basic environment
+        run: |
+          python -V
+          pip --version  
+          pip list
+          java -version
+          javac -version
+          tree .
+          cloc plantuml
+          cloc test
+      - name: Test the plantuml in use (jar ${{ matrix.plantuml-version }}, server ${{ matrix.plantuml-server-version }})
+        env:
+          PLANTUML_HOST: http://localhost:18080
+        run: |
+          curl -L "${PLANTUML_HOST}/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80"
+      - name: Run unittest
+        env:
+          PLANTUML_JAR_VERSION: ${{ matrix.plantuml-version }}
+          PLANTUML_HOST: http://localhost:18080
+          PLANTUML_SERVER_VERSION: ${{ matrix.plantuml-server-version }}
+          TIMEOUT: '30'
+        run: |
+          make unittest WORKERS=${WORKERS}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+
+  test_for_all:
+    name: Test For ALL
+    runs-on: ${{ matrix.os }}
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+#          - 'ubuntu-22.04'
+          - 'windows-2022'
+          - 'macos-13'
+        python-version:
+          - '3.7'
+          - '3.10'
+          - '3.13'
+        java-version:
+          - '8'
+        plantuml-server-version:
+          - 'jetty-v1.2025.3'
+#          - 'jetty-v1.2023.8'  # this is a very important version, the ui is changed!!!
+          - 'jetty-v1.2023.7'  # this is a very important version, the ui is changed!!!
+#          - 'jetty-v1.2023.6'
+#          - 'jetty-v1.2021.14'
+          - 'jetty-v1.2019.11'
+        plantuml-version:
+          - '1.2025.3'
+          - '1.2023.6'
+#          - '1.2020.19'
+          - '1.2017.20'
+
+    services:
+      plantuml:
+        image: plantuml/plantuml-server:${{ matrix.plantuml-server-version }}
+        ports:
+          - 18080:8080
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 20
+      - name: Set up system dependences on linux
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y tree cloc wget curl make zip graphviz
+          dot -V
+      - name: Set up system dependences on Windows
+        if: ${{ env.OS_NAME == 'Windows' }}
+        shell: bash
+        run: |
+          choco install tree cloc wget curl make zip graphviz
+      - name: Set up system dependences on MacOS
+        if: ${{ env.OS_NAME == 'MacOS' }}
+        run: |
+          brew install tree cloc wget curl make zip graphviz
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
