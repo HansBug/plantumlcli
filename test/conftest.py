@@ -37,11 +37,12 @@ def plantuml_server_version():
         (major, year, v), = re.findall(r'v(?P<major>\d+).(?P<year>\d+).(?P<v>\d+)', raw, re.IGNORECASE)
         return int(major), int(year), int(v.lstrip('0') or '0')
     else:
+        pytest.skip('No plantuml server version assigned')
         return None
 
 
 # this is a buggy version which will cause error in plantumlcli
 @pytest.fixture(scope='session')
 def skip_for_server_v1202307(plantuml_server_version):
-    if plantuml_server_version == (1, 2023, 7):
+    if plantuml_server_version is not None and plantuml_server_version == (1, 2023, 7):
         pytest.skip('Skipped due to plantuml-server v1.2023.7')
