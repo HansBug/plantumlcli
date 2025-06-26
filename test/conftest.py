@@ -8,12 +8,21 @@ from plantumlcli.download import get_plantuml_jar_file
 
 @pytest.fixture(scope='session')
 def plantuml_jar_version():
-    return os.environ.get('PLANTUML_JAR_VERSION', '1.2020.19')
+    version = os.environ.get('PLANTUML_JAR_VERSION', '1.2020.19')
+    if not version:
+        pytest.skip('No plantuml jar version assigned')
+        return None
+    else:
+        return version
 
 
 @pytest.fixture(scope='session')
 def plantuml_jar_file(plantuml_jar_version):
-    return get_plantuml_jar_file(version=plantuml_jar_version)
+    if not plantuml_jar_version:
+        pytest.skip('No plantuml jar version assigned')
+        return None
+    else:
+        return get_plantuml_jar_file(version=plantuml_jar_version)
 
 
 @pytest.fixture(scope='session')

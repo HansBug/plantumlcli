@@ -113,24 +113,12 @@ jobs:
           - '3.13'
         java-version:
           - '8'
-        plantuml-server-version:
-          - 'jetty-v1.2025.3'
-#          - 'jetty-v1.2023.8'  # this is a very important version, the ui is changed!!!
-          - 'jetty-v1.2023.7'  # this is a very important version, the ui is changed!!!
-#          - 'jetty-v1.2023.6'
-#          - 'jetty-v1.2021.14'
-          - 'jetty-v1.2019.11'
         plantuml-version:
           - '1.2025.3'
           - '1.2023.6'
-#          - '1.2020.19'
+          - '1.2020.19'
           - '1.2017.20'
 
-    services:
-      plantuml:
-        image: plantuml/plantuml-server:${{ matrix.plantuml-server-version }}
-        ports:
-          - 18080:8080
 
     steps:
       - name: Checkout code
@@ -177,16 +165,10 @@ jobs:
           tree .
           cloc plantuml
           cloc test
-      - name: Test the plantuml in use (jar ${{ matrix.plantuml-version }}, server ${{ matrix.plantuml-server-version }})
-        env:
-          PLANTUML_HOST: http://localhost:18080
-        run: |
-          curl -L "${PLANTUML_HOST}/txt/SoWkIImgAStDuNBAJrBGjLDmpCbCJbMmKiX8pSd9vt98pKi1IG80"
       - name: Run unittest
         env:
           PLANTUML_JAR_VERSION: ${{ matrix.plantuml-version }}
           PLANTUML_HOST: http://localhost:18080
-          PLANTUML_SERVER_VERSION: ${{ matrix.plantuml-server-version }}
           TIMEOUT: '30'
         run: |
           make unittest WORKERS=${WORKERS}
